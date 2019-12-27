@@ -1,11 +1,11 @@
-from django.http import response, JsonResponse
+from django.http import response, JsonResponse, request
 from django.shortcuts import render
 
 # Create your views here.
 from django.views import generic
 from django.views.generic import TemplateView
 
-from app.models import CharacterClass
+from app.models import CharacterClass, Character
 
 
 class IndexView(TemplateView):
@@ -18,8 +18,7 @@ class IndexView(TemplateView):
 
 
 class GenerateCharacterView(generic.View):
-	def get(self, request):
-		var = request.GET
-		return JsonResponse([
-			{'id': 'characeter.id'}
-		])
+	def post(self):
+		
+		var = Character.generateRandomCharacter(request['characterClass'])
+		return JsonResponse(var)

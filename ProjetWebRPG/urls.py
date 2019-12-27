@@ -16,10 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from app import views
 from app.views import IndexView, GenerateCharacterView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='home'),
-    path('generateCharacter', GenerateCharacterView.as_view(), name='generateCharacter'),
+    path('generateCharacter', views.GenerateCharacterView,
+         name='generateCharacter'),
 ]

@@ -7,19 +7,19 @@
 
 	{#	<link href="{% static 'css/main.css' %}"#}
 	{#	      rel="stylesheet" type="text/css">#}
-
+	<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
 	<script src="{% static 'js/main.js' %}"></script>
 </head>
 
 <body id="page-body">
-<form method="POST">
+<form>
 	{% csrf_token %}
 
 	<label for="name">Name: </label>
 	<input type="text" name="name" id="name" required>
 
 	<label for="characterClass">Class: </label>
-	<select name="characterClass">
+	<select id="characterClass" name="characterClass">
 		{% for characterClass in characterClasses %}
 			<option value="{{ characterClass.id }}">
 				{{ characterClass.name }}</option>
@@ -27,8 +27,10 @@
 	</select>
 
 
-	<button id="play"> Play !</button>
+	<input type="submit" id="play" value="play">
+
 </form>
+
 
 </body>
 

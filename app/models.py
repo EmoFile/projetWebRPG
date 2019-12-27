@@ -83,16 +83,14 @@ class Character(models.Model):
 	inventory = models.OneToOneField('Inventory',
 	                                 on_delete=models.PROTECT)
 	
-	def generateRandomCharacter(self, name, characterClass):
-		self.name = name
-		self.characterClass = characterClass
-		self.hpMax = self.generateHpMax(characterClass)
-		self.hp = self.hpMax
-		self.strength = self.generateStrength(characterClass)
-		self.agility = self.generateAgility(characterClass)
-		self.intelligence = self.generateIntelligence(characterClass)
-		self.PR = self.generatePR(characterClass)
-		self.MR = self.generateMR(characterClass)
+	def generateRandomCharacter(self, characterClass):
+		return {'hpMax': Character.generateHpMax(characterClass),
+		        'strength': Character.generateStrength(characterClass),
+		        'agility': Character.generateAgility(characterClass),
+		        'intelligence': Character.generateIntelligence(characterClass),
+		        'PR': Character.generatePR(characterClass),
+		        'MR': Character.generateMR(characterClass)
+		        }
 	
 	def __str__(self):
 		return f'{self.id}: {self.name} ' \
@@ -107,23 +105,27 @@ class Character(models.Model):
 		       f'|Mr: {self.magicalResistance}]'
 	
 	def generateStrength(self, characterclass):
-		return random.randint(characterclass.minStrength, characterclass.minStrength + 5)
+		return random.randint(characterclass.minStrength,
+		                      characterclass.minStrength + 5)
 	
 	def generateHpMax(self, characterclass):
-		return random.randint(characterclass.minHpMax, characterclass.minHpMax + 5)
+		return random.randint(characterclass.minHpMax,
+		                      characterclass.minHpMax + 5)
 	
 	def generateAgility(self, characterclass):
-		return random.randint(characterclass.minAgility, characterclass.minAgility + 5)
+		return random.randint(characterclass.minAgility,
+		                      characterclass.minAgility + 5)
 	
 	def generateIntelligence(self, characterclass):
 		return random.randint(characterclass.minInt, characterclass.minInt + 5)
 	
 	def generatePR(self, characterclass):
 		return random.randint(characterclass.minPhysResis,
-		             characterclass.minPhysResis + 5)
+		                      characterclass.minPhysResis + 5)
 	
 	def generateMR(self, characterclass):
-		return random.randint(characterclass.minMagRes, characterclass.minMagRes + 5)
+		return random.randint(characterclass.minMagRes,
+		                      characterclass.minMagRes + 5)
 
 
 class Item(models.Model):
