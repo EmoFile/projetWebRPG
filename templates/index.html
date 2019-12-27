@@ -1,0 +1,34 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<title>{{ title }}</title>
+
+	{#	<link href="{% static 'css/main.css' %}"#}
+	{#	      rel="stylesheet" type="text/css">#}
+
+	<script src="{% static 'js/main.js' %}"></script>
+</head>
+
+<body id="page-body">
+<form method="POST">
+	{% csrf_token %}
+
+	<label for="name">Name: </label>
+	<input type="text" name="name" id="name" required>
+
+	<label for="characterClass">Class: </label>
+	<select name="characterClass">
+		{% for characterClass in characterClasses %}
+			<option value="{{ characterClass.id }}">
+				{{ characterClass.name }}</option>
+		{% endfor %}
+	</select>
+
+
+	<button id="play"> Play !</button>
+</form>
+
+</body>
+

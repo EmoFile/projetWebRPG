@@ -1,0 +1,92 @@
+Page d'acceuil
+	- S'incire
+	- Connexion/Deconnexion
+	- Tableau des scores (Username|Name personnage|Classe|Toutes les statistiques|Score) => Tout les temps/An/Mois/Semaine
+	- Bouton Démarrer une partie
+
+Démarrage d'une partie
+	- Choix de la classe (Statistique du perso aléatoire)
+		- Mage
+		- Guerrier
+		- Voleur
+	- Bouton Go
+
+Déroullement de la partie
+	- Recontre d'un adversaire
+		- Résolution des attaques/défenses/esquives en random
+	- Drop inch'allah des objets
+	- Utilisation des objets
+
+Page de profil utilisateur
+	- 10 dernières parties
+	- Top 10 des parties => Tout les temps/An/Mois/Semaine
+
+Custom admin création d'objet
+	- Stuff
+	- Consommable
+
+Classe:
+	- Character
+		- name
+		- level
+		- hpMax
+		- hp
+		- armor
+		- resistense
+		- agility
+		- physicalResistance
+		- magicalResistance
+		- listStuff[Stuff]
+		- listWeapon[Weapon]
+		- listConsumable[Consumable]
+
+	- Warrior expend(Character)
+		- strengh
+	- Wizzard expend(Character)
+		- intelligence
+
+	- Item
+		- name
+		- hp max
+		- hp
+		- strenght
+		- inteligence
+		- agility
+		- physicalResistance
+		- magicalResistance
+
+	- Stuff expend(Item)
+		- characterClasses
+		- requiredLevel
+
+	- Head expend(Stuff)
+	- Chest expend(Stuff)
+	- Leg expend(Stuff)
+	- Weapon expend(Stuff)
+		- OneHanded
+
+	- Party
+		- User
+		- Date
+		- Character
+		- Stage
+
+
+class IndexView(generic.View):
+	def get(self, request, $args, **kwargs):
+		pass
+
+	def post(self, request, $args, **kwargs):
+		request.POST
+		response JsonResponse([
+			{'id':'characeter.id'}
+		])
+
+    def get(self, request, $args, **kwargs):
+		request.GET
+		response JsonResponse([
+			{'id':'characeter.id'}
+		])
+
+	def delete(self, request, $args, **kwargs):
+		pass
