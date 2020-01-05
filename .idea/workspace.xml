@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f8051ae-f943-48d5-87a1-9567dd0571e7" name="Default Changelist" comment="" />
+    <list default="true" id="5f8051ae-f943-48d5-87a1-9567dd0571e7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjetWebRPG/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ProjetWebRPG/settings.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,6 +21,9 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1VF0vDRUBqXgCrilvA19dJf98NX" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -27,7 +33,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../RIL_2019_DjangoTraining" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -42,7 +48,7 @@
       </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="launchJavascriptDebuger" value="false" />
@@ -82,6 +88,8 @@
       <workItem from="1576833784939" duration="5579000" />
       <workItem from="1576846007654" duration="8605000" />
       <workItem from="1577436989878" duration="9830000" />
+      <workItem from="1578241964449" duration="336000" />
+      <workItem from="1578242314865" duration="232000" />
     </task>
     <servers />
   </component>
@@ -89,6 +97,18 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="679" y="128" key="#ProjetWebRPG" timestamp="1578242525997">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="679" y="128" key="#ProjetWebRPG/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578242525997" />
+    <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1578242507302">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578242507302" />
+    <state x="694" y="283" width="765" height="616" key="EnvironmentVariablesDialog" timestamp="1578242481877">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="694" y="283" width="765" height="616" key="EnvironmentVariablesDialog/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578242481877" />
     <state x="565" y="117" key="FileChooserDialogImpl" timestamp="1577440581789">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -113,6 +133,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1366.728@0.0.1366.728" timestamp="1577440910993" />
+    <state x="661" y="345" key="com.intellij.ide.util.TipDialog" timestamp="1578242315232">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="661" y="345" key="com.intellij.ide.util.TipDialog/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578242315232" />
     <state x="324" y="78" width="700" height="530" key="recent.locations.popup" timestamp="1577440912152">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
