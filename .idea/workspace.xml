@@ -1,29 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f8051ae-f943-48d5-87a1-9567dd0571e7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/migrations/0002_auto_20200106_2228.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/migrations/0003_auto_20200106_2339.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjetWebRPG/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/ProjetWebRPG/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/migrations/0002_auto_20191220_1348.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/migrations/0003_auto_20191220_1405.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/migrations/0004_auto_20191220_1453.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/migrations/0005_auto_20191220_1501.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/migrations/0006_auto_20191220_1557.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/migrations/0007_auto_20191220_1608.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/migrations/0008_character_inventory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/migrations/0009_party.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/migrations/0010_auto_20191227_1148.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/migrations/0011_auto_20191227_1330.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-    </list>
+    <list default="true" id="5f8051ae-f943-48d5-87a1-9567dd0571e7" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -136,7 +114,7 @@
       <workItem from="1577454794210" duration="3995000" />
       <workItem from="1578003182821" duration="2668000" />
       <workItem from="1578083552871" duration="9555000" />
-      <workItem from="1578343050266" duration="11914000" />
+      <workItem from="1578343050266" duration="12239000" />
     </task>
     <servers />
   </component>
@@ -156,22 +134,22 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="565" y="117" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1578348325111" />
-    <state width="1322" height="102" key="GridCell.Tab.0.bottom" timestamp="1578350358077">
+    <state width="1322" height="192" key="GridCell.Tab.0.bottom" timestamp="1578355835034">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1322" height="102" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1578350358077" />
-    <state width="1322" height="102" key="GridCell.Tab.0.center" timestamp="1578350358077">
+    <state width="1322" height="192" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1578355835034" />
+    <state width="1322" height="192" key="GridCell.Tab.0.center" timestamp="1578355835034">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1322" height="102" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1578350358077" />
-    <state width="1322" height="102" key="GridCell.Tab.0.left" timestamp="1578350358077">
+    <state width="1322" height="192" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1578355835034" />
+    <state width="1322" height="192" key="GridCell.Tab.0.left" timestamp="1578355835034">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1322" height="102" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1578350358077" />
-    <state width="1322" height="102" key="GridCell.Tab.0.right" timestamp="1578350358077">
+    <state width="1322" height="192" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1578355835034" />
+    <state width="1322" height="192" key="GridCell.Tab.0.right" timestamp="1578355835034">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1322" height="102" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1578350358077" />
+    <state width="1322" height="192" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1578355835034" />
     <state width="196" height="457" key="HiddenNamespacesPopup" timestamp="1578345703873">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
