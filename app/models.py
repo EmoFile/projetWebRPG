@@ -334,7 +334,8 @@ class Enemy(models.Model):
 
 
 class Minion(Enemy):
-	def __init__(self, adventurer, i):
+	def __init__(self, adventurer, i, *args, **kwargs):
+		super().__init__(*args, **kwargs)
 		min_percent = (i - 1) * 3
 		max_percent = (i + 2) * 3
 		min_percent_def = (30 * i - 330) / 11
