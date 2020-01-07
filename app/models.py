@@ -4,8 +4,9 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
 
-
 # Create your models here.
+from django.urls import reverse
+
 
 class CharacterClass(models.Model):
 	name = models.CharField(max_length=20,
@@ -38,6 +39,35 @@ class CharacterClass(models.Model):
 	
 	def __str__(self):
 		return f'{self.id}: {self.name}'
+	
+	def generateHpMax(self):
+		return random.randint(self.minHpMax, self.minHpMax + 10)
+	
+	def generateStrength(self):
+		return random.randint(self.minStrength, self.minStrength + 10)
+	
+	def generateAgility(self):
+		return random.randint(self.minAgility, self.minAgility + 10)
+	
+	def generateIntelligence(self):
+		return random.randint(self.minInt, self.minInt + 10)
+	
+	def generatePR(self):
+		return random.randint(self.minPhysResis, self.minPhysResis + 10)
+	
+	def generateMR(self):
+		return random.randint(self.minMagRes, self.minMagRes + 10)
+
+
+# USELESS CAR PBR DE TROP NOMBREUX CALL LES UN DANS LES AUTRES MAIS C4EST
+# CHELOU DONC A MONTRER A PONS
+# def getRadomCarac(self):
+# 	return {'hpMax': self.generateHpMax(),
+# 	        'strength': self.generateStrength(),
+# 	        'agility': self.generateAgility(),
+# 	        'intelligence': self.generateIntelligence(),
+# 	        'physicalResistance': self.generatePR(),
+# 	        'magicalResistance': self.getRadomCarac()}
 
 
 class Character(models.Model):
@@ -73,29 +103,22 @@ class Character(models.Model):
 	                                   blank=False,
 	                                   null=False)
 	physicalResistance = models.IntegerField(default=0,
-	                                         validators=[MinValueValidator(0)],
+	                                         validators=[
+		                                         MinValueValidator(0)],
 	                                         blank=False,
 	                                         null=False)
 	magicalResistance = models.IntegerField(default=0,
-	                                        validators=[MinValueValidator(0)],
+	                                        validators=[
+		                                        MinValueValidator(0)],
 	                                        blank=False,
 	                                        null=False)
 	inventory = models.OneToOneField('Inventory',
 	                                 on_delete=models.PROTECT)
 	
-	def generateRandomCharacter(self, characterClass):
-		return {'hpMax': Character.generateHpMax(characterClass),
-		        'strength': Character.generateStrength(characterClass),
-		        'agility': Character.generateAgility(characterClass),
-		        'intelligence': Character.generateIntelligence(characterClass),
-		        'PR': Character.generatePR(characterClass),
-		        'MR': Character.generateMR(characterClass)
-		        }
-	
 	def __str__(self):
 		return f'{self.id}: {self.name} ' \
 		       f'[Lvl: {self.level}' \
-		       f'|Class: {self.characterClass.name}' \
+		       f'|Class: {self.characterClass}' \
 		       f'|HpM: {self.hpMax}' \
 		       f'|hp: {self.hp}' \
 		       f'|Str: {self.strength}' \
@@ -104,28 +127,10 @@ class Character(models.Model):
 		       f'|Pr: {self.physicalResistance}' \
 		       f'|Mr: {self.magicalResistance}]'
 	
-	def generateStrength(self, characterclass):
-		return random.randint(characterclass.minStrength,
-		                      characterclass.minStrength + 5)
-	
-	def generateHpMax(self, characterclass):
-		return random.randint(characterclass.minHpMax,
-		                      characterclass.minHpMax + 5)
-	
-	def generateAgility(self, characterclass):
-		return random.randint(characterclass.minAgility,
-		                      characterclass.minAgility + 5)
-	
-	def generateIntelligence(self, characterclass):
-		return random.randint(characterclass.minInt, characterclass.minInt + 5)
-	
-	def generatePR(self, characterclass):
-		return random.randint(characterclass.minPhysResis,
-		                      characterclass.minPhysResis + 5)
-	
-	def generateMR(self, characterclass):
-		return random.randint(characterclass.minMagRes,
-		                      characterclass.minMagRes + 5)
+	# Page de redirection après création d'un user => pour le passage en prod
+	# mettre la page début de la partie du coup
+	def get_absolute_url(self):
+		return reverse('characterDetail', kwargs={'pk': self.pk})
 
 
 class Item(models.Model):
@@ -164,11 +169,13 @@ class Stuff(Item):
 	                            blank=False,
 	                            null=False)
 	physicalResistance = models.IntegerField(default=0,
-	                                         validators=[MinValueValidator(0)],
+	                                         validators=[
+		                                         MinValueValidator(0)],
 	                                         blank=False,
 	                                         null=False)
 	magicalResistance = models.IntegerField(default=0,
-	                                        validators=[MinValueValidator(0)],
+	                                        validators=[
+		                                        MinValueValidator(0)],
 	                                        blank=False,
 	                                        null=False)
 
@@ -257,13 +264,19 @@ class Consumable(Item):
 class Inventory(models.Model):
 	head = models.ForeignKey(Head,
 	                         on_delete=models.CASCADE,
-	                         related_name='headInventory')
+	                         related_name='headInventory',
+	                         blank=True,
+	                         null=True)
 	chest = models.ForeignKey(Chest,
 	                          on_delete=models.CASCADE,
-	                          related_name='chestInventory')
+	                          related_name='chestInventory',
+	                          blank=True,
+	                          null=True)
 	leg = models.ForeignKey(Leg,
 	                        on_delete=models.CASCADE,
-	                        related_name='legInventory')
+	                        related_name='legInventory',
+	                        blank=True,
+	                        null=True)
 	consumables = models.ManyToManyField('Consumable',
 	                                     through='InventoryConsumable')
 

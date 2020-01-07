@@ -6,7 +6,6 @@ from app.models import Character, Weapon, Head, Chest, Leg, Consumable, \
 
 
 class CharacterAdmin(admin.ModelAdmin):
-	
 	def className(self, obj):
 		return f'{obj.characterClass.name}'
 	

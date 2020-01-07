@@ -1,0 +1,15 @@
+<form>
+    <input type="number" value="4" readonly="readonly">
+</form>
+
+
+
+somefield = forms.CharField(
+    widget=forms.NumberInput(attrs={'readonly':'readonly', 'value': '1'})
+)
+https://stackoverflow.com/questions/1827526/django-creating-a-form-field-thats-read-only-using-widgets
+
+
+
+https://docs.djangoproject.com/fr/3.0/topics/forms/
+https://openclassrooms.com/fr/courses/1871271-developpez-votre-site-web-avec-le-framework-django/1872573-les-formulaires#r-1876028
