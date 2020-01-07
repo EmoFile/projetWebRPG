@@ -19,18 +19,29 @@ class IndexView(TemplateView):
 	def get_context_data(self, **kwargs):
 		result = super().get_context_data(**kwargs)
 		result['characterClasses'] = CharacterClass.objects.all()
+		result['title'] = 'Home'
 		return result
 
 
 class CharacterDetailView(DetailView):
 	model = Character
 	template_name = 'characterDetail.html'
+	
+	def get_context_data(self, **kwargs):
+		result = super().get_context_data(**kwargs)
+		result['title'] = 'Character Detail'
+		return result
 
 
 class GenerateCharacterView(CreateView):
 	model = Character
 	form_class = CharacterForm
 	template_name = 'characterForm.html'
+	
+	def get_context_data(self, **kwargs):
+		result = super().get_context_data(**kwargs)
+		result['title'] = 'Create Character'
+		return result
 	
 	def form_valid(self, form):
 		# Création de l'objet sans enregistrement en base
