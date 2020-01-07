@@ -2,8 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f8051ae-f943-48d5-87a1-9567dd0571e7" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjetWebRPG/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ProjetWebRPG/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjetWebRPG/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/ProjetWebRPG/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,10 +36,16 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Y0652097\Desktop\CESIproject\PythonProject\projetWebRPG\app" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="ProjetWebRPG" type="Python.DjangoServer" factoryName="Django server">
@@ -90,6 +100,8 @@
       <workItem from="1577436989878" duration="9830000" />
       <workItem from="1578241964449" duration="336000" />
       <workItem from="1578242314865" duration="1486000" />
+      <workItem from="1578246793524" duration="404000" />
+      <workItem from="1578388210498" duration="10407000" />
     </task>
     <task id="LOCAL-00001" summary="Modification de setting de ce que m'a dit richard">
       <created>1578242603689</created>
@@ -117,9 +129,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578242839565" />
-    <state x="585" y="115" key="CommitChangelistDialog2" timestamp="1578242602877">
+    <state x="585" y="115" key="CommitChangelistDialog2" timestamp="1578407470114">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state x="585" y="115" key="CommitChangelistDialog2/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578407470114" />
     <state x="585" y="115" key="CommitChangelistDialog2/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578242602877" />
     <state x="694" y="283" width="765" height="616" key="EnvironmentVariablesDialog" timestamp="1578242481877">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -129,41 +142,53 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="565" y="117" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1577440581789" />
-    <state width="1877" height="60" key="GridCell.Tab.0.bottom" timestamp="1578243141651">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="60" key="GridCell.Tab.0.bottom/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578243141651" />
-    <state width="1322" height="238" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1577449840119" />
-    <state width="1877" height="60" key="GridCell.Tab.0.center" timestamp="1578243141651">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="60" key="GridCell.Tab.0.center/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578243141651" />
-    <state width="1322" height="238" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1577449840119" />
-    <state width="1877" height="60" key="GridCell.Tab.0.left" timestamp="1578243141651">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="60" key="GridCell.Tab.0.left/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578243141651" />
-    <state width="1322" height="238" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1577449840119" />
-    <state width="1877" height="60" key="GridCell.Tab.0.right" timestamp="1578243141651">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="60" key="GridCell.Tab.0.right/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578243141651" />
-    <state width="1322" height="238" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1577449840119" />
-    <state x="461" y="163" key="SettingsEditor" timestamp="1578243038084">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="461" y="163" key="SettingsEditor/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578243038084" />
-    <state width="498" height="446" key="SwitcherDM" timestamp="1577440910993">
+    <state width="1323" height="179" key="GridCell.Tab.0.bottom" timestamp="1578247196869">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="498" height="446" key="SwitcherDM/0.0.1366.728@0.0.1366.728" timestamp="1577440910993" />
-    <state x="661" y="345" key="com.intellij.ide.util.TipDialog" timestamp="1578242315232">
+    <state width="1877" height="60" key="GridCell.Tab.0.bottom/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578243141651" />
+    <state width="1323" height="179" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1578247196869" />
+    <state width="1323" height="179" key="GridCell.Tab.0.center" timestamp="1578247196869">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1877" height="60" key="GridCell.Tab.0.center/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578243141651" />
+    <state width="1323" height="179" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1578247196869" />
+    <state width="1323" height="179" key="GridCell.Tab.0.left" timestamp="1578247196869">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1877" height="60" key="GridCell.Tab.0.left/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578243141651" />
+    <state width="1323" height="179" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1578247196869" />
+    <state width="1323" height="179" key="GridCell.Tab.0.right" timestamp="1578247196869">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1877" height="60" key="GridCell.Tab.0.right/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578243141651" />
+    <state width="1323" height="179" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1578247196869" />
+    <state x="328" y="14" key="SettingsEditor" timestamp="1578246963484">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="461" y="163" key="SettingsEditor/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578243038084" />
+    <state x="328" y="14" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1578246963484" />
+    <state width="700" height="638" key="SwitcherDM" timestamp="1578404286414">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state width="700" height="638" key="SwitcherDM/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578404286414" />
+    <state width="498" height="446" key="SwitcherDM/0.0.1366.728@0.0.1366.728" timestamp="1577440910993" />
+    <state x="661" y="346" key="com.intellij.ide.util.TipDialog" timestamp="1578388217825">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="661" y="346" key="com.intellij.ide.util.TipDialog/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578388217825" />
     <state x="661" y="345" key="com.intellij.ide.util.TipDialog/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578242315232" />
+    <state x="470" y="242" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1578246795060" />
+    <state x="2029" y="17" width="1420" height="1026" maximized="true" key="dock-window-1" timestamp="1578406086549">
+      <screen x="1920" y="17" width="1920" height="1040" />
+    </state>
+    <state x="2029" y="17" width="1420" height="1026" maximized="true" key="dock-window-1/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578406086549" />
     <state x="324" y="78" width="700" height="530" key="recent.locations.popup" timestamp="1577440912152">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="324" y="78" width="700" height="530" key="recent.locations.popup/0.0.1366.728@0.0.1366.728" timestamp="1577440912152" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1578404240497">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578404240497" />
   </component>
 </project>
