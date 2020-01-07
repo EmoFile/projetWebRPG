@@ -10,14 +10,31 @@
 		HP: {{ character.hp }}/{{ character.hpMax }} <br><br>
 
 		Force: {{ character.strength }} <br>
-		{{ character.intelligence }} <br>
-		{{ character.agility }} <br>
-		{{ character.physicalResistance }} <br>
-		{{ character.magicalResistance }} <br>
+		Intelligence: {{ character.intelligence }} <br>
+		Agility: {{ character.agility }} <br>
+		Physical resistance: {{ character.physicalResistance }} <br>
+		Magical resistance: {{ character.magicalResistance }} <br>
 
-		{{ character.inventory.head.name }} <br>
-		{{ character.inventory.chest.name }} <br>
-		{{ character.inventory.leg.name }} <br>
+		Head:
+		{% if character.inventory.head.name == Null %}
+			Pas de d'équipement
+		{% else %}
+			{{ character.inventory.head.name }}
+		{% endif %} <br>
+
+		Chest:
+		{% if character.inventory.chest.name == Null %}
+			Pas de d'équipement
+		{% else %}
+			{{ character.inventory.chest.name }}
+		{% endif %} <br>
+
+		Leg:
+		{% if character.inventory.leg.name == Null %}
+			Pas de d'équipement
+		{% else %}
+			{{ character.inventory.leg.name }}
+		{% endif %} <br>
 	</div>
 
 
