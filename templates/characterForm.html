@@ -12,27 +12,27 @@
 	      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
 	      crossorigin="anonymous">
 	<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-	<script src="{% static 'js/main.js' %}"></script>
 </head>
 
 <body id="page-body">
 
-{#{% csrf_token %}#}
-{##}
-{#<label for="name">Name: </label>#}
-{#<input type="text" name="name" id="name" required>#}
-{##}
-{#<label for="characterClass">Class: </label>#}
-{#<select id="characterClass" name="characterClass">#}
-{#	{% for characterClass in characterClasses %}#}
-{#		<option value="{{ characterClass.id }}">#}
-{#			{{ characterClass.name }}</option>#}
-{#	{% endfor %}#}
-{#</select>#}
 
-<button>
-	<a href="{% url 'generateCharacter' %}">Play</a>
-</button>
+<form method="POST">
+	{% csrf_token %}
+	{% for field in form %}
+		<div class="h5 font-weight-bold text-primary text-uppercase mb-1">
+			<label>
+				{{ field.label }}:
+			</label>
+			<nav>
+				{{ field }}
+			</nav>
+		</div>
+	{% endfor %}
+
+	{{ Test }}
+	<button type="submit">Valider</button>
+</form>
 
 
 </body>

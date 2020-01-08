@@ -16,10 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from app.views import IndexView, GenerateCharacterView
+from app import views
+from app.views import IndexView, GenerateCharacterView, CharacterDetailView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', IndexView.as_view(), name='home'),
-    path('generateCharacter', GenerateCharacterView.as_view(), name='generateCharacter'),
+	path('admin/', admin.site.urls),
+	path('', IndexView.as_view(), name='home'),
+	path('generateCharacter',
+	     GenerateCharacterView.as_view(),
+	     name='generateCharacter'),
+	path('characterDetail/<int:pk>', CharacterDetailView.as_view(),
+	     name='characterDetail'),
 ]
