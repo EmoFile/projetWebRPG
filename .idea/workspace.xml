@@ -134,10 +134,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="275" y="21" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.728@0.0.1366.728" timestamp="1578345879204" />
-    <state x="561" y="115" key="CommitChangelistDialog2" timestamp="1578475276052">
+    <state x="561" y="115" key="CommitChangelistDialog2" timestamp="1578476349387">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="561" y="115" key="CommitChangelistDialog2/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578475276052" />
+    <state x="561" y="115" key="CommitChangelistDialog2/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578476349387" />
     <state x="565" y="117" key="FileChooserDialogImpl" timestamp="1578348325111">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -162,18 +162,19 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="196" height="457" key="HiddenNamespacesPopup/0.0.1366.728@0.0.1366.728" timestamp="1578345703873" />
-    <state x="184" y="0" key="SettingsEditor" timestamp="1577455009812">
-      <screen x="0" y="0" width="1366" height="728" />
+    <state x="259" y="0" key="SettingsEditor" timestamp="1578476394829">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state x="259" y="0" key="SettingsEditor/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578476394829" />
     <state x="184" y="0" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1577455009812" />
     <state width="498" height="446" key="SwitcherDM" timestamp="1577440910993">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1366.728@0.0.1366.728" timestamp="1577440910993" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1578475291797">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1578476364516">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578475291797" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578476364516" />
     <state x="525" y="251" key="com.intellij.execution.console.ConsoleHistoryController$MyBrowseAction$1" timestamp="1578345901754">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
