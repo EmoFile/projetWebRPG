@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f8051ae-f943-48d5-87a1-9567dd0571e7" name="Default Changelist" comment="" />
+    <list default="true" id="5f8051ae-f943-48d5-87a1-9567dd0571e7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -81,17 +83,7 @@
       <list>
         <serviceView>
           <treeState>
-            <expand>
-              <path>
-                <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
-                <item name="root:db" type="7427dc5b:ServiceModel$ServiceGroupNode" />
-              </path>
-              <path>
-                <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
-                <item name="root:db" type="7427dc5b:ServiceModel$ServiceGroupNode" />
-                <item name="com.intellij.database.console.session.MessageBusSession@23919100" type="9fbbdea:ServiceModel$ServiceNode" />
-              </path>
-            </expand>
+            <expand />
             <select />
           </treeState>
         </serviceView>
@@ -116,10 +108,22 @@
       <workItem from="1578083552871" duration="9555000" />
       <workItem from="1578343050266" duration="12239000" />
     </task>
+    <task id="LOCAL-00001" summary="fichier gitignore ajouter">
+      <created>1578475277431</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1578475277431</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fichier gitignore ajouter" />
+    <option name="LAST_COMMIT_MESSAGE" value="fichier gitignore ajouter" />
   </component>
   <component name="WindowStateProjectService">
     <state x="275" y="21" key="#Inspections" timestamp="1578343787406">
@@ -130,6 +134,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="275" y="21" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.728@0.0.1366.728" timestamp="1578345879204" />
+    <state x="561" y="115" key="CommitChangelistDialog2" timestamp="1578475276052">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="561" y="115" key="CommitChangelistDialog2/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578475276052" />
     <state x="565" y="117" key="FileChooserDialogImpl" timestamp="1578348325111">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -162,6 +170,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1366.728@0.0.1366.728" timestamp="1577440910993" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1578475291797">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578475291797" />
     <state x="525" y="251" key="com.intellij.execution.console.ConsoleHistoryController$MyBrowseAction$1" timestamp="1578345901754">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
