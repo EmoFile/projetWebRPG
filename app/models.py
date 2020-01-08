@@ -336,7 +336,6 @@ class Enemy(models.Model):
 class Minion(Enemy):
 	def __init__(self, adventurer, i, *args, **kwargs):
 		'''
-
 		:param adventurer: Object from class carachter
 		:param i: iteration of ennemy from place
 		:param args:
@@ -360,3 +359,6 @@ class Minion(Enemy):
 		self.agility = random.randrange(adventurer.agility - 10, adventurer.agility + 10)
 		self.hp = self.hpMax
 
+
+class BossAlain(Enemy):
+	pass
