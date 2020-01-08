@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f8051ae-f943-48d5-87a1-9567dd0571e7" name="Default Changelist" comment="" />
+    <list default="true" id="5f8051ae-f943-48d5-87a1-9567dd0571e7" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,12 +23,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="ProjectId" id="1VF0vDRUBqXgCrilvA19dJf98NX" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
@@ -33,7 +38,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/app" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.fileTypes" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -94,8 +99,8 @@
       <workItem from="1578241964449" duration="336000" />
       <workItem from="1578242314865" duration="1486000" />
       <workItem from="1578246793524" duration="404000" />
-      <workItem from="1578388210498" duration="11531000" />
-      <workItem from="1578434514500" duration="10000" />
+      <workItem from="1578388210498" duration="12126000" />
+      <workItem from="1578471401304" duration="1250000" />
     </task>
     <task id="LOCAL-00001" summary="Modification de setting de ce que m'a dit richard">
       <created>1578242603689</created>
@@ -111,29 +116,53 @@
       <option name="project" value="LOCAL" />
       <updated>1578407511866</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Mise en place du model Enemy et Minions (encore en fonderie) (le commit juste avant aussi ici c'est une modif de l'appel def __init__)">
+      <created>1578408843248</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1578408843248</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="SHOW_OTHER_BRANCHES" value="true" />
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Modification de setting de ce que m'a dit richard" />
-    <option name="LAST_COMMIT_MESSAGE" value="Modification de setting de ce que m'a dit richard" />
+    <MESSAGE value="Mise en place du model Enemy et Minions (encore en fonderie) (le commit juste avant aussi ici c'est une modif de l'appel def __init__)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Mise en place du model Enemy et Minions (encore en fonderie) (le commit juste avant aussi ici c'est une modif de l'appel def __init__)" />
   </component>
   <component name="WindowStateProjectService">
     <state x="679" y="128" key="#ProjetWebRPG" timestamp="1578242525997">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="679" y="128" key="#ProjetWebRPG/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578242525997" />
-    <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1578242839565">
+    <state x="552" y="179" key="#Scopes" timestamp="1578471567009">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state x="552" y="179" key="#Scopes/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578471567009" />
+    <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1578471429857">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578471429857" />
     <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578242839565" />
-    <state x="585" y="115" key="CommitChangelistDialog2" timestamp="1578407509920">
+    <state x="585" y="115" key="CommitChangelistDialog2" timestamp="1578472662221">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="585" y="115" key="CommitChangelistDialog2/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578407509920" />
+    <state x="585" y="115" key="CommitChangelistDialog2/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578472662221" />
     <state x="585" y="115" key="CommitChangelistDialog2/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578242602877" />
     <state x="694" y="283" width="765" height="616" key="EnvironmentVariablesDialog" timestamp="1578242481877">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -163,9 +192,18 @@
     </state>
     <state width="1877" height="60" key="GridCell.Tab.0.right/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578243141651" />
     <state width="1323" height="179" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1578247196869" />
-    <state x="328" y="14" key="SettingsEditor" timestamp="1578246963484">
-      <screen x="0" y="0" width="1366" height="728" />
+    <state x="184" y="91" key="MergeDialog" timestamp="1578472805549">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state x="184" y="91" key="MergeDialog/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578472805549" />
+    <state x="672" y="236" key="MultipleFileMergeDialog" timestamp="1578472815937">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="672" y="236" key="MultipleFileMergeDialog/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578472815937" />
+    <state x="461" y="20" key="SettingsEditor" timestamp="1578472334690">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="461" y="20" key="SettingsEditor/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578472334690" />
     <state x="461" y="163" key="SettingsEditor/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578243038084" />
     <state x="328" y="14" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1578246963484" />
     <state width="700" height="638" key="SwitcherDM" timestamp="1578404286414">
@@ -173,12 +211,20 @@
     </state>
     <state width="700" height="638" key="SwitcherDM/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578404286414" />
     <state width="498" height="446" key="SwitcherDM/0.0.1366.728@0.0.1366.728" timestamp="1577440910993" />
-    <state x="661" y="345" key="com.intellij.ide.util.TipDialog" timestamp="1578434515411">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1578472702268">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="661" y="346" key="com.intellij.ide.util.TipDialog/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578388217825" />
-    <state x="661" y="345" key="com.intellij.ide.util.TipDialog/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578434515411" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578472702268" />
+    <state x="661" y="346" key="com.intellij.ide.util.TipDialog" timestamp="1578471403992">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="661" y="346" key="com.intellij.ide.util.TipDialog/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578471403992" />
+    <state x="661" y="345" key="com.intellij.ide.util.TipDialog/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1578242315232" />
     <state x="470" y="242" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1578246795060" />
+    <state x="769" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1578472775217">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="769" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/-1366.315.1366.728/1920.17.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1578472775217" />
     <state x="2029" y="17" width="1420" height="1026" maximized="true" key="dock-window-1" timestamp="1578406086549">
       <screen x="1920" y="17" width="1920" height="1040" />
     </state>
