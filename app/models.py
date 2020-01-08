@@ -358,3 +358,17 @@ class Minion(Enemy):
 									  			   round(adventurer.intelligence + (adventurer.intelligence * max_percent_def)/100))
 		self.agility = random.randrange(adventurer.agility - 10, adventurer.agility + 10)
 		self.hp = self.hpMax
+
+
+class BossAlain(Enemy):
+	def __init__(self, stage, adventurer, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		if(stage % 100)  == 0:
+			print("KingAlain is comming for you")
+		elif (stage % 50) == 0:
+			print("GeneralAlain is comming for you")
+		elif (stage % 10) == 0:
+			print("SoldierAlain is comming for you")
+		else:
+			print("t'es pas censé être la mec t'a lancer une fonction au mauvais stage")
+
