@@ -308,3 +308,82 @@ class Party(models.Model):
 		return f'{self.id}: {self.user.first_name} ' \
 		       f'{self.character} ' \
 		       f'{self.level}'
+
+
+class Enemy(models.Model):
+	class Meta:
+		abstract = True
+
+	name = models.CharField(max_length=20,
+							default='un sbire de Alain',
+							blank=False,
+							null=False)
+	hpMax = models.PositiveIntegerField(default=10,
+										validators=[MinValueValidator(0)],
+										blank=False,
+										null=False)
+	hp = models.PositiveIntegerField(default=10,
+									 validators=[MinValueValidator(0)],
+									 blank=False,
+									 null=False)
+	strength = models.IntegerField(default=1,
+								   validators=[MinValueValidator(0)],
+								   blank=False,
+								   null=False)
+	agility = models.IntegerField(default=1,
+								  validators=[MinValueValidator(0)],
+								  blank=False,
+								  null=False)
+	intelligence = models.IntegerField(default=1,
+									   validators=[MinValueValidator(0)],
+									   blank=False,
+									   null=False)
+	physical_resistance = models.IntegerField(default=0,
+											 validators=[MinValueValidator(0)],
+											 blank=False,
+											 null=False)
+	magical_resistance = models.IntegerField(default=0,
+											validators=[MinValueValidator(0)],
+											blank=False,
+											null=False)
+
+
+class Minion(Enemy):
+	def __init__(self, adventurer, i, *args, **kwargs):
+		'''
+		:param adventurer: Object from class carachter
+		:param i: iteration of ennemy from place
+		:param args:
+		:param kwargs:
+		'''
+		super().__init__(*args, **kwargs)
+		min_percent = (i - 1) * 3
+		max_percent = (i + 2) * 3
+		min_percent_def = (30 * i - 330) / 11
+		max_percent_def = (7 * i - 69) / 3
+		self.hpMax = random.randrange(round(adventurer.hpMax + (adventurer.hpMax * min_percent)/100),
+									  round(adventurer.hpMax + (adventurer.hpMax * max_percent)/100))
+		self.strength = random.randrange(round(adventurer.physicalResistance - (adventurer.physicalResistance * min_percent_def)/100),
+									  	 round(adventurer.physicalResistance - (adventurer.physicalResistance * max_percent_def)/100))
+		self.intelligence = random.randrange(round(adventurer.magicalResistance - (adventurer.magicalResistance * min_percent_def)/100),
+									  		 round(adventurer.magicalResistance - (adventurer.magicalResistance * max_percent_def)/100))
+		self.physical_resistance = random.randrange(round(adventurer.strength + (adventurer.strength * min_percent_def)/100),
+									  				round(adventurer.strength + (adventurer.strength * max_percent_def)/100))
+		self.magical_resistance = random.randrange(round(adventurer.intelligence + (adventurer.intelligence * min_percent_def)/100),
+									  			   round(adventurer.intelligence + (adventurer.intelligence * max_percent_def)/100))
+		self.agility = random.randrange(adventurer.agility - 10, adventurer.agility + 10)
+		self.hp = self.hpMax
+
+
+class BossAlain(Enemy):
+	def __init__(self, stage, adventurer, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		if(stage % 100)  == 0:
+			print("KingAlain is comming for you")
+		elif (stage % 50) == 0:
+			print("GeneralAlain is comming for you")
+		elif (stage % 10) == 0:
+			print("SoldierAlain is comming for you")
+		else:
+			print("t'es pas censé être la mec t'a lancer une fonction au mauvais stage")
+
