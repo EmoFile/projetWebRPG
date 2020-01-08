@@ -1,4 +1,3 @@
-import self
 from django.core.checks import messages
 from django.db import IntegrityError
 from django.http import response, JsonResponse, request

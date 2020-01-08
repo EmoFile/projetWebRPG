@@ -41,7 +41,7 @@ class CharacterClass(models.Model):
 		return f'{self.id}: {self.name}'
 	
 	def generateHpMax(self):
-		return random.randint(self.minHpMax, self.minHpMax + 10)
+		return random.randint(self.minHpMax, self.minHpMax + 20)
 	
 	def generateStrength(self):
 		return random.randint(self.minStrength, self.minStrength + 10)
