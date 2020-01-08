@@ -104,3 +104,8 @@ GitHub.sublime-settings
 !.vscode/launch.json
 !.vscode/extensions.json
 .history
+
+# django migrations
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
