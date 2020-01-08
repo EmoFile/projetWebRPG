@@ -358,7 +358,3 @@ class Minion(Enemy):
 									  			   round(adventurer.intelligence + (adventurer.intelligence * max_percent_def)/100))
 		self.agility = random.randrange(adventurer.agility - 10, adventurer.agility + 10)
 		self.hp = self.hpMax
-
-
-class BossAlain(Enemy):
-	pass
