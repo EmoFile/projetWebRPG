@@ -1,34 +1,40 @@
 {% load static i18n %}<!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport"
-	      content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="description" content="">
-	<meta name="author" content="">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-	<title>RichardDev - {{ title }}</title>
+    <title>RichardDev - {{ title }}</title>
 
 
-	{#   CSS   #}
-	<link rel="stylesheet"
-	      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-	      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-	      crossorigin="anonymous">
+    {#   CSS   #}
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
 
-	{#   JS   #}
-	<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-	<script src="{% static 'js/main.js' %}"></script>
+    {#   JS   #}
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
 
 </head>
 
-<body id="page-top" class="container-fluid">
-{% block page-top %}
+<body id="page-body" class="container-fluid">
+<div class="row">
+    <div class="col-10">
+        {% block table-score %}
 
+        {% endblock %}
+    </div>
+    <div class="col-2">
+        {% block choose-class %}
 
-
-{% endblock %}
+        {% endblock %}
+    </div>
+</div>
 </body>
-
 </html>

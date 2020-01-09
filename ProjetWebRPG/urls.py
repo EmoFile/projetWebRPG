@@ -17,15 +17,13 @@ from django.contrib import admin
 from django.urls import path
 
 from app import views
-from app.views import IndexView, GenerateCharacterView, CharacterDetailView, GenerateCharacterView2
+from app.views import IndexView, GenerateCharacterView, CharacterDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='home'),
-    path('generateCharacterByPk/<int:pk>', GenerateCharacterView2.as_view(),
+    path('generateCharacterByPk/<int:pk>', GenerateCharacterView.as_view(),
          name='generateCharacterByPk'),
-    path('generateCharacter', GenerateCharacterView.as_view(),
-         name='generateCharacter'),
     path('characterDetail/<int:pk>', CharacterDetailView.as_view(),
          name='characterDetail'),
 ]

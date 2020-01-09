@@ -1,30 +1,66 @@
 {% extends 'base.html' %}
 
-{% block page-top %}
-
+{% block table-score %}
 
     <form method="POST">
         {% csrf_token %}
         {% for field in form %}
-            <div class="h5 font-weight-bold text-primary text-uppercase mb-1">
-                <label>
-                    {{ field.label }}:
-                </label>
-                <nav>
-                    {{ field }}
-                </nav>
-            </div>
-        {% endfor %}
 
-        {{ request.session.characterClass }}
-        {{ request.session.HpMax }}
-        {{ request.session.Strength }}
-        {{ request.session.Intelligence }}
-        {{ request.session.Agility }}
-        {{ request.session.PhysicalResistance }}
-        {{ request.session.MagicalResistance }}
+            <table class="table table-borderless">
+                <thead>
+                <tr>
+                    <th scope="row">{{ field.label }}:</th>
+                    <td >{{ field }}</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">Character class:</th>
+                    <td>
+                        {{ request.session.characterClassName }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Max HP:</th>
+                    <td>
+                        {{ request.session.HpMax }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Strength:</th>
+                    <td>
+                        {{ request.session.Strength }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Intelligence:</th>
+                    <td>
+                        {{ request.session.Intelligence }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Agility:</th>
+                    <td>
+                        {{ request.session.Agility }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Physical resistance:</th>
+                    <td>
+                        {{ request.session.PhysicalResistance }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Magical Resistance:</th>
+                    <td>
+                        {{ request.session.MagicalResistance }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        {% endfor %}
         <button type="submit">Valider</button>
     </form>
-
 
 {% endblock %}

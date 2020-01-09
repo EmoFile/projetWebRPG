@@ -9,17 +9,6 @@ class CharacterForm(forms.ModelForm):
 	class Meta:
 		model = Character
 		# exclude = []
-		fields = ['name', 'characterClass']
-	
-	name = forms.CharField(max_length=20, widget=widgets.TextInput(
-		attrs={'placeholder': 'Enter Your Name'}
-	))
-
-
-class CharacterForm2(forms.ModelForm):
-	class Meta:
-		model = Character
-		# exclude = []
 		fields = ['name']
 
 	name = forms.CharField(max_length=20, widget=widgets.TextInput(

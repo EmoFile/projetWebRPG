@@ -1,31 +1,62 @@
 {% extends 'base.html' %}
 
-{% block page-top %}
+{% block table-score %}
 
-    {#{% csrf_token %}#}
-    {##}
-    {#<label for="name">Name: </label>#}
-    {#<input type="text" name="name" id="name" required>#}
-    {##}
-    {#<label for="characterClass">Class: </label>#}
-    {#<select id="characterClass" name="characterClass">#}
-    {#	{% for characterClass in characterClasses %}#}
-    {#		<option value="{{ characterClass.id }}">#}
-    {#			{{ characterClass.name }}</option>#}
-    {#	{% endfor %}#}
-    {#</select>#}
+    <table class="table table-borderless">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Class</th>
+            <th scope="col">HP Max</th>
+            <th scope="col">Strength</th>
+            <th scope="col">Intelligence</th>
+            <th scope="col">Agility</th>
+            <th scope="col">Physical resistance</th>
+            <th scope="col">Magical resistance</th>
+        </tr>
+        </thead>
+        <tbody>
 
-    <button>
-        <a href="{% url 'generateCharacter' %}">Play</a>
-    </button>
 
-    <button>
-        <a href="{% url 'generateCharacterByPk' 1 %}">Play2(pk=1)</a>
-    </button>
+        {% for character in characters %}
+            <tr>
+                <td>
+                    {{ character.name }}
+                </td>
+                <td>
+                    {{ character.characterClass.name }}
+                </td>
+                <td>
+                    {{ character.hpMax }}
+                </td>
+                <td>
+                    {{ character.strength }}
+                </td>
+                <td>
+                    {{ character.agility }}
+                </td>
+                <td>
+                    {{ character.intelligence }}
+                </td>
+                <td>
+                    {{ character.physicalResistance }}
+                </td>
+                <td>
+                    {{ character.magicalResistance }}
+                </td>
+            </tr>
 
-    <button>
-        <a href="{% url 'generateCharacterByPk' 2 %}">Play2(pk=2)</a>
-    </button>
+        {% endfor %}
+        </tbody>
+    </table>
 
+{% endblock %}
+{% block choose-class %}
+
+    {% for characterClass in characterClasses %}
+        <button>
+            <a href="{% url 'generateCharacterByPk' characterClass.pk %}">{{ characterClass.name }}</a>
+        </button>
+    {% endfor %}
 
 {% endblock %}

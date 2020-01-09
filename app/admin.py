@@ -132,15 +132,6 @@ class PartyAdmin(admin.ModelAdmin):
 	def characterMR(self, obj):
 		return f'{obj.character.magicalResistance}'
 	
-	def characterHead(self, obj):
-		return f'{obj.character.inventory.head.name}'
-	
-	def characterChest(self, obj):
-		return f'{obj.character.inventory.chest.name}'
-	
-	def characterLeg(self, obj):
-		return f'{obj.character.inventory.leg.name}'
-	
 	list_display = ('user',
 	                'level',
 	                'characterName',
@@ -151,10 +142,7 @@ class PartyAdmin(admin.ModelAdmin):
 	                'characterAgility',
 	                'characterInt',
 	                'characterPR',
-	                'characterMR',
-	                'characterHead',
-	                'characterChest',
-	                'characterLeg')
+	                'characterMR')
 	list_display_links = list_display
 
 
