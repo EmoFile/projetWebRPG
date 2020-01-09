@@ -3,22 +3,28 @@
 {% block page-top %}
 
 
-	<form method="POST">
-		{% csrf_token %}
-		{% for field in form %}
-			<div class="h5 font-weight-bold text-primary text-uppercase mb-1">
-				<label>
-					{{ field.label }}:
-				</label>
-				<nav>
-					{{ field }}
-				</nav>
-			</div>
-		{% endfor %}
+    <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="h5 font-weight-bold text-primary text-uppercase mb-1">
+                <label>
+                    {{ field.label }}:
+                </label>
+                <nav>
+                    {{ field }}
+                </nav>
+            </div>
+        {% endfor %}
 
-		{{ Test }}
-		<button type="submit">Valider</button>
-	</form>
+        {{ request.session.characterClass }}
+        {{ request.session.HpMax }}
+        {{ request.session.Strength }}
+        {{ request.session.Intelligence }}
+        {{ request.session.Agility }}
+        {{ request.session.PhysicalResistance }}
+        {{ request.session.MagicalResistance }}
+        <button type="submit">Valider</button>
+    </form>
 
 
 {% endblock %}
