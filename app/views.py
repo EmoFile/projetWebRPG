@@ -103,36 +103,40 @@ class GenerateCharacterView2(CreateView):
         result['title'] = 'Create Character'
         return result
 
-    def get(self, request, *args, **kwargs):
-        request.session.characterClass = self.kwargs['pk']
+    def get(self, *args, **kwargs):
         currentCharacterClass = get_object_or_404(CharacterClass,
                                                   pk=self.kwargs['pk'])
-        request.session.characterClass = currentCharacterClass
-        request.session.HpMax = currentCharacterClass.generateHpMax()
-        request.session.Strength = currentCharacterClass.generateStrength()
-        request.session.Agility = currentCharacterClass.generateAgility()
-        request.session.Intelligence = currentCharacterClass.generateIntelligence()
-        request.session.PhysicalResistance = currentCharacterClass.generatePR()
-        request.session.MagicalResistance = currentCharacterClass.generateMR()
-        return super().get(self, request)
+
+        self.request.session['characterClass'] = self.kwargs['pk']
+        self.request.session['HpMax'] = currentCharacterClass.generateHpMax()
+        self.request.session['Strength'] = currentCharacterClass.generateStrength()
+        self.request.session['Agility'] = currentCharacterClass.generateAgility()
+        self.request.session['Intelligence'] = currentCharacterClass.generateIntelligence()
+        self.request.session['PhysicalResistance'] = currentCharacterClass.generatePR()
+        self.request.session['MagicalResistance'] = currentCharacterClass.generateMR()
+        return super().get(self)
 
     def form_valid(self, form):
         # Création de l'objet sans enregistrement en base
         self.object = form.save(commit=False)
 
-        # Création d'un inventaire vide unique au personnage avec affectation
+        # Création d'un inventaire vide unique au personnage avec affectation et récupéraction de la classe du personnage
+        currentCharacterClass = get_object_or_404(CharacterClass,
+                                                  pk=self.request.session['characterClass'])
         inventory = Inventory()
         inventory.save()
 
+        # Constitution du personnage
         self.object.inventory = inventory
-        self.object.hpMax = request.session.characterClass
-        self.object.hpMax = request.session.HpMax
-        self.object.hp = request.session.HpMax
-        self.object.strength = request.session.Strength
-        self.object.agility = request.session.Agility
-        self.object.intelligence = request.session.Intelligence
-        self.object.physicalResistance = request.session.PhysicalResistance
-        self.object.magicalResistance = request.session.MagicalResistance
+        self.object.characterClass = currentCharacterClass
+        self.object.hpMax = self.request.session['HpMax']
+        self.object.hp = self.request.session['HpMax']
+        self.object.strength = self.request.session['Strength']
+        self.object.agility = self.request.session['Agility']
+        self.object.intelligence = self.request.session['Intelligence']
+        self.object.physicalResistance = self.request.session['PhysicalResistance']
+        self.object.magicalResistance = self.request.session['MagicalResistance']
 
+        # Création en BDD du personnage
         self.object.save()
         return super().form_valid(form)
