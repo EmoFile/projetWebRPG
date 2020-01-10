@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block table-score %}
+    {{ party.character.name }}
+    {{ party.character.characterClass.name }}
+    {{ party.character.level }}
+    {{ party.character.hp }}/{{ party.character.hpMax }}
+    {{ party.character.strength }}
+    {{ party.character.intelligence }}
+    {{ party.character.agility }}
+    {{ party.character.physicalResistance }}
+    {{ party.character.magicalResistance }}
+{% endblock %}

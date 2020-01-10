@@ -1,62 +1,74 @@
 {% extends 'base.html' %}
 
 {% block table-score %}
-
-    <table class="table table-borderless">
-        <thead>
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Class</th>
-            <th scope="col">HP Max</th>
-            <th scope="col">Strength</th>
-            <th scope="col">Intelligence</th>
-            <th scope="col">Agility</th>
-            <th scope="col">Physical resistance</th>
-            <th scope="col">Magical resistance</th>
-        </tr>
-        </thead>
-        <tbody>
-
-
-        {% for character in characters %}
+    <div class="col-10 fluid">
+        <table class="table table-striped">
+            <thead class="thead-dark">
             <tr>
-                <td>
-                    {{ character.name }}
-                </td>
-                <td>
-                    {{ character.characterClass.name }}
-                </td>
-                <td>
-                    {{ character.hpMax }}
-                </td>
-                <td>
-                    {{ character.strength }}
-                </td>
-                <td>
-                    {{ character.agility }}
-                </td>
-                <td>
-                    {{ character.intelligence }}
-                </td>
-                <td>
-                    {{ character.physicalResistance }}
-                </td>
-                <td>
-                    {{ character.magicalResistance }}
-                </td>
+                <th scope="col">Date</th>
+                <th scope="col">User</th>
+                <th scope="col">Character</th>
+                <th scope="col">Stage</th>
+                <th scope="col">Class</th>
+                <th scope="col">HP Max</th>
+                <th scope="col">Strength</th>
+                <th scope="col">Intelligence</th>
+                <th scope="col">Agility</th>
+                <th scope="col">Physical resistance</th>
+                <th scope="col">Magical resistance</th>
             </tr>
+            </thead>
+            <tbody>
 
-        {% endfor %}
-        </tbody>
-    </table>
 
+            {% for party in partys %}
+                <tr>
+                    <td>
+                        {{ party.date }}
+                    </td>
+                    <td>
+                        {{ party.user.username }}
+                    </td>
+                    <td>
+                        {{ party.character.name }}
+                    </td>
+                    <td>
+                        {{ party.stage }}
+                    </td>
+                    <td>
+                        {{ party.character.characterClass.name }}
+                    </td>
+                    <td>
+                        {{ party.character.hpMax }}
+                    </td>
+                    <td>
+                        {{ party.character.strength }}
+                    </td>
+                    <td>
+                        {{ party.character.agility }}
+                    </td>
+                    <td>
+                        {{ party.character.intelligence }}
+                    </td>
+                    <td>
+                        {{ party.character.physicalResistance }}
+                    </td>
+                    <td>
+                        {{ party.character.magicalResistance }}
+                    </td>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
 {% block choose-class %}
-
-    {% for characterClass in characterClasses %}
-        <button>
-            <a href="{% url 'generateCharacterByPk' characterClass.pk %}">{{ characterClass.name }}</a>
-        </button>
-    {% endfor %}
-
+    <div class="col-2 fluid">
+        {% for characterClass in characterClasses %}
+            <button>
+                <a href="{% url 'generateCharacterByPk' characterClass.pk %}">{{ characterClass.name }}</a>
+            </button>
+        {% endfor %}
+    </div>
 {% endblock %}

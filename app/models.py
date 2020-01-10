@@ -1,4 +1,4 @@
-import random
+import random, datetime
 
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
@@ -13,27 +13,41 @@ class CharacterClass(models.Model):
                             blank=True,
                             null=True)
     minHpMax = models.PositiveIntegerField(default=10,
+                                           validators=[MinValueValidator(5)],
+                                           blank=False,
+                                           null=False)
+    maxHpMax = models.PositiveIntegerField(default=20,
                                            validators=[MinValueValidator(10)],
                                            blank=False,
                                            null=False)
-    minStrength = models.IntegerField(default=1,
-                                      validators=[MinValueValidator(0)],
+    minStrength = models.IntegerField(default=-10,
                                       blank=False,
                                       null=False)
-    minAgility = models.IntegerField(default=1,
-                                     validators=[MinValueValidator(0)],
+    maxStrength = models.IntegerField(default=10,
+                                      blank=False,
+                                      null=False)
+    minAgility = models.IntegerField(default=-10,
                                      blank=False,
                                      null=False)
-    minInt = models.IntegerField(default=1,
-                                 validators=[MinValueValidator(0)],
+    maxAgility = models.IntegerField(default=10,
+                                     blank=False,
+                                     null=False)
+    minInt = models.IntegerField(default=-10,
                                  blank=False,
                                  null=False)
-    minPhysResis = models.IntegerField(default=0,
-                                       validators=[MinValueValidator(0)],
-                                       blank=False,
-                                       null=False)
-    minMagRes = models.IntegerField(default=0,
-                                    validators=[MinValueValidator(0)],
+    maxInt = models.IntegerField(default=10,
+                                 blank=False,
+                                 null=False)
+    minPhysRes = models.IntegerField(default=-10,
+                                     blank=False,
+                                     null=False)
+    maxPhysRes = models.IntegerField(default=10,
+                                     blank=False,
+                                     null=False)
+    minMagRes = models.IntegerField(default=-10,
+                                    blank=False,
+                                    null=False)
+    maxMagRes = models.IntegerField(default=10,
                                     blank=False,
                                     null=False)
 
@@ -41,22 +55,22 @@ class CharacterClass(models.Model):
         return f'{self.id}: {self.name}'
 
     def generateHpMax(self):
-        return random.randint(self.minHpMax, self.minHpMax + 20)
+        return random.randint(self.minHpMax, self.maxHpMax)
 
     def generateStrength(self):
-        return random.randint(self.minStrength, self.minStrength + 10)
+        return random.randint(self.minStrength, self.maxStrength)
 
     def generateAgility(self):
-        return random.randint(self.minAgility, self.minAgility + 10)
+        return random.randint(self.minAgility, self.maxAgility)
 
     def generateIntelligence(self):
-        return random.randint(self.minInt, self.minInt + 10)
+        return random.randint(self.minInt, self.maxInt)
 
     def generatePR(self):
-        return random.randint(self.minPhysResis, self.minPhysResis + 10)
+        return random.randint(self.minPhysRes, self.maxPhysRes)
 
     def generateMR(self):
-        return random.randint(self.minMagRes, self.minMagRes + 10)
+        return random.randint(self.minMagRes, self.maxMagRes)
 
 
 # USELESS CAR PBR DE TROP NOMBREUX CALL LES UN DANS LES AUTRES MAIS C4EST
@@ -91,25 +105,18 @@ class Character(models.Model):
                                      blank=False,
                                      null=False)
     strength = models.IntegerField(default=1,
-                                   validators=[MinValueValidator(0)],
                                    blank=False,
                                    null=False)
     agility = models.IntegerField(default=1,
-                                  validators=[MinValueValidator(0)],
                                   blank=False,
                                   null=False)
     intelligence = models.IntegerField(default=1,
-                                       validators=[MinValueValidator(0)],
                                        blank=False,
                                        null=False)
     physicalResistance = models.IntegerField(default=0,
-                                             validators=[
-                                                 MinValueValidator(0)],
                                              blank=False,
                                              null=False)
     magicalResistance = models.IntegerField(default=0,
-                                            validators=[
-                                                MinValueValidator(0)],
                                             blank=False,
                                             null=False)
     inventory = models.OneToOneField('Inventory',
@@ -137,15 +144,12 @@ class Item(models.Model):
                             blank=False,
                             null=False)
     strength = models.IntegerField(default=0,
-                                   validators=[MinValueValidator(0)],
                                    blank=False,
                                    null=False)
     agility = models.IntegerField(default=0,
-                                  validators=[MinValueValidator(0)],
                                   blank=False,
                                   null=False)
     intelligence = models.IntegerField(default=0,
-                                       validators=[MinValueValidator(0)],
                                        blank=False,
                                        null=False)
 
@@ -160,17 +164,12 @@ class Stuff(Item):
                                                 blank=False,
                                                 null=False)
     hpMax = models.IntegerField(default=0,
-                                validators=[MinValueValidator(0)],
                                 blank=False,
                                 null=False)
     physicalResistance = models.IntegerField(default=0,
-                                             validators=[
-                                                 MinValueValidator(0)],
                                              blank=False,
                                              null=False)
     magicalResistance = models.IntegerField(default=0,
-                                            validators=[
-                                                MinValueValidator(0)],
                                             blank=False,
                                             null=False)
 
@@ -294,15 +293,19 @@ class Party(models.Model):
                              on_delete=models.PROTECT)
     character = models.OneToOneField(Character,
                                      on_delete=models.PROTECT)
-    level = models.PositiveIntegerField(default=1,
+    stage = models.PositiveIntegerField(default=1,
                                         validators=[MinValueValidator(1)],
                                         blank=False,
                                         null=False)
+    date = models.DateField("Date", default=datetime.date.today)
+
+    class Meta:
+        unique_together = ['character']
 
     def __str__(self):
         return f'{self.id}: {self.user.username} ' \
                f'{self.character} ' \
-               f'{self.level}'
+               f'{self.stage}'
 
 
 class Enemy(models.Model):

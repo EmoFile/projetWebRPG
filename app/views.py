@@ -8,7 +8,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, CreateView, DetailView
 
 from app.forms import CharacterForm
-from app.models import CharacterClass, Character, Inventory
+from app.models import CharacterClass, Character, Inventory, Party
 
 
 class IndexView(TemplateView):
@@ -18,9 +18,11 @@ class IndexView(TemplateView):
         result = super().get_context_data(**kwargs)
         result['characterClasses'] = CharacterClass.objects.all()
         # le - dans le order_by pour demander un ordre décroissant
-        result['characters'] = Character.objects.all().order_by('-level', '-hpMax', '-strength', '-intelligence',
-                                                                '-agility',
-                                                                '-physicalResistance', '-magicalResistance')
+        # result['characters'] = Character.objects.all().order_by('-level', '-hpMax', '-strength', '-intelligence',
+        #                                                         '-agility',
+        #                                                         '-physicalResistance', '-magicalResistance')
+
+        result['partys'] = Party.objects.all().order_by('-stage')
         result['title'] = 'B.T.A - II'
         return result
 
@@ -41,7 +43,8 @@ class GenerateCharacterView(CreateView):
     template_name = 'characterForm.html'
 
     def get_success_url(self):
-        return reverse('characterDetail', kwargs={'pk': self.object.pk})
+        party = get_object_or_404(Party, character=self.object)
+        return reverse('playGame', kwargs={'pk': party.pk})
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
@@ -85,6 +88,8 @@ class GenerateCharacterView(CreateView):
 
         # Création en BDD du personnage
         self.object.save()
+        party = Party(user=self.request.user,character=self.object)
+        party.save()
         return super().form_valid(form)
 
 
@@ -100,3 +105,13 @@ class LogInView(LoginView):
 
     def get_success_url(self):
         return reverse('home')
+
+class PlayGameView(TemplateView):
+    template_name = 'playGame.html'
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+        result['title'] = 'Play Game'
+        party = get_object_or_404(Party, pk=self.kwargs['pk'])
+        result['party'] = party
+        return result

@@ -133,7 +133,7 @@ class PartyAdmin(admin.ModelAdmin):
 		return f'{obj.character.magicalResistance}'
 	
 	list_display = ('user',
-	                'level',
+	                'stage',
 	                'characterName',
 	                'className',
 	                'characterLvl',
