@@ -1,3 +1,5 @@
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.views import LoginView
 from django.http import response, JsonResponse, request
 from django.shortcuts import render, get_object_or_404
 
@@ -19,7 +21,7 @@ class IndexView(TemplateView):
         result['characters'] = Character.objects.all().order_by('-level', '-hpMax', '-strength', '-intelligence',
                                                                 '-agility',
                                                                 '-physicalResistance', '-magicalResistance')
-        result['title'] = 'Home'
+        result['title'] = 'B.T.A - II'
         return result
 
 
@@ -84,3 +86,17 @@ class GenerateCharacterView(CreateView):
         # Création en BDD du personnage
         self.object.save()
         return super().form_valid(form)
+
+
+class SignUpView(CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('logIn')
+    template_name = 'signUp.html'
+
+
+class LogInView(LoginView):
+    form_class = AuthenticationForm
+    template_name = 'logIn.html'
+
+    def get_success_url(self):
+        return reverse('home')

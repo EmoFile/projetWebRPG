@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 
 from app import views
-from app.views import IndexView, GenerateCharacterView, CharacterDetailView
+from app.views import IndexView, GenerateCharacterView, CharacterDetailView, SignUpView, LogInView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +26,6 @@ urlpatterns = [
          name='generateCharacterByPk'),
     path('characterDetail/<int:pk>', CharacterDetailView.as_view(),
          name='characterDetail'),
+    path('signUp/', SignUpView.as_view(), name='signUp'),
+    path('logIn/', LogInView.as_view(), name='logIn')
 ]

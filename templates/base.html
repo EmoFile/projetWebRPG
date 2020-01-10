@@ -8,6 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
+    <link rel="icon" href="{% static 'img/swordshield.png' %}" type="image/png">
     <title>RichardDev - {{ title }}</title>
 
 
@@ -22,8 +23,25 @@
     <script src="{% static 'js/main.js' %}"></script>
 
 </head>
-
 <body id="page-body" class="container-fluid">
+<nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand mb-0 h1" href="{% url 'home' %}">
+        <img src="{% static 'img/swordshield.svg' %}" width="30" height="30"
+             class="d-inline-block align-top"
+             alt="">
+        B.T.A - II
+    </a>
+    {% if user.is_anonymous %}
+    <a href="{% url 'signUp' %}" class="btn btn-outline-success">Sign Up</a>
+    <a href="{% url 'logIn' %}" class="btn btn-outline-success">Log In</a>
+{% else %}
+    <p>
+        {{ request.user }}
+    </p>
+{% endif %}
+</nav>
+
+
 <div class="row">
     <div class="col-10">
         {% block table-score %}
