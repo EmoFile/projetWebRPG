@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path
 
 from app import views
-from app.views import IndexView, GenerateCharacterView, CharacterDetailView, SignUpView, LogInView, PlayGameView
+from app.views import IndexView, GenerateCharacterView, CharacterDetailView, SignUpView, LogInView, PlayGameView, \
+    GenerateMinionTest, EnemyList
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,5 +29,7 @@ urlpatterns = [
          name='characterDetail'),
     path('playGame/<int:pk>', PlayGameView.as_view(), name='playGame'),
     path('signUp/', SignUpView.as_view(), name='signUp'),
-    path('logIn/', LogInView.as_view(), name='logIn')
+    path('logIn/', LogInView.as_view(), name='logIn'),
+    path('testGenerateEnemy/<int:pk>', GenerateMinionTest.as_view(), name='minionTest'),
+    path('ArticleListView/', EnemyList.as_view(), name='listEnemy')
 ]
