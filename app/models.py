@@ -313,7 +313,7 @@ class Enemy(models.Model):
         abstract = True
 
     name = models.CharField(max_length=20,
-                            default='un sbire de Alain',
+                            default='un mec',
                             blank=False,
                             null=False)
     hpMax = models.PositiveIntegerField(default=10,
@@ -346,7 +346,7 @@ class Enemy(models.Model):
                                              null=False)
 
     @classmethod
-    def create(cls, adventurer, min_percent, max_percent, min_percent_def, max_percent_def):
+    def create(cls, adventurer, min_percent, max_percent, min_percent_def, max_percent_def, name):
         hpMax = random.uniform(round(adventurer.hpMax + (adventurer.hpMax * min_percent) / 100),
                                round(adventurer.hpMax + (adventurer.hpMax * max_percent) / 100))
         strength = random.uniform(
@@ -365,7 +365,7 @@ class Enemy(models.Model):
         hp = hpMax
         return cls(hpMax=hpMax, strength=strength, intelligence=intelligence,
                    physical_resistance=physical_resistance, magical_resistance=magical_resistance,
-                   agility=agility, hp=hp)
+                   agility=agility, hp=hp, name=name)
 
 
 class Minion(Enemy):
@@ -383,7 +383,8 @@ class Minion(Enemy):
         max_percent = (i + 2) * 3
         min_percent_def = (30 * i - 330) / 11
         max_percent_def = (7 * i - 69) / 3
-        return super(Minion, cls).create(adventurer, min_percent, max_percent, min_percent_def, max_percent_def)
+        name = "un sbire d'Alain"
+        return super(Minion, cls).create(adventurer, min_percent, max_percent, min_percent_def, max_percent_def, name)
 
 
 class BossAlain(Enemy):
@@ -404,16 +405,19 @@ class BossAlain(Enemy):
             print("KingAlain is comming for you")
             min_percent = 70
             max_percent = 100
+            name = 'KingAlain'
         elif (stage % 50) == 0:
             print("GeneralAlain is comming for you")
             min_percent = 60
             max_percent = 70
+            name = 'GeneralAlain'
         elif (stage % 10) == 0:
             print("SoldierAlain is comming for you")
             min_percent = 50
             max_percent = 60
+            name = 'SoldierAlain'
         else:
             print("t'es pas censé être la mec t'a lancer une fonction au mauvais stage")
         return super(BossAlain, cls).create(adventurer, min_percent, max_percent, min_percent_def,
-                                            max_percent_def)
+                                            max_percent_def, name)
 
