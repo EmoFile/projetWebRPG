@@ -345,6 +345,28 @@ class Enemy(models.Model):
                                              blank=False,
                                              null=False)
 
+    @classmethod
+    def create(cls, adventurer, min_percent, max_percent, min_percent_def, max_percent_def):
+        hpMax = random.uniform(round(adventurer.hpMax + (adventurer.hpMax * min_percent) / 100),
+                               round(adventurer.hpMax + (adventurer.hpMax * max_percent) / 100))
+        strength = random.uniform(
+            round(adventurer.physicalResistance - (adventurer.physicalResistance * min_percent_def) / 100),
+            round(adventurer.physicalResistance - (adventurer.physicalResistance * max_percent_def) / 100))
+        intelligence = random.uniform(
+            round(adventurer.magicalResistance - (adventurer.magicalResistance * min_percent_def) / 100),
+            round(adventurer.magicalResistance - (adventurer.magicalResistance * max_percent_def) / 100))
+        physical_resistance = random.uniform(
+            round(adventurer.strength + (adventurer.strength * min_percent_def) / 100),
+            round(adventurer.strength + (adventurer.strength * max_percent_def) / 100))
+        magical_resistance = random.uniform(
+            round(adventurer.intelligence + (adventurer.intelligence * min_percent_def) / 100),
+            round(adventurer.intelligence + (adventurer.intelligence * max_percent_def) / 100))
+        agility = random.uniform(adventurer.agility - 10, adventurer.agility + 10)
+        hp = hpMax
+        return cls(hpMax=hpMax, strength=strength, intelligence=intelligence,
+                   physical_resistance=physical_resistance, magical_resistance=magical_resistance,
+                   agility=agility, hp=hp)
+
 
 class Minion(Enemy):
     def __str__(self):
@@ -355,44 +377,43 @@ class Minion(Enemy):
                f'|Ag: {self.agility}' \
                f'|Int: {self.intelligence}]'
 
-    def __init__(self, adventurer, i, *args, **kwargs):
-        '''
-        :param adventurer: Object from class carachter
-        :param i: iteration of ennemy from place
-        :param args:
-        :param kwargs:
-        '''
-        super().__init__(*args, **kwargs)
-        min_percent = (float(i) - 1) * 3
-        max_percent = (float(i) + 2) * 3
-        min_percent_def = (30 * float(i) - 330) / 11
-        max_percent_def = (7 * float(i) - 69) / 3
-        self.hpMax = random.uniform(round(adventurer.hpMax + (adventurer.hpMax * min_percent) / 100),
-                                    round(adventurer.hpMax + (adventurer.hpMax * max_percent) / 100))
-        self.strength = random.uniform(
-            round(adventurer.physicalResistance - (adventurer.physicalResistance * min_percent_def) / 100),
-            round(adventurer.physicalResistance - (adventurer.physicalResistance * max_percent_def) / 100))
-        self.intelligence = random.uniform(
-            round(adventurer.magicalResistance - (adventurer.magicalResistance * min_percent_def) / 100),
-            round(adventurer.magicalResistance - (adventurer.magicalResistance * max_percent_def) / 100))
-        self.physical_resistance = random.uniform(
-            round(adventurer.strength + (adventurer.strength * min_percent_def) / 100),
-            round(adventurer.strength + (adventurer.strength * max_percent_def) / 100))
-        self.magical_resistance = random.uniform(
-            round(adventurer.intelligence + (adventurer.intelligence * min_percent_def) / 100),
-            round(adventurer.intelligence + (adventurer.intelligence * max_percent_def) / 100))
-        self.agility = random.uniform(adventurer.agility - 10, adventurer.agility + 10)
-        self.hp = self.hpMax
+    @classmethod
+    def create(cls, adventurer, i, **kwargs):
+        min_percent = (i - 1) * 3
+        max_percent = (i + 2) * 3
+        min_percent_def = (30 * i - 330) / 11
+        max_percent_def = (7 * i - 69) / 3
+        return super(Minion, cls).create(adventurer, min_percent, max_percent, min_percent_def, max_percent_def)
 
 
 class BossAlain(Enemy):
-    def __init__(self, stage, adventurer, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __str__(self):
+        return f'{self.id}: {self.name} ' \
+               f'|HpM: {self.hpMax}' \
+               f'|hp: {self.hp}' \
+               f'|Str: {self.strength}' \
+               f'|Ag: {self.agility}' \
+               f'|Int: {self.intelligence}]'
+
+    @classmethod
+    def create(cls, stage, adventurer, **kwargs):
+        k = random.randint(7, 9)
+        min_percent_def = (30 * k - 330) / 11
+        max_percent_def = (7 * k - 69) / 3
         if (stage % 100) == 0:
             print("KingAlain is comming for you")
+            min_percent = 70
+            max_percent = 100
         elif (stage % 50) == 0:
             print("GeneralAlain is comming for you")
+            min_percent = 60
+            max_percent = 70
         elif (stage % 10) == 0:
             print("SoldierAlain is comming for you")
+            min_percent = 50
+            max_percent = 60
         else:
             print("t'es pas censé être la mec t'a lancer une fonction au mauvais stage")
+        return super(BossAlain, cls).create(adventurer, min_percent, max_percent, min_percent_def,
+                                            max_percent_def)
+

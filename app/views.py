@@ -9,7 +9,7 @@ from django.views.generic import TemplateView, CreateView, DetailView, ListView
 from django.views.generic.base import View, RedirectView
 
 from app.forms import CharacterForm
-from app.models import CharacterClass, Character, Inventory, Party, Enemy, Minion
+from app.models import CharacterClass, Character, Inventory, Party, Enemy, Minion, BossAlain
 
 
 class IndexView(TemplateView):
@@ -138,8 +138,20 @@ class GenerateMinionTest(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         adventurer = get_object_or_404(Character, pk=kwargs['pk'])
         for i in range(9):
-            minion_temp = Minion(adventurer, i)
+            minion_temp = Minion.create(adventurer, i)
             minion_temp.save()
+        return super().get_redirect_url(*args, **kwargs)
+
+
+class GenerateBoss(RedirectView):
+    permanent = False
+    query_string = False
+    pattern_name = 'playGame'
+
+    def get_redirect_url(self, *args, **kwargs):
+        adventurer = get_object_or_404(Character, pk=kwargs['pk'])
+        boss_temp = BossAlain.create(100, adventurer)
+        boss_temp.save()
         return super().get_redirect_url(*args, **kwargs)
 
 
