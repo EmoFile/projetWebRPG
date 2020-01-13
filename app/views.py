@@ -7,11 +7,11 @@ from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse, reverse_lazy
-from django.views import View
-from django.views.generic import TemplateView, CreateView, DetailView
+from django.views.generic import TemplateView, CreateView, DetailView, ListView
+from django.views.generic.base import RedirectView
 
 from app.forms import CharacterForm
-from app.models import CharacterClass, Character, Inventory, Party, Consumable, Head, Chest, Leg, Weapon
+from app.models import CharacterClass, Character, Inventory, Party, Minion, BossAlain, Consumable, Head, Chest, Leg, Weapon
 
 
 class IndexView(TemplateView):
@@ -202,3 +202,49 @@ def dropItem(request):
     else:
         data = {'isItemDropped': False}
     return JsonResponse(data)
+
+# class GenerateMinionTest(View):
+#     def get_success_url(self):
+#         return reverse('home')
+#
+#     def get(self):
+#         adventurer = Character.objects.filter(pk=['adventurerId'])
+#         for i in range(9):
+#             minion_temp = Minion(adventurer, i)
+#             minion_temp.save()
+
+
+class GenerateMinionTest(RedirectView):
+    permanent = False
+    query_string = False
+    pattern_name = 'playGame'
+
+    def get_redirect_url(self, *args, **kwargs):
+        adventurer = get_object_or_404(Character, pk=kwargs['pk'])
+        for i in range(9):
+            minion_temp = Minion.create(adventurer, i)
+            minion_temp.save()
+        return super().get_redirect_url(*args, **kwargs)
+
+
+class GenerateBoss(RedirectView):
+    permanent = False
+    query_string = False
+    pattern_name = 'playGame'
+
+    def get_redirect_url(self, *args, **kwargs):
+        adventurer = get_object_or_404(Character, pk=kwargs['pk'])
+        boss_temp = BossAlain.create(100, adventurer)
+        boss_temp.save()
+        return super().get_redirect_url(*args, **kwargs)
+
+
+class EnemyList(ListView):
+    template_name = 'listEnemy.html'
+    model = Minion
+    paginate_by = 100  # if pagination is desired
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['minions'] = Minion.objects.all()
+        return context

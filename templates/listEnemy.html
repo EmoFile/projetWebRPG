@@ -1,0 +1,8 @@
+<h1>Articles</h1>
+<ul>
+{% for minion in object_list %}
+    <li>{{ minion.name }} - {{ minion.hpMax }}</li>
+{% empty %}
+    <li>No articles yet.</li>
+{% endfor %}
+</ul>

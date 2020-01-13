@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from app.models import Character, Weapon, Head, Chest, Leg, Consumable, \
-	CharacterClass, Inventory, InventoryConsumable, Party
+	CharacterClass, Inventory, InventoryConsumable, Party, Minion, BossAlain
 
 
 class CharacterAdmin(admin.ModelAdmin):
@@ -109,6 +109,16 @@ class InventoryAdmin(admin.ModelAdmin):
 	inlines = (ConsumableIlineAdmin,)
 
 
+class GenerateMinionAdmin(admin.ModelAdmin):
+	def className(self, obj):
+		return f'{obj.Minion.name}'
+
+
+class GenerateBossAlain(admin.ModelAdmin):
+	def className(self, obj):
+		return f'{obj.BossAlain.name}'
+
+
 class PartyAdmin(admin.ModelAdmin):
 	def className(self, obj):
 		return f'{obj.character.characterClass.name}'
@@ -160,3 +170,5 @@ admin.site.register(Leg, LegAdmin)
 admin.site.register(Consumable, ConsumableAdmin)
 admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(Party, PartyAdmin)
+admin.site.register(Minion, GenerateMinionAdmin)
+admin.site.register(BossAlain, GenerateBossAlain)
