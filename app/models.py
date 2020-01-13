@@ -139,10 +139,24 @@ class Item(models.Model):
     class Meta:
         abstract = True
 
+    COMMON = 'Common'
+    RARE = 'Rare'
+    EPIC = 'Epic'
+    LEGENDARY = 'Legendary'
+    RARITY_CHOICES = [
+        (COMMON, 'Common'),
+        (RARE, 'Rare'),
+        (EPIC, 'Epic'),
+        (LEGENDARY, 'Legendary'),
+    ]
     name = models.CharField(max_length=40,
                             default='New Item',
                             blank=False,
                             null=False)
+    rarity = models.CharField(max_length=10,
+                              choices=RARITY_CHOICES,
+                              default=COMMON
+                              )
     strength = models.IntegerField(default=0,
                                    blank=False,
                                    null=False)
@@ -242,8 +256,8 @@ class Leg(Stuff):
 
 
 class Consumable(Item):
-    hp = models.IntegerField(default=1,
-                             validators=[MinValueValidator(1)],
+    hp = models.IntegerField(default=0,
+                             validators=[MinValueValidator(0)],
                              blank=False,
                              null=False)
 

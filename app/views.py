@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.http import response, JsonResponse, request
@@ -5,10 +7,11 @@ from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import TemplateView, CreateView, DetailView
 
 from app.forms import CharacterForm
-from app.models import CharacterClass, Character, Inventory, Party
+from app.models import CharacterClass, Character, Inventory, Party, Consumable, Head, Chest, Leg, Weapon
 
 
 class IndexView(TemplateView):
@@ -88,7 +91,7 @@ class GenerateCharacterView(CreateView):
 
         # Création en BDD du personnage
         self.object.save()
-        party = Party(user=self.request.user,character=self.object)
+        party = Party(user=self.request.user, character=self.object)
         party.save()
         return super().form_valid(form)
 
@@ -106,6 +109,7 @@ class LogInView(LoginView):
     def get_success_url(self):
         return reverse('home')
 
+
 class PlayGameView(TemplateView):
     template_name = 'playGame.html'
 
@@ -115,3 +119,86 @@ class PlayGameView(TemplateView):
         party = get_object_or_404(Party, pk=self.kwargs['pk'])
         result['party'] = party
         return result
+
+
+def dropItem(request):
+    if random.randint(1, 2) == 1:
+        stuffRarity = random.randint(1, 10)
+        if 1 <= stuffRarity <= 4:
+            stuffRarity = 'Common'
+        elif 5 <= stuffRarity <= 7:
+            stuffRarity = 'Rare'
+        elif 8 <= stuffRarity <= 9:
+            stuffRarity = 'Epic'
+        else:
+            stuffRarity = 'Legendary'
+
+        stuffClass = random.randint(1, 5)
+        if stuffClass == 1:
+            stuffClassName = 'Consumable'
+            stuffPull = Consumable.objects.filter(rarity=stuffRarity)
+            stuffCount = stuffPull.count()
+            ItemDropped = stuffPull[random.randint(0, stuffCount-1)]
+            # ItemDropped = get_object_or_404(Consumable, pk=random.randint(1, Consumable.objects.count()))
+        elif stuffClass == 2:
+            stuffClassName = 'Head'
+            stuffPull = Head.objects.filter(rarity=stuffRarity)
+            stuffCount = stuffPull.count()
+            ItemDropped = stuffPull[random.randint(0, stuffCount-1)]
+            # ItemDropped = get_object_or_404(Head, pk=random.randint(1, Head.objects.count()))
+        elif stuffClass == 3:
+            stuffClassName = 'Chest'
+            stuffPull = Chest.objects.filter(rarity=stuffRarity)
+            stuffCount = stuffPull.count()
+            ItemDropped = stuffPull[random.randint(0, stuffCount-1)]
+            #ItemDropped = get_object_or_404(Chest, pk=random.randint(1, Chest.objects.count()))
+        elif stuffClass == 4:
+            stuffClassName = 'Leg'
+            stuffPull = Leg.objects.filter(rarity=stuffRarity)
+            stuffCount = stuffPull.count()
+            ItemDropped = stuffPull[random.randint(0, stuffCount-1)]
+            # ItemDropped = get_object_or_404(Leg, pk=random.randint(1, Leg.objects.count()))
+        else:
+            stuffClassName = 'Weapon'
+            stuffPull = Weapon.objects.filter(rarity=stuffRarity)
+            stuffCount = stuffPull.count()
+            ItemDropped = stuffPull[random.randint(0, stuffCount-1)]
+            # ItemDropped = get_object_or_404(Weapon, pk=random.randint(1, Weapon.objects.count()))
+
+        if stuffClassName == 'Consumable':
+            data = {
+                'isItemDropped': True,
+                'stuffClassName': stuffClassName,
+                'stuffRarity': stuffRarity,
+                'stuffCount': stuffCount,
+                'ItemDropped': {
+                    'name': ItemDropped.name,
+                    'rarity': ItemDropped.rarity,
+                    'hp': ItemDropped.hp,
+                    'strength': ItemDropped.strength,
+                    'intelligence': ItemDropped.intelligence,
+                    'agility': ItemDropped.agility
+                }
+            }
+        else:
+            data = {
+                'isItemDropped': True,
+                'stuffClassName': stuffClassName,
+                'stuffRarity': stuffRarity,
+                'stuffCount': stuffCount,
+                'ItemDropped': {
+                    'name': ItemDropped.name,
+                    'requiredLevel': ItemDropped.requiredLevel,
+                    'requiredClass': ItemDropped.characterClass.name,
+                    'rarity': ItemDropped.rarity,
+                    'hpMax': ItemDropped.hpMax,
+                    'physicalResistance': ItemDropped.physicalResistance,
+                    'magicalResistance': ItemDropped.magicalResistance,
+                    'strength': ItemDropped.strength,
+                    'intelligence': ItemDropped.intelligence,
+                    'agility': ItemDropped.agility
+                }
+            }
+    else:
+        data = {'isItemDropped': False}
+    return JsonResponse(data)
