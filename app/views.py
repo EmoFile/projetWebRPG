@@ -248,3 +248,4 @@ class EnemyList(ListView):
         context = super().get_context_data(**kwargs)
         context['minions'] = Minion.objects.all()
         return context
+
