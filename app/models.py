@@ -347,6 +347,15 @@ class Enemy(models.Model):
 
     @classmethod
     def create(cls, adventurer, min_percent, max_percent, min_percent_def, max_percent_def, name):
+        '''
+        :param adventurer: Charactere Adventurer
+        :param min_percent:
+        :param max_percent:
+        :param min_percent_def:
+        :param max_percent_def:
+        :param name:
+        :return: Enemy
+        '''
         hpMax = random.uniform(round(adventurer.hpMax + (adventurer.hpMax * min_percent) / 100),
                                round(adventurer.hpMax + (adventurer.hpMax * max_percent) / 100))
         strength = random.uniform(
@@ -379,6 +388,12 @@ class Minion(Enemy):
 
     @classmethod
     def create(cls, adventurer, i, **kwargs):
+        """
+        :param adventurer: Charactere Adventurer
+        :param i: placement number of Minion (itération)
+        :param kwargs:
+        :return: Minion
+        """
         min_percent = (i - 1) * 3
         max_percent = (i + 2) * 3
         min_percent_def = (30 * i - 330) / 11
@@ -398,6 +413,12 @@ class BossAlain(Enemy):
 
     @classmethod
     def create(cls, stage, adventurer, **kwargs):
+        """
+        :param stage: level stage
+        :param adventurer: Charactere Adventurer
+        :param kwargs:
+        :return: BossAlain
+        """
         k = random.randint(7, 9)
         min_percent_def = (30 * k - 330) / 11
         max_percent_def = (7 * k - 69) / 3
