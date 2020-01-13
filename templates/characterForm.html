@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block table-score %}
+
+    <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+
+            <table class="table table-borderless">
+                <thead>
+                <tr>
+                    <th scope="row">{{ field.label }}:</th>
+                    <td>{{ field }}</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">Character class:</th>
+                    <td>
+                        {{ request.session.characterClassName }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Max HP:</th>
+                    <td>
+                        {{ request.session.HpMax }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Strength:</th>
+                    <td>
+                        {{ request.session.Strength }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Intelligence:</th>
+                    <td>
+                        {{ request.session.Intelligence }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Agility:</th>
+                    <td>
+                        {{ request.session.Agility }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Physical resistance:</th>
+                    <td>
+                        {{ request.session.PhysicalResistance }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Magical Resistance:</th>
+                    <td>
+                        {{ request.session.MagicalResistance }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        {% endfor %}
+        <button onClick="window.location.href=window.location.href">Re-roll</button>
+        <button type="submit">Valider</button>
+    </form>
+
+{% endblock %}

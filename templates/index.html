@@ -1,34 +1,74 @@
-{% load static %}<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
+{% extends 'base.html' %}
 
-	<title>{{ title }}</title>
-
-	{#	<link href="{% static 'css/main.css' %}"#}
-	{#	      rel="stylesheet" type="text/css">#}
-
-	<script src="{% static 'js/main.js' %}"></script>
-</head>
-
-<body id="page-body">
-<form method="POST">
-	{% csrf_token %}
-
-	<label for="name">Name: </label>
-	<input type="text" name="name" id="name" required>
-
-	<label for="characterClass">Class: </label>
-	<select name="characterClass">
-		{% for characterClass in characterClasses %}
-			<option value="{{ characterClass.id }}">
-				{{ characterClass.name }}</option>
-		{% endfor %}
-	</select>
+{% block table-score %}
+    <div class="col-10 fluid">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">User</th>
+                <th scope="col">Character</th>
+                <th scope="col">Stage</th>
+                <th scope="col">Class</th>
+                <th scope="col">HP Max</th>
+                <th scope="col">Strength</th>
+                <th scope="col">Intelligence</th>
+                <th scope="col">Agility</th>
+                <th scope="col">Physical resistance</th>
+                <th scope="col">Magical resistance</th>
+            </tr>
+            </thead>
+            <tbody>
 
 
-	<button id="play"> Play !</button>
-</form>
+            {% for party in partys %}
+                <tr>
+                    <td>
+                        {{ party.date }}
+                    </td>
+                    <td>
+                        {{ party.user.username }}
+                    </td>
+                    <td>
+                        {{ party.character.name }}
+                    </td>
+                    <td>
+                        {{ party.stage }}
+                    </td>
+                    <td>
+                        {{ party.character.characterClass.name }}
+                    </td>
+                    <td>
+                        {{ party.character.hpMax }}
+                    </td>
+                    <td>
+                        {{ party.character.strength }}
+                    </td>
+                    <td>
+                        {{ party.character.agility }}
+                    </td>
+                    <td>
+                        {{ party.character.intelligence }}
+                    </td>
+                    <td>
+                        {{ party.character.physicalResistance }}
+                    </td>
+                    <td>
+                        {{ party.character.magicalResistance }}
+                    </td>
+                </tr>
 
-</body>
-
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+{% block choose-class %}
+    <div class="col-2 fluid">
+        {% for characterClass in characterClasses %}
+            <button>
+                <a href="{% url 'generateCharacterByPk' characterClass.pk %}">{{ characterClass.name }}</a>
+            </button>
+        {% endfor %}
+    </div>
+{% endblock %}

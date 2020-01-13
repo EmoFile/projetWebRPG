@@ -2,11 +2,10 @@ from django.contrib import admin
 
 # Register your models here.
 from app.models import Character, Weapon, Head, Chest, Leg, Consumable, \
-	CharacterClass, Inventory, InventoryConsumable, Party
+	CharacterClass, Inventory, InventoryConsumable, Party, Minion, BossAlain
 
 
 class CharacterAdmin(admin.ModelAdmin):
-	
 	def className(self, obj):
 		return f'{obj.characterClass.name}'
 	
@@ -29,6 +28,7 @@ class WeaponAdmin(admin.ModelAdmin):
 	list_display = ('name',
 	                'requiredLevel',
 	                'className',
+					'rarity',
 	                'oneHanded',
 	                'strength',
 	                'agility',
@@ -43,6 +43,7 @@ class HeadAdmin(admin.ModelAdmin):
 	list_display = ('name',
 	                'requiredLevel',
 	                'className',
+					'rarity',
 	                'hpMax',
 	                'strength',
 	                'agility',
@@ -59,6 +60,7 @@ class ChestAdmin(admin.ModelAdmin):
 	list_display = ('name',
 	                'requiredLevel',
 	                'className',
+					'rarity',
 	                'hpMax',
 	                'strength',
 	                'agility',
@@ -75,6 +77,7 @@ class LegAdmin(admin.ModelAdmin):
 	list_display = ('name',
 	                'requiredLevel',
 	                'className',
+					'rarity',
 	                'hpMax',
 	                'strength',
 	                'agility',
@@ -89,6 +92,7 @@ class ConsumableAdmin(admin.ModelAdmin):
 		return f'{obj.characterClass.name}'
 	
 	list_display = ('name',
+					'rarity',
 	                'hp',
 	                'strength',
 	                'agility',
@@ -103,6 +107,16 @@ class ConsumableIlineAdmin(admin.TabularInline):
 
 class InventoryAdmin(admin.ModelAdmin):
 	inlines = (ConsumableIlineAdmin,)
+
+
+class GenerateMinionAdmin(admin.ModelAdmin):
+	def className(self, obj):
+		return f'{obj.Minion.name}'
+
+
+class GenerateBossAlain(admin.ModelAdmin):
+	def className(self, obj):
+		return f'{obj.BossAlain.name}'
 
 
 class PartyAdmin(admin.ModelAdmin):
@@ -133,17 +147,8 @@ class PartyAdmin(admin.ModelAdmin):
 	def characterMR(self, obj):
 		return f'{obj.character.magicalResistance}'
 	
-	def characterHead(self, obj):
-		return f'{obj.character.inventory.head.name}'
-	
-	def characterChest(self, obj):
-		return f'{obj.character.inventory.chest.name}'
-	
-	def characterLeg(self, obj):
-		return f'{obj.character.inventory.leg.name}'
-	
 	list_display = ('user',
-	                'level',
+	                'stage',
 	                'characterName',
 	                'className',
 	                'characterLvl',
@@ -152,10 +157,7 @@ class PartyAdmin(admin.ModelAdmin):
 	                'characterAgility',
 	                'characterInt',
 	                'characterPR',
-	                'characterMR',
-	                'characterHead',
-	                'characterChest',
-	                'characterLeg')
+	                'characterMR')
 	list_display_links = list_display
 
 
@@ -168,3 +170,5 @@ admin.site.register(Leg, LegAdmin)
 admin.site.register(Consumable, ConsumableAdmin)
 admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(Party, PartyAdmin)
+admin.site.register(Minion, GenerateMinionAdmin)
+admin.site.register(BossAlain, GenerateBossAlain)

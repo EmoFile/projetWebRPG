@@ -16,10 +16,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from app.views import IndexView, GenerateCharacterView
+from app import views
+from app.views import IndexView, GenerateCharacterView, CharacterDetailView, SignUpView, LogInView, PlayGameView, dropItem, GenerateMinionTest, EnemyList, GenerateBoss
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='home'),
-    path('generateCharacter', GenerateCharacterView.as_view(), name='generateCharacter'),
+    path('generateCharacterByPk/<int:pk>', GenerateCharacterView.as_view(),
+         name='generateCharacterByPk'),
+    path('characterDetail/<int:pk>', CharacterDetailView.as_view(),
+         name='characterDetail'),
+    path('playGame/<int:pk>', PlayGameView.as_view(), name='playGame'),
+    path('signUp/', SignUpView.as_view(), name='signUp'),
+    path('logIn/', LogInView.as_view(), name='logIn'),
+    path('dropItem', dropItem, name='dropItem'),
+    path('testGenerateEnemy/<int:pk>', GenerateMinionTest.as_view(), name='minionTest'),
+    path('GenerateBoss/<int:pk>', GenerateBoss.as_view(), name='BossGenerate'),
+    path('ArticleListView/', EnemyList.as_view(), name='listEnemy')
 ]

@@ -1,0 +1,56 @@
+{% load static i18n %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="icon" href="{% static 'img/swordshield.png' %}" type="image/png">
+    <title>RichardDev - {{ title }}</title>
+
+
+    {#   CSS   #}
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+    {#   JS   #}
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+</head>
+<body id="page-body" class="container-fluid">
+<nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand mb-0 h1" href="{% url 'home' %}">
+        <img src="{% static 'img/swordshield.svg' %}" width="30" height="30"
+             class="d-inline-block align-top"
+             alt="">
+        B.T.A - II
+    </a>
+    {% if user.is_anonymous %}
+    <a href="{% url 'signUp' %}" class="btn btn-outline-success">Sign Up</a>
+    <a href="{% url 'logIn' %}" class="btn btn-outline-success">Log In</a>
+{% else %}
+    <p>
+        {{ request.user }}
+    </p>
+{% endif %}
+</nav>
+
+
+<div class="row">
+
+        {% block table-score %}
+
+        {% endblock %}
+
+        {% block choose-class %}
+
+        {% endblock %}
+</div>
+</body>
+</html>
