@@ -192,8 +192,8 @@ def dropItem(request):
                     'requiredClass': ItemDropped.characterClass.name,
                     'rarity': ItemDropped.rarity,
                     'hpMax': ItemDropped.hpMax,
-                    'physicalResistance': ItemDropped.physicalResistance,
-                    'magicalResistance': ItemDropped.magicalResistance,
+                    'physicalResistence': ItemDropped.physicalResistance,
+                    'magicalResistence': ItemDropped.magicalResistance,
                     'strength': ItemDropped.strength,
                     'intelligence': ItemDropped.intelligence,
                     'agility': ItemDropped.agility

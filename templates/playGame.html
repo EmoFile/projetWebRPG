@@ -10,5 +10,39 @@
     {{ party.character.physicalResistance }}
     {{ party.character.magicalResistance }}
 
-    <button id="dropButton">Drop</button>
+    <!-- Button trigger modal -->
+    <button type="button" id="dropButton" class="btn btn-primary" data-toggle="modal" data-target="#itemModal">
+        Drop Item
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="itemModal" tabindex="-1" role="dialog" aria-labelledby="itemModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="itemModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="itemModalBody">
+                    <p id="levelRequired"></p>
+                    <p id="classRequired"></p>
+                    <p id="rarity"></p>
+                    <p id="hpMax"></p>
+                    <p id="hp"></p>
+                    <p id="physicalResistence"></p>
+                    <p id="magicalResistence"></p>
+                    <p id="strength"></p>
+                    <p id="intelligence"></p>
+                    <p id="agility"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="closeModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
