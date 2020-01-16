@@ -1,4 +1,15 @@
 $(() => {
+    let $url = document.location.pathname;
+    console.log($url);
+    console.log($url.lastIndexOf("/"));
+    console.log($url.length);
+
+    let $pkParty = '';
+    for ($i = $url.lastIndexOf("/") + 1; $i < $url.length; $i++) {
+        $pkParty += $url[$i];
+    }
+    console.log($pkParty);
+
     $('#dropButton').click(function () {
         $.ajax({
             url: 'dropItem',
@@ -68,6 +79,15 @@ $(() => {
         $strength.textContent = '';
         $intelligence.textContent = '';
         $agility.textContent = '';
+    });
+
+    $('#changeItem').click(function () {
+        $.ajax({
+            url: 'changeItem/' + $pkParty,
+            type: 'get',
+            dataType: 'json',
+        }).done(function (result) {
+        });
     });
     // $('#dropButton').click(function () {
     //     console.log($('#dropButton').val());
