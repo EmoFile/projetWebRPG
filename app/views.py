@@ -11,7 +11,8 @@ from django.views.generic import TemplateView, CreateView, DetailView, ListView
 from django.views.generic.base import RedirectView
 
 from app.forms import CharacterForm
-from app.models import CharacterClass, Character, Inventory, Party, Minion, BossAlain, Consumable, Head, Chest, Leg, Weapon
+from app.models import CharacterClass, Character, Inventory, Party, Minion, BossAlain, Consumable, Head, Chest, Leg, \
+    Weapon
 
 
 class IndexView(TemplateView):
@@ -138,32 +139,27 @@ def dropItem(request):
             stuffClassName = 'Consumable'
             stuffPull = Consumable.objects.filter(rarity=stuffRarity)
             stuffCount = stuffPull.count()
-            ItemDropped = stuffPull[random.randint(0, stuffCount-1)]
-            # ItemDropped = get_object_or_404(Consumable, pk=random.randint(1, Consumable.objects.count()))
+            ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 2:
             stuffClassName = 'Head'
             stuffPull = Head.objects.filter(rarity=stuffRarity)
             stuffCount = stuffPull.count()
-            ItemDropped = stuffPull[random.randint(0, stuffCount-1)]
-            # ItemDropped = get_object_or_404(Head, pk=random.randint(1, Head.objects.count()))
+            ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 3:
             stuffClassName = 'Chest'
             stuffPull = Chest.objects.filter(rarity=stuffRarity)
             stuffCount = stuffPull.count()
-            ItemDropped = stuffPull[random.randint(0, stuffCount-1)]
-            #ItemDropped = get_object_or_404(Chest, pk=random.randint(1, Chest.objects.count()))
+            ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 4:
             stuffClassName = 'Leg'
             stuffPull = Leg.objects.filter(rarity=stuffRarity)
             stuffCount = stuffPull.count()
-            ItemDropped = stuffPull[random.randint(0, stuffCount-1)]
-            # ItemDropped = get_object_or_404(Leg, pk=random.randint(1, Leg.objects.count()))
+            ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         else:
             stuffClassName = 'Weapon'
             stuffPull = Weapon.objects.filter(rarity=stuffRarity)
             stuffCount = stuffPull.count()
-            ItemDropped = stuffPull[random.randint(0, stuffCount-1)]
-            # ItemDropped = get_object_or_404(Weapon, pk=random.randint(1, Weapon.objects.count()))
+            ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
 
         if stuffClassName == 'Consumable':
             data = {
@@ -171,6 +167,7 @@ def dropItem(request):
                 'stuffClassName': stuffClassName,
                 'stuffRarity': stuffRarity,
                 'stuffCount': stuffCount,
+                'pk': ItemDropped.pk,
                 'ItemDropped': {
                     'name': ItemDropped.name,
                     'rarity': ItemDropped.rarity,
@@ -186,6 +183,7 @@ def dropItem(request):
                 'stuffClassName': stuffClassName,
                 'stuffRarity': stuffRarity,
                 'stuffCount': stuffCount,
+                'pk': ItemDropped.pk,
                 'ItemDropped': {
                     'name': ItemDropped.name,
                     'requiredLevel': ItemDropped.requiredLevel,
@@ -202,6 +200,46 @@ def dropItem(request):
     else:
         data = {'isItemDropped': False}
     return JsonResponse(data)
+
+
+def changeItem(*args, **kwargs):
+    currentParty = get_object_or_404(Party, pk=kwargs['partyPk'])
+    currentCharacter = currentParty.character
+    characterInventory = currentCharacter.inventory
+    oldStuff = ''
+    newStuff = ''
+    if kwargs['stuffClassName'] == 'Consumable':
+        pass
+    elif kwargs['stuffClassName'] == 'Head':
+        if characterInventory.head != None:
+            oldStuff = characterInventory.head.name
+        characterInventory.head = get_object_or_404(Head, pk=kwargs['stuffPk'])
+        characterInventory.save()
+        newStuff = characterInventory.head
+    elif kwargs['stuffClassName'] == 'Chest':
+        if characterInventory.chest != None:
+            oldStuff = characterInventory.chest.name
+        characterInventory.chest = get_object_or_404(Chest, pk=kwargs['stuffPk'])
+        characterInventory.save()
+        newStuff = characterInventory.chest
+    elif kwargs['stuffClassName'] == 'Leg':
+        if characterInventory.leg != None:
+            oldStuff = characterInventory.leg.name
+        characterInventory.leg = get_object_or_404(Leg, pk=kwargs['stuffPk'])
+        characterInventory.save()
+        newStuff = characterInventory.leg
+    else:
+        pass
+
+    return JsonResponse({
+        'partyPK': kwargs['partyPk'],
+        'stuffClassName': kwargs['stuffClassName'],
+        'stuffPk': kwargs['stuffPk'],
+        'currentCharacter': currentCharacter.name,
+        'oldStuff': oldStuff,
+        'newStuff': newStuff.name
+    })
+
 
 # class GenerateMinionTest(View):
 #     def get_success_url(self):

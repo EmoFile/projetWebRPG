@@ -17,7 +17,11 @@ $(() => {
             dataType: 'json',
         }).done(function (result) {
             console.log(result);
+
+
             let $modalTitle = document.getElementById('itemModalLabel');
+            let $stuffClassName = document.getElementById('stuffClassName');
+            let $stuffPk = document.getElementById('stuffPk');
             let $levelRequired = document.getElementById('levelRequired');
             let $classRequired = document.getElementById('classRequired');
             let $rarity = document.getElementById('rarity');
@@ -32,6 +36,9 @@ $(() => {
             if (result['isItemDropped'] !== false) {
                 $modalTitle.textContent = result['ItemDropped']['name'];
                 $rarity.textContent = 'Rarity: ' + result['ItemDropped']['rarity'] + '\n';
+                $stuffClassName.textContent = result['stuffClassName'];
+                $stuffPk.textContent = result['pk'];
+
                 if (result['stuffClassName'] === 'Consumable') {
                     $hp.textContent = 'Hp: ' + result['ItemDropped']['hp'] + '\n';
                 } else {
@@ -54,6 +61,17 @@ $(() => {
 
         });
 
+    });
+
+    $('#changeItem').click(function () {
+        $.ajax({
+            url: 'changeItem/' + $pkParty + '/' + document.getElementById('stuffClassName').textContent
+                + '/' + document.getElementById('stuffPk').textContent,
+            type: 'get',
+            dataType: 'json',
+        }).done(function (result) {
+            console.log(result);
+        });
     });
 
     $('#closeModal').click(function () {
@@ -79,15 +97,6 @@ $(() => {
         $strength.textContent = '';
         $intelligence.textContent = '';
         $agility.textContent = '';
-    });
-
-    $('#changeItem').click(function () {
-        $.ajax({
-            url: 'changeItem/' + $pkParty,
-            type: 'get',
-            dataType: 'json',
-        }).done(function (result) {
-        });
     });
     // $('#dropButton').click(function () {
     //     console.log($('#dropButton').val());
