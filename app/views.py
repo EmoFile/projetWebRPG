@@ -202,43 +202,69 @@ def dropItem(request):
     return JsonResponse(data)
 
 
+def ChangeWeapon(*args, **kwargs):
+    return JsonResponse({
+        'stuffClassName': kwargs['stuffClassName'],
+        'weapon': kwargs['weapon'].name,
+        'oldStuff': 'oldStuff',
+        'newStuff': 'newStuff'
+    })
+
+
+def ChangeStuff(*args, **kwargs):
+    oldStuff = ''
+    newStuff = ''
+    if kwargs['stuffClassName'] == 'Head':
+        if kwargs['inventory'].head != None:
+            oldStuff = kwargs['inventory'].head.name
+        kwargs['inventory'].head = get_object_or_404(Head, pk=kwargs['stuffPk'])
+        kwargs['inventory'].save()
+        newStuff = kwargs['inventory'].head
+    elif kwargs['stuffClassName'] == 'Chest':
+        if kwargs['inventory'].chest != None:
+            oldStuff = kwargs['inventory'].chest.name
+        kwargs['inventory'].chest = get_object_or_404(Chest, pk=kwargs['stuffPk'])
+        kwargs['inventory'].save()
+        newStuff = kwargs['inventory'].chest
+    elif kwargs['stuffClassName'] == 'Leg':
+        if kwargs['inventory'].leg != None:
+            oldStuff = kwargs['inventory'].leg.name
+        kwargs['inventory'].leg = get_object_or_404(Leg, pk=kwargs['stuffPk'])
+        kwargs['inventory'].save()
+        newStuff = kwargs['inventory'].leg
+
+    return JsonResponse({
+        'stuffClassName': kwargs['stuffClassName'],
+        'oldStuff': oldStuff,
+        'newStuff': newStuff.name
+    })
+
+
+def AddConsumable(*args, **kwargs):
+    return JsonResponse({
+        'stuffClassName': kwargs['stuffClassName'],
+        'stuffPk': kwargs['consumable'].name,
+        'oldStuff': 'oldStuff',
+        'newStuff': 'newStuff'
+    })
+
+
 def changeItem(*args, **kwargs):
     currentParty = get_object_or_404(Party, pk=kwargs['partyPk'])
     currentCharacter = currentParty.character
     characterInventory = currentCharacter.inventory
-    oldStuff = ''
-    newStuff = ''
     if kwargs['stuffClassName'] == 'Consumable':
-        pass
-    elif kwargs['stuffClassName'] == 'Head':
-        if characterInventory.head != None:
-            oldStuff = characterInventory.head.name
-        characterInventory.head = get_object_or_404(Head, pk=kwargs['stuffPk'])
-        characterInventory.save()
-        newStuff = characterInventory.head
-    elif kwargs['stuffClassName'] == 'Chest':
-        if characterInventory.chest != None:
-            oldStuff = characterInventory.chest.name
-        characterInventory.chest = get_object_or_404(Chest, pk=kwargs['stuffPk'])
-        characterInventory.save()
-        newStuff = characterInventory.chest
-    elif kwargs['stuffClassName'] == 'Leg':
-        if characterInventory.leg != None:
-            oldStuff = characterInventory.leg.name
-        characterInventory.leg = get_object_or_404(Leg, pk=kwargs['stuffPk'])
-        characterInventory.save()
-        newStuff = characterInventory.leg
+        return AddConsumable(inventory=characterInventory,
+                             consumable=get_object_or_404(Consumable, pk=kwargs['stuffPk']),
+                             stuffClassName=kwargs['stuffClassName'])
+    elif kwargs['stuffClassName'] == 'Weapon':
+        return ChangeWeapon(inventory=characterInventory,
+                            weapon=get_object_or_404(Weapon, pk=kwargs['stuffPk']),
+                            stuffClassName=kwargs['stuffClassName'])
     else:
-        pass
-
-    return JsonResponse({
-        'partyPK': kwargs['partyPk'],
-        'stuffClassName': kwargs['stuffClassName'],
-        'stuffPk': kwargs['stuffPk'],
-        'currentCharacter': currentCharacter.name,
-        'oldStuff': oldStuff,
-        'newStuff': newStuff.name
-    })
+        return ChangeStuff(inventory=characterInventory,
+                           stuffClassName=kwargs['stuffClassName'],
+                           stuffPk=kwargs['stuffPk'])
 
 
 # class GenerateMinionTest(View):
