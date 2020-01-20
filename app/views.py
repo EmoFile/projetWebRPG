@@ -131,7 +131,19 @@ class PlayGameView(TemplateView):
 		return result
 
 
-def dropItem(request):
+def PlayTour():
+	pass
+
+
+def ReloadCharacter(*args, **kwargs):
+	pass
+
+
+def ReloadEnemy(*args, **kwargs):
+	pass
+
+
+def DropItem(request):
 	if random.randint(1, 2) == 1:
 		stuffRarity = random.randint(1, 10)
 		if 1 <= stuffRarity <= 4:
@@ -247,8 +259,9 @@ def ChangeStuff(*args, **kwargs):
 
 
 def AddConsumable(*args, **kwargs):
-	i_c = InventoryConsumable.get(inventory=kwargs['inventory'],
-	                              consumable__name='')
+	kwargs['inventory'].consumables.add(kwargs['consumable'])
+	i_c = InventoryConsumable.objects.get(inventory=kwargs['inventory'],
+	                                      consumable=kwargs['consumable'])
 	i_c.quantity += 1
 	i_c.save()
 	
@@ -260,7 +273,7 @@ def AddConsumable(*args, **kwargs):
 	})
 
 
-def changeItem(*args, **kwargs):
+def ChangeItem(*args, **kwargs):
 	currentParty = get_object_or_404(Party, pk=kwargs['partyPk'])
 	currentCharacter = currentParty.character
 	characterInventory = currentCharacter.inventory
@@ -270,26 +283,29 @@ def changeItem(*args, **kwargs):
 		                     consumable=get_object_or_404(Consumable,
 		                                                  pk=kwargs['stuffPk']),
 		                     stuffClassName=kwargs['stuffClassName'])
-	# elif kwargs['stuffClassName'] == 'Weapon':
-	#     return ChangeWeapon(inventory=characterInventory,
-	#                         weapon=get_object_or_404(Weapon,
-	#                                                  pk=kwargs['stuffPk']),
-	#                         stuffClassName=kwargs['stuffClassName'])
 	else:
 		return ChangeStuff(inventory=characterInventory,
 		                   stuffClassName=kwargs['stuffClassName'],
 		                   stuffPk=kwargs['stuffPk'])
 
 
-# class GenerateMinionTest(View):
-#     def get_success_url(self):
-#         return reverse('home')
-#
-#     def get(self):
-#         adventurer = Character.objects.filter(pk=['adventurerId'])
-#         for i in range(9):
-#             minion_temp = Minion(adventurer, i)
-#             minion_temp.save()
+def UseItem(*args, **kwargs):
+	currentCharacter = get_object_or_404(Character, pk=kwargs['characterPk'])
+	currentConsumable = get_object_or_404(Consumable, pk=kwargs['consumablePk'])
+	
+	i_c = InventoryConsumable.objects.get(inventory=currentCharacter.inventory,
+	                                      consumable=currentConsumable)
+	consumableName = i_c.consumable.name
+	consumableOldQuantity = i_c.quantity
+	i_c.quantity -= 1
+	i_c.save()
+	if i_c.quantity == 0:
+		i_c.delete()
+	consumableNewQuantity = i_c.quantity
+	
+	return JsonResponse({'consumableName': consumableName,
+	                     'consumableOldQuantity': consumableOldQuantity,
+	                     'consumableNewQuantity': consumableNewQuantity})
 
 
 class GenerateMinionTest(RedirectView):

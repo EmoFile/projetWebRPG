@@ -132,6 +132,29 @@
 					{% endif %}
 				</div>
 			</div>
+			<div>
+				<div>
+					{% if party.character.inventory.consumables != Null %}
+						{% for consumable in party.character.inventory.inventoryconsumable_set.all %}
+							<div>
+								<p>
+									{{ consumable.consumable.name }}
+								</p>
+								<p id="quantity/{{ party.character.pk }}/{{ consumable.consumable.pk }}">{{ consumable.quantity }}</p>
+								<button type="button"
+								        urlUseItem="useItem/{{ party.character.pk }}/{{ consumable.consumable.pk }}"
+								        coupleCharacterConsumable="{{ party.character.pk }}/{{ consumable.consumable.pk }}"
+								        class="useItem btn btn-success">
+									Use
+								</button>
+							</div>
+						{% endfor %}
+
+					{% else %}
+						No consumable
+					{% endif %}
+				</div>
+			</div>
 		</div>
 		<div class="col-6">
 			Battle report

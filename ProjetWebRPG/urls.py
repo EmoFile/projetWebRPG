@@ -17,22 +17,27 @@ from django.contrib import admin
 from django.urls import path
 
 from app import views
-from app.views import IndexView, GenerateCharacterView, CharacterDetailView, SignUpView, LogInView, PlayGameView, \
-    dropItem, GenerateMinionTest, EnemyList, GenerateBoss, changeItem
+from app.views import IndexView, GenerateCharacterView, CharacterDetailView, \
+	SignUpView, LogInView, PlayGameView, \
+	DropItem, GenerateMinionTest, EnemyList, GenerateBoss, ChangeItem, UseItem
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', IndexView.as_view(), name='home'),
-    path('generateCharacterByPk/<int:pk>', GenerateCharacterView.as_view(),
-         name='generateCharacterByPk'),
-    path('characterDetail/<int:pk>', CharacterDetailView.as_view(),
-         name='characterDetail'),
-    path('playGame/<int:pk>', PlayGameView.as_view(), name='playGame'),
-    path('signUp/', SignUpView.as_view(), name='signUp'),
-    path('logIn/', LogInView.as_view(), name='logIn'),
-    path('playGame/dropItem', dropItem, name='dropItem'),
-    path('playGame/changeItem/<int:partyPk>/<str:stuffClassName>/<int:stuffPk>', changeItem, name='changeItem'),
-    path('testGenerateEnemy/<int:pk>', GenerateMinionTest.as_view(), name='minionTest'),
-    path('GenerateBoss/<int:pk>', GenerateBoss.as_view(), name='BossGenerate'),
-    path('ArticleListView/', EnemyList.as_view(), name='listEnemy')
+	path('admin/', admin.site.urls),
+	path('', IndexView.as_view(), name='home'),
+	path('generateCharacterByPk/<int:pk>', GenerateCharacterView.as_view(),
+	     name='generateCharacterByPk'),
+	path('characterDetail/<int:pk>', CharacterDetailView.as_view(),
+	     name='characterDetail'),
+	path('playGame/<int:pk>', PlayGameView.as_view(), name='playGame'),
+	path('signUp/', SignUpView.as_view(), name='signUp'),
+	path('logIn/', LogInView.as_view(), name='logIn'),
+	path('dropItem', DropItem, name='dropItem'),
+	path('useItem/<int:characterPk>/<int:consumablePk>', UseItem,
+	     name='useItem'),
+	path('changeItem/<int:partyPk>/<str:stuffClassName>/<int:stuffPk>',
+	     ChangeItem, name='changeItem'),
+	path('testGenerateEnemy/<int:pk>', GenerateMinionTest.as_view(),
+	     name='minionTest'),
+	path('GenerateBoss/<int:pk>', GenerateBoss.as_view(), name='BossGenerate'),
+	path('ArticleListView/', EnemyList.as_view(), name='listEnemy')
 ]
