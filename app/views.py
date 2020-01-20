@@ -303,6 +303,8 @@ def UseItem(*args, **kwargs):
 		i_c.delete()
 	consumableNewQuantity = i_c.quantity
 	
+	currentCharacter.modifyCarac(currentConsumable)
+	currentCharacter.save()
 	return JsonResponse({'consumableName': consumableName,
 	                     'consumableOldQuantity': consumableOldQuantity,
 	                     'consumableNewQuantity': consumableNewQuantity})
