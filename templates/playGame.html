@@ -1,14 +1,190 @@
 {% extends 'base.html' %}
 {% block table-score %}
-    {{ party.character.name }}
-    {{ party.character.characterClass.name }}
-    {{ party.character.level }}
-    {{ party.character.hp }}/{{ party.character.hpMax }}
-    {{ party.character.strength }}
-    {{ party.character.intelligence }}
-    {{ party.character.agility }}
-    {{ party.character.physicalResistance }}
-    {{ party.character.magicalResistance }}
+	<div class="row container-fluid">
+		<div class="col-3">
+			<table class="table table-borderless">
+				<thead>
+				<tr>
+					<th scope="col"><p
+						id="characterName">{{ party.character.name }}</p>
+					</th>
+					<th scope="col"><p
+						id="characterClass">{{ party.character.characterClass.name }}</p>
+					</th>
+					<th scope="col"><p class="inline"
+					                   id="characterLevel">
+						Lvl: {{ party.character.level }}</p></th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<th scope="row">HP:</th>
+					<td><p
+						id="characterHp"> {{ party.character.hp }}/{{ party.character.hpMax }}</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">ARM:</th>
+					<td><p
+						id="characterPhysicalResistence">{{ party.character.physicalResistance }}</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">RES:</th>
+					<td><p
+						id="characterMagicalResistence">{{ party.character.magicalResistance }}</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">STR:</th>
+					<td><p
+						id="characterStrength">{{ party.character.strength }}</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">INT:</th>
+					<td><p
+						id="characterIntelligence">{{ party.character.intelligence }}</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">AGI:</th>
+					<td><p
+						id="characterAgility">{{ party.character.agility }}</p>
+					</td>
+				</tr>
+				</tbody>
+			</table>
 
-    <button id="dropButton">Drop</button>
+			<div>
+				<div>
+					{% if party.character.inventory.head != Null %}
+						{{ party.character.inventory.head.name }} |
+						{{ party.character.inventory.head.physicalResistance }}
+						|
+						{{ party.character.inventory.head.magicalResistance }}
+						|
+						{{ party.character.inventory.head.hpMax }}
+						|
+						{{ party.character.inventory.head.strength }}
+						|
+						{{ party.character.inventory.head.intelligence }}
+						|
+						{{ party.character.inventory.head.agility }}
+					{% else %}
+						No helmet
+					{% endif %}
+				</div>
+
+				<div>
+					{% if party.character.inventory.chest != Null %}
+						{{ party.character.inventory.chest.name }} |
+						{{ party.character.inventory.chest.physicalResistance }}
+						|
+						{{ party.character.inventory.chest.magicalResistance }}
+						|
+						{{ party.character.inventory.chest.hpMax }}
+						|
+						{{ party.character.inventory.chest.strength }}
+						|
+						{{ party.character.inventory.chest.intelligence }}
+						|
+						{{ party.character.inventory.chest.agility }}
+					{% else %}
+						No breathplate
+					{% endif %}
+				</div>
+
+				<div>
+					{% if party.character.inventory.leg != Null %}
+						{{ party.character.inventory.leg.name }} |
+						{{ party.character.inventory.leg.physicalResistance }}
+						|
+						{{ party.character.inventory.leg.magicalResistance }}
+						|
+						{{ party.character.inventory.leg.hpMax }} |
+						{{ party.character.inventory.leg.strength }}
+						|
+						{{ party.character.inventory.leg.intelligence }}
+						|
+						{{ party.character.inventory.leg.agility }}
+					{% else %}
+						No leg
+					{% endif %}
+				</div>
+				<div>
+					{% if party.character.inventory.weapon != Null %}
+						{{ party.character.inventory.weapon.name }}
+						|
+						{{ party.character.inventory.weapon.physicalResistance }}
+						|
+						{{ party.character.inventory.weapon.magicalResistance }}
+						|
+						{{ party.character.inventory.weapon.hpMax }}
+						|
+						{{ party.character.inventory.weapon.strength }}
+						|
+						{{ party.character.inventory.weapon.intelligence }}
+						|
+						{{ party.character.inventory.weapon.agility }}
+					{% else %}
+						No weapon
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div class="col-6">
+			Battle report
+		</div>
+		<div class="col-3">
+			Ennemy Info
+		</div>
+		<!-- Button trigger modal -->
+		<button type="button" id="dropButton" class="btn btn-primary"
+		        data-toggle="modal" data-target="#itemModal">
+			Drop Item
+		</button>
+
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="itemModal" tabindex="-1" role="dialog"
+	     aria-labelledby="itemModalLabel"
+	     aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="itemModalLabel">Modal
+						title</h5>
+					<button type="button" class="close"
+					        data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="itemModalBody">
+					<p id="levelRequired"></p>
+					<p id="classRequired"></p>
+					<p id="rarity"></p>
+					<p id="hpMax"></p>
+					<p id="hp"></p>
+					<p id="physicalResistence"></p>
+					<p id="magicalResistence"></p>
+					<p id="strength"></p>
+					<p id="intelligence"></p>
+					<p id="agility"></p>
+					<p id="stuffClassName" hidden></p>
+					<p id="stuffPk" hidden></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" id="closeModal"
+					        class="btn btn-secondary"
+					        data-dismiss="modal">Pass
+					</button>
+					<button type="button" id="changeItem"
+					        class="btn btn-primary">Keep
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}
