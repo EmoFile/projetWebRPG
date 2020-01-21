@@ -65,12 +65,13 @@ $(() => {
 
     $('#changeItem').click(function () {
         $.ajax({
-            url: 'changeItem/' + $pkParty + '/' + document.getElementById('stuffClassName').textContent
+            url: '/changeItem/' + $pkParty + '/' + document.getElementById('stuffClassName').textContent
                 + '/' + document.getElementById('stuffPk').textContent,
             type: 'get',
             dataType: 'json',
         }).done(function (result) {
             console.log(result);
+
         });
     });
 

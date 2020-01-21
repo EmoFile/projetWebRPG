@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from app.models import Character, Weapon, Head, Chest, Leg, Consumable, \
-    CharacterClass, Inventory, InventoryConsumable, Party, Minion, BossAlain
+    CharacterClass, Inventory, InventoryConsumable, Party, Minion, BossAlain, Enemy
 
 
 class CharacterAdmin(admin.ModelAdmin):
@@ -170,5 +170,6 @@ admin.site.register(Leg, LegAdmin)
 admin.site.register(Consumable, ConsumableAdmin)
 admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(Party, PartyAdmin)
-admin.site.register(Minion, GenerateMinionAdmin)
+admin.site.register(Minion)
 admin.site.register(BossAlain, GenerateBossAlain)
+admin.site.register(Enemy)

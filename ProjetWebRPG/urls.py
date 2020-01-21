@@ -18,7 +18,7 @@ from django.urls import path
 
 from app import views
 from app.views import IndexView, GenerateCharacterView, CharacterDetailView, SignUpView, LogInView, PlayGameView, \
-    dropItem, GenerateMinionTest, EnemyList, GenerateBoss, changeItem
+    dropItem, GenerateMinionTest, EnemyList, GenerateBoss, changeItem, GenerateEnemy
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,7 +32,5 @@ urlpatterns = [
     path('logIn/', LogInView.as_view(), name='logIn'),
     path('playGame/dropItem', dropItem, name='dropItem'),
     path('playGame/changeItem/<int:partyPk>/<str:stuffClassName>/<int:stuffPk>', changeItem, name='changeItem'),
-    path('testGenerateEnemy/<int:pk>', GenerateMinionTest.as_view(), name='minionTest'),
-    path('GenerateBoss/<int:pk>', GenerateBoss.as_view(), name='BossGenerate'),
     path('ArticleListView/', EnemyList.as_view(), name='listEnemy')
 ]

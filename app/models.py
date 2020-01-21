@@ -5,6 +5,8 @@ from django.core.validators import MinValueValidator
 from django.db import models
 
 # Create your models here.
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.urls import reverse
 
 
@@ -50,25 +52,25 @@ class CharacterClass(models.Model):
     maxMagRes = models.IntegerField(default=10,
                                     blank=False,
                                     null=False)
-    
+
     def __str__(self):
         return f'{self.id}: {self.name}'
-    
+
     def generateHpMax(self):
         return random.randint(self.minHpMax, self.maxHpMax)
-    
+
     def generateStrength(self):
         return random.randint(self.minStrength, self.maxStrength)
-    
+
     def generateAgility(self):
         return random.randint(self.minAgility, self.maxAgility)
-    
+
     def generateIntelligence(self):
         return random.randint(self.minInt, self.maxInt)
-    
+
     def generatePR(self):
         return random.randint(self.minPhysRes, self.maxPhysRes)
-    
+
     def generateMR(self):
         return random.randint(self.minMagRes, self.maxMagRes)
 
@@ -121,7 +123,7 @@ class Character(models.Model):
                                             null=False)
     inventory = models.OneToOneField('Inventory',
                                      on_delete=models.PROTECT)
-    
+
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Lvl: {self.level}' \
@@ -138,7 +140,7 @@ class Character(models.Model):
 class Item(models.Model):
     class Meta:
         abstract = True
-    
+
     COMMON = 'Common'
     RARE = 'Rare'
     EPIC = 'Epic'
@@ -171,7 +173,7 @@ class Item(models.Model):
 class Stuff(Item):
     class Meta:
         abstract = True
-    
+
     requiredLevel = models.PositiveIntegerField(default=1,
                                                 validators=[
                                                     MinValueValidator(1)],
@@ -193,7 +195,7 @@ class Weapon(Stuff):
     characterClass = models.ForeignKey(CharacterClass,
                                        on_delete=models.CASCADE,
                                        related_name='weaponCharacterClass')
-    
+
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Lvl: {self.requiredLevel}' \
@@ -208,7 +210,7 @@ class Head(Stuff):
     characterClass = models.ForeignKey(CharacterClass,
                                        on_delete=models.CASCADE,
                                        related_name='headCharacterClass')
-    
+
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Lvl: {self.requiredLevel}' \
@@ -225,7 +227,7 @@ class Chest(Stuff):
     characterClass = models.ForeignKey(CharacterClass,
                                        on_delete=models.CASCADE,
                                        related_name='chestCharacterClass')
-    
+
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Lvl: {self.requiredLevel}' \
@@ -242,7 +244,7 @@ class Leg(Stuff):
     characterClass = models.ForeignKey(CharacterClass,
                                        on_delete=models.CASCADE,
                                        related_name='legCharacterClass')
-    
+
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Lvl: {self.requiredLevel}' \
@@ -260,7 +262,7 @@ class Consumable(Item):
                              validators=[MinValueValidator(0)],
                              blank=False,
                              null=False)
-    
+
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Hp: {self.hp}' \
@@ -302,7 +304,7 @@ class InventoryConsumable(models.Model):
     quantity = models.PositiveIntegerField(default=0,
                                            blank=False,
                                            null=False)
-    
+
     def __str__(self):
         return f'{self.id}: {self.consumable.name} {self.quantity}'
 
@@ -317,10 +319,11 @@ class Party(models.Model):
                                         blank=False,
                                         null=False)
     date = models.DateField("Date", default=datetime.date.today)
-    
+    enemies = models.ManyToManyField('Enemy', through='PartyEnemy')
+
     class Meta:
         unique_together = ['character']
-    
+
     def __str__(self):
         return f'{self.id}: {self.user.username} ' \
                f'{self.character} ' \
@@ -328,84 +331,68 @@ class Party(models.Model):
 
 
 class Enemy(models.Model):
-    class Meta:
-        abstract = True
-    
+    default = {'validators': [MinValueValidator(0)],
+               'blank': False,
+               'null': False}
     name = models.CharField(max_length=20,
                             default='un mec',
                             blank=False,
                             null=False)
-    hpMax = models.PositiveIntegerField(default=10,
-                                        validators=[MinValueValidator(0)],
-                                        blank=False,
-                                        null=False)
-    hp = models.PositiveIntegerField(default=10,
-                                     validators=[MinValueValidator(0)],
-                                     blank=False,
-                                     null=False)
-    strength = models.IntegerField(default=1,
-                                   validators=[MinValueValidator(0)],
-                                   blank=False,
-                                   null=False)
-    agility = models.IntegerField(default=1,
-                                  validators=[MinValueValidator(0)],
-                                  blank=False,
-                                  null=False)
-    intelligence = models.IntegerField(default=1,
-                                       validators=[MinValueValidator(0)],
-                                       blank=False,
-                                       null=False)
-    physical_resistance = models.IntegerField(default=0,
-                                              validators=[MinValueValidator(0)],
-                                              blank=False,
-                                              null=False)
-    magical_resistance = models.IntegerField(default=0,
-                                             validators=[MinValueValidator(0)],
-                                             blank=False,
-                                             null=False)
-    
+    hpMax = models.PositiveIntegerField(default=10, **default)
+    hp = models.PositiveIntegerField(default=10, **default)
+    strength = models.IntegerField(default=1, **default)
+    agility = models.IntegerField(default=1, **default)
+    intelligence = models.IntegerField(default=1, **default)
+    physical_resistance = models.IntegerField(default=0, **default)
+    magical_resistance = models.IntegerField(default=0, **default)
+    is_boss = models.BooleanField(default=False)
+    next = models.ForeignKey('self', default=None, on_delete=models.PROTECT, blank=True, null=True)
+
+    def is_minion(self):
+        return hasattr(self, 'minion')
+
     @classmethod
     def create(cls, adventurer, min_percent, max_percent, min_percent_def,
-               max_percent_def, name):
-        '''
-        :param adventurer: Charactere Adventurer
+               max_percent_def, name, *args, **kwargs):
+        """
+        :param adventurer: Character Adventurer
         :param min_percent:
         :param max_percent:
         :param min_percent_def:
         :param max_percent_def:
         :param name:
         :return: Enemy
-        '''
-        hpMax = random.uniform(
+        """
+        hpMax = random.randint(
             round(adventurer.hpMax + (adventurer.hpMax * min_percent) / 100),
             round(adventurer.hpMax + (adventurer.hpMax * max_percent) / 100))
-        strength = random.uniform(
+        strength = random.randint(
             round(adventurer.physicalResistance - (
-                adventurer.physicalResistance * min_percent_def) / 100),
+                    adventurer.physicalResistance * min_percent_def) / 100),
             round(adventurer.physicalResistance - (
-                adventurer.physicalResistance * max_percent_def) / 100))
-        intelligence = random.uniform(
+                    adventurer.physicalResistance * max_percent_def) / 100))
+        intelligence = random.randint(
             round(adventurer.magicalResistance - (
-                adventurer.magicalResistance * min_percent_def) / 100),
+                    adventurer.magicalResistance * min_percent_def) / 100),
             round(adventurer.magicalResistance - (
-                adventurer.magicalResistance * max_percent_def) / 100))
-        physical_resistance = random.uniform(
+                    adventurer.magicalResistance * max_percent_def) / 100))
+        physical_resistance = random.randint(
             round(adventurer.strength + (
-                adventurer.strength * min_percent_def) / 100),
+                    adventurer.strength * min_percent_def) / 100),
             round(adventurer.strength + (
-                adventurer.strength * max_percent_def) / 100))
-        magical_resistance = random.uniform(
+                    adventurer.strength * max_percent_def) / 100))
+        magical_resistance = random.randint(
             round(adventurer.intelligence + (
-                adventurer.intelligence * min_percent_def) / 100),
+                    adventurer.intelligence * min_percent_def) / 100),
             round(adventurer.intelligence + (
-                adventurer.intelligence * max_percent_def) / 100))
-        agility = random.uniform(adventurer.agility - 10,
+                    adventurer.intelligence * max_percent_def) / 100))
+        agility = random.randint(adventurer.agility - 10,
                                  adventurer.agility + 10)
         hp = hpMax
         return cls(hpMax=hpMax, strength=strength, intelligence=intelligence,
                    physical_resistance=physical_resistance,
                    magical_resistance=magical_resistance,
-                   agility=agility, hp=hp, name=name)
+                   agility=agility, hp=hp, name=name, *args, **kwargs)
 
 
 class Minion(Enemy):
@@ -415,8 +402,9 @@ class Minion(Enemy):
                f'|hp: {self.hp}' \
                f'|Str: {self.strength}' \
                f'|Ag: {self.agility}' \
-               f'|Int: {self.intelligence}]'
-    
+               f'|Int: {self.intelligence}'\
+               f'|Next: {str(self.next) if self.next is not None else None}]'
+
     @classmethod
     def create(cls, adventurer, i, **kwargs):
         """
@@ -430,8 +418,8 @@ class Minion(Enemy):
         min_percent_def = (30 * i - 330) / 11
         max_percent_def = (7 * i - 69) / 3
         name = "un sbire d'Alain"
-        return super(Minion, cls).create(adventurer, min_percent, max_percent,
-                                         min_percent_def, max_percent_def, name)
+        return super().create(adventurer, min_percent, max_percent,
+                              min_percent_def, max_percent_def, name)
 
 
 class BossAlain(Enemy):
@@ -441,8 +429,9 @@ class BossAlain(Enemy):
                f'|hp: {self.hp}' \
                f'|Str: {self.strength}' \
                f'|Ag: {self.agility}' \
-               f'|Int: {self.intelligence}]'
-    
+               f'|Int: {self.intelligence}'\
+               f'|Next {str(self.next) if self.next is not None else None}]'
+
     @classmethod
     def create(cls, stage, adventurer, **kwargs):
         """
@@ -451,27 +440,39 @@ class BossAlain(Enemy):
         :param kwargs:
         :return: BossAlain
         """
+        cls.is_boss = True
         k = random.randint(7, 9)
         min_percent_def = (30 * k - 330) / 11
         max_percent_def = (7 * k - 69) / 3
-        if (stage % 100) == 0:
-            print("KingAlain is comming for you")
-            min_percent = 70
-            max_percent = 100
-            name = 'KingAlain'
-        elif (stage % 50) == 0:
-            print("GeneralAlain is comming for you")
-            min_percent = 60
-            max_percent = 70
-            name = 'GeneralAlain'
-        elif (stage % 10) == 0:
-            print("SoldierAlain is comming for you")
-            min_percent = 50
-            max_percent = 60
-            name = 'SoldierAlain'
-        else:
-            print(
-                "t'es pas censé être la mec t'a lancer une fonction au mauvais stage")
-        return super(BossAlain, cls).create(adventurer, min_percent,
-                                            max_percent, min_percent_def,
-                                            max_percent_def, name)
+
+        min_percent = max_percent = name = None
+        for (percent, p_min, p_max, title) in [(100, 70, 100, 'King'),
+                                               (50, 60, 70, 'General'),
+                                               (10, 50, 60, 'Soldier')]:
+            if (stage % percent) == 0:
+                min_percent = p_min
+                max_percent = p_max
+                name = title
+                break
+        if name is None:
+            print("t'es pas censé être la mec t'a lancer une fonction au mauvais stage")
+            return None
+        return super().create(adventurer,
+                              min_percent, max_percent,
+                              min_percent_def, max_percent_def, name)
+
+
+class PartyEnemy(models.Model):
+    party = models.ForeignKey(Party,
+                              on_delete=models.PROTECT)
+    enemy = models.ForeignKey(Enemy,
+                              on_delete=models.PROTECT)
+    hp = models.PositiveIntegerField(default=0,
+                                     blank=False,
+                                     null=False)
+
+# @receiver(pre_save, sender=Enemy)
+# def pre_save_enemy_handle(sender, instance, created, **kwargs):
+#     if created:
+#         if isinstance(instance, BossAlain):
+#         elif
