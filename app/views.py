@@ -226,7 +226,6 @@ def ChangeStuff(*args, **kwargs):
                 newStuff = getattr(kwargs['inventory'], prop)
             except:
                 pass
-    
     return JsonResponse({
         'stuffClassName': kwargs['stuffClassName'],
         'oldStuff': oldStuff,
