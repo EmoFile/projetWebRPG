@@ -139,34 +139,87 @@ class Character(models.Model):
             self.magicalResistance += item.magicalResistance
     
     def getHpMax(self):
-        return self.hpMax + self.inventory.head.hpMax + \
-               self.inventory.chest.hpMax + self.inventory.leg.hpMax + \
-               self.inventory.weapon.hpMax
-        
+        hpMax = self.hpMax
+        if self.inventory.head is not None:
+            hpMax += self.inventory.head.hpMax
+        if self.inventory.chest is not None:
+            hpMax += self.inventory.chest.hpMax
+        if self.inventory.leg is not None:
+            hpMax += self.inventory.leg.hpMax
+        if self.inventory.weapon is not None:
+            hpMax += self.inventory.weapon.hpMax
+        return hpMax
+    
     def getStrength(self):
-        return self.strength + self.inventory.head.strength + \
-               self.inventory.chest.strength + self.inventory.leg.strength + \
-               self.inventory.weapon.strength
-
+        strength = self.strength
+        if self.inventory.head is not None:
+            strength += self.inventory.head.strength
+        if self.inventory.chest is not None:
+            strength += self.inventory.chest.strength
+        if self.inventory.leg is not None:
+            strength += self.inventory.leg.strength
+        if self.inventory.weapon is not None:
+            strength += self.inventory.weapon.strength
+        return strength
+    
     def getAgility(self):
-        return self.agility + self.inventory.head.agility + \
-               self.inventory.chest.agility + self.inventory.leg.agility + \
-               self.inventory.weapon.agility
-
+        agility = self.agility
+        if self.inventory.head is not None:
+            agility += self.inventory.head.agility
+        if self.inventory.chest is not None:
+            agility += self.inventory.chest.agility
+        if self.inventory.leg is not None:
+            agility += self.inventory.leg.agility
+        if self.inventory.weapon is not None:
+            agility += self.inventory.weapon.agility
+        return agility
+    
     def getIntelligence(self):
-        return self.intelligence + self.inventory.head.intelligence + \
-               self.inventory.chest.intelligence + self.inventory.leg.intelligence + \
-               self.inventory.weapon.intelligence
+        intelligence = self.intelligence
+        if self.inventory.head is not None:
+            intelligence += self.inventory.head.intelligence
+        if self.inventory.chest is not None:
+            intelligence += self.inventory.chest.intelligence
+        if self.inventory.leg is not None:
+            intelligence += self.inventory.leg.intelligence
+        if self.inventory.weapon is not None:
+            intelligence += self.inventory.weapon.intelligence
+        return intelligence
     
     def getPhysicalResistance(self):
-        return self.physicalResistance + self.inventory.head.physicalResistance + \
-               self.inventory.chest.physicalResistance + self.inventory.leg.physicalResistance + \
-               self.inventory.weapon.physicalResistance
-
+        physicalResistance = self.physicalResistance
+        if self.inventory.head is not None:
+            physicalResistance += self.inventory.head.physicalResistance
+        if self.inventory.chest is not None:
+            physicalResistance += self.inventory.chest.physicalResistance
+        if self.inventory.leg is not None:
+            physicalResistance += self.inventory.leg.physicalResistance
+        if self.inventory.weapon is not None:
+            physicalResistance += self.inventory.weapon.physicalResistance
+        return physicalResistance
+    
     def getMagicalResistance(self):
-        return self.magicalResistance + self.inventory.head.magicalResistance + \
-               self.inventory.chest.magicalResistance + self.inventory.leg.magicalResistance + \
-               self.inventory.weapon.magicalResistance
+        magicalResistance = self.magicalResistance
+        if self.inventory.head is not None:
+            magicalResistance += self.inventory.head.magicalResistance
+        if self.inventory.chest is not None:
+            magicalResistance += self.inventory.chest.magicalResistance
+        if self.inventory.leg is not None:
+            magicalResistance += self.inventory.leg.magicalResistance
+        if self.inventory.weapon is not None:
+            magicalResistance += self.inventory.weapon.magicalResistance
+        return magicalResistance
+
+    def reload(self):
+        return {
+            'hpMax': self.getHpMax(),
+            'hp': self.hp,
+            'strength': self.getStrength(),
+            'agility': self.getAgility(),
+            'intelligence': self.getIntelligence(),
+            'physicalResistance': self.getPhysicalResistance(),
+            'magicalResistance': self.getMagicalResistance()
+        }
 
 
 class Item(models.Model):

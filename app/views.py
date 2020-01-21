@@ -124,6 +124,7 @@ class PlayGameView(TemplateView):
         result['title'] = 'Play Game'
         party = get_object_or_404(Party, pk=self.kwargs['pk'])
         result['party'] = party
+        result['currentCharacter'] = party.character.reload()
         return result
 
 
@@ -326,15 +327,7 @@ class EnemyList(ListView):
 
 def ReloadCharacter(*args, **kwargs):
     currentCharacter = kwargs['currentCharacter']
-    return {
-        'hpMax': currentCharacter.getHpMax(),
-        'hp': currentCharacter.hp,
-        'strength': currentCharacter.getStrength(),
-        'agility': currentCharacter.getAgility(),
-        'intelligence': currentCharacter.getIntelligence(),
-        'physicalResistance': currentCharacter.getPhysicalResistance(),
-        'magicalResistance': currentCharacter.getMagicalResistance()
-    }
+    return currentCharacter.reload()
 
 
 def PlayTour():
