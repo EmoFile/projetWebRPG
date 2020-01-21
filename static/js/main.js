@@ -3,22 +3,22 @@ $(() => {
     console.log($url);
     console.log($url.lastIndexOf("/"));
     console.log($url.length);
-
+    
     let $pkParty = '';
     for ($i = $url.lastIndexOf("/") + 1; $i < $url.length; $i++) {
         $pkParty += $url[$i];
     }
     console.log($pkParty);
-
+    
     $('#dropButton').click(function () {
         $.ajax({
-            url: 'dropItem',
+            url: '/dropItem',
             type: 'get',
             dataType: 'json',
         }).done(function (result) {
             console.log(result);
-
-
+            
+            
             let $modalTitle = document.getElementById('itemModalLabel');
             let $stuffClassName = document.getElementById('stuffClassName');
             let $stuffPk = document.getElementById('stuffPk');
@@ -32,13 +32,13 @@ $(() => {
             let $strength = document.getElementById('strength');
             let $intelligence = document.getElementById('intelligence');
             let $agility = document.getElementById('agility');
-
+            
             if (result['isItemDropped'] !== false) {
                 $modalTitle.textContent = result['ItemDropped']['name'];
                 $rarity.textContent = 'Rarity: ' + result['ItemDropped']['rarity'] + '\n';
                 $stuffClassName.textContent = result['stuffClassName'];
                 $stuffPk.textContent = result['pk'];
-
+                
                 if (result['stuffClassName'] === 'Consumable') {
                     $hp.textContent = 'Hp: ' + result['ItemDropped']['hp'] + '\n';
                 } else {
@@ -55,14 +55,14 @@ $(() => {
                 $modalTitle.textContent = 'No loot here !';
             }
             $('#itemModal').on('shown.bs.modal', function () {
-
+                
                 $('#dropButton').trigger('focus')
             });
-
+            
         });
-
+        
     });
-
+    
     $('#changeItem').click(function () {
         $.ajax({
             url: '/changeItem/' + $pkParty + '/' + document.getElementById('stuffClassName').textContent
@@ -74,7 +74,7 @@ $(() => {
 
         });
     });
-
+    
     $('#closeModal').click(function () {
         let $modalTitle = document.getElementById('itemModalLabel');
         let $levelRequired = document.getElementById('levelRequired');
@@ -99,68 +99,36 @@ $(() => {
         $intelligence.textContent = '';
         $agility.textContent = '';
     });
-    // $('#dropButton').click(function () {
-    //     console.log($('#dropButton').val());
-    //     $.ajax({
-    //         url: 'dropItem',
-    //         type: 'get',
-    //         dataType: 'json',
-    //     }).done(function (result) {
-    //         console.log(result);
-    //         console.log(result['ItemDropped']['name']);
-    //         let $body = $('#page-body');
-    //
-    //         let $modal = document.createElement('div');
-    //         // <div class="modal" tabindex="-1" role="dialog">
-    //
-    //         let $modalDialog = document.createElement('div');
-    //         // <div class="modal-dialog" role="document">
-    //
-    //         let $modalContent = document.createElement('div');
-    //         // <div class="modal-content">
-    //
-    //         let $modalHeader = document.createElement('div');
-    //         // <div class="modal-header">
-    //
-    //         let $modalTitle = document.createElement('h5');
-    //         $modalTitle.textContent = result['ItemDropped']['name'];
-    //         // <h5 class="modal-title">' + result['ItemDropped']['name'] + '</h5>
-    //
-    //         let $modalBody = document.createElement('div');
-    //         // <div class="modal-body">
-    //
-    //         let $modalBodyContent = document.createElement('p');
-    //         $modalBodyContent.textContent = result['ItemDropped']['requiredLevel'] + result['ItemDropped']['requiredClass'] + result['ItemDropped']['rarity'];
-    //         // <p>' + result['ItemDropped']['requiredLevel'] + result['ItemDropped']['requiredClass'] + result['ItemDropped']['rarity'] + '</p>
-    //
-    //         let $modalFooter = document.createElement('div');
-    //         // <div class="modal-footer">
-    //
-    //         let $modalEquipButton = document.createElement('button');
-    //         $modalEquipButton.textContent = 'Equiper';
-    //         // <button type="button" class="btn btn-primary">Save changes</button>
-    //
-    //         let $modalCloseButton = document.createElement('button');
-    //         $modalCloseButton.textContent = 'Close';
-    //         // <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    //
-    //         $modalFooter.append($modalEquipButton);
-    //         $modalFooter.append($modalCloseButton);
-    //         $modalBody.append($modalBodyContent);
-    //         $modalHeader.append($modalTitle);
-    //
-    //         $modalContent.append($modalHeader);
-    //         $modalContent.append($modalBody);
-    //         $modalContent.append($modalFooter);
-    //
-    //         $modalDialog.append($modalContent);
-    //
-    //         $modal.append($modalDialog);
-    //
-    //         $body.append($modal);
-    // });
-    //     });
-    //     return false;
-    // });
-
+    
+    $(".useItem").click(function () {
+        let $urlUseItem = $(this).attr('urlUseItem');
+        let $coupleCharacterConsumable = $(this).attr('coupleCharacterConsumable');
+        console.log($urlUseItem);
+        console.log($coupleCharacterConsumable);
+        $.ajax({
+            url: '/' + $urlUseItem,
+            type: 'get',
+            dataType: 'json',
+        }).done(function (result) {
+            console.log(result);
+            let $quantity = document.getElementById('quantity/' + $coupleCharacterConsumable);
+            let $hp = document.getElementById('characterHp');
+            let $physicalResistence = document.getElementById('characterPhysicalResistence');
+            let $magicalResistence = document.getElementById('characterMagicalResistence');
+            let $strength = document.getElementById('characterStrength');
+            let $intelligence = document.getElementById('characterIntelligence');
+            let $agility = document.getElementById('characterAgility');
+            if (result['consumableNewQuantity'] > 0) {
+                $quantity.textContent = result['consumableNewQuantity'];
+            } else {
+                $quantity.parentElement.hidden = true;
+            }
+            $hp.textContent = result['character']['hp'] + '/' + result['character']['hpMax'];
+            $physicalResistence.textContent = result['character']['physicalResistance'];
+            $magicalResistence.textContent = result['character']['magicalResistance'];
+            $strength.textContent = result['character']['strength'];
+            $intelligence.textContent = result['character']['intelligence'];
+            $agility.textContent = result['character']['agility'];
+        });
+    });
 });

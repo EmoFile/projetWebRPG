@@ -16,6 +16,7 @@ from app.models import CharacterClass, Character, Inventory, Party, Minion, \
     Weapon, InventoryConsumable, Enemy, PartyEnemy
 
 
+
 class IndexView(TemplateView):
     template_name = 'index.html'
 
@@ -23,10 +24,6 @@ class IndexView(TemplateView):
         result = super().get_context_data(**kwargs)
         result['characterClasses'] = CharacterClass.objects.all()
         # le - dans le order_by pour demander un ordre décroissant
-        # result['characters'] = Character.objects.all().order_by('-level', '-hpMax', '-strength', '-intelligence',
-        #                                                         '-agility',
-        #                                                         '-physicalResistance', '-magicalResistance')
-
         result['partys'] = Party.objects.all().order_by('-stage')
         result['title'] = 'B.T.A - II'
         return result
@@ -59,7 +56,6 @@ class GenerateCharacterView(CreateView):
     def get(self, *args, **kwargs):
         currentCharacterClass = get_object_or_404(CharacterClass,
                                                   pk=self.kwargs['pk'])
-
         self.request.session['characterClassName'] = currentCharacterClass.name
         self.request.session['characterClass'] = self.kwargs['pk']
         self.request.session['HpMax'] = currentCharacterClass.generateHpMax()
@@ -78,14 +74,12 @@ class GenerateCharacterView(CreateView):
     def form_valid(self, form):
         # Création de l'objet sans enregistrement en base
         self.object = form.save(commit=False)
-
         # Création d'un inventaire vide unique au personnage avec affectation et récupéraction de la classe du personnage
         currentCharacterClass = get_object_or_404(CharacterClass,
                                                   pk=self.request.session[
                                                       'characterClass'])
         inventory = Inventory()
         inventory.save()
-
         # Constitution du personnage
         self.object.inventory = inventory
         self.object.characterClass = currentCharacterClass
@@ -98,7 +92,6 @@ class GenerateCharacterView(CreateView):
             'PhysicalResistance']
         self.object.magicalResistance = self.request.session[
             'MagicalResistance']
-
         # Création en BDD du personnage
         self.object.save()
         party = Party(user=self.request.user, character=self.object)
@@ -128,6 +121,7 @@ class PlayGameView(TemplateView):
         result['title'] = 'Play Game'
         party = get_object_or_404(Party, pk=self.kwargs['pk'])
         result['party'] = party
+        result['currentCharacter'] = party.character.reload()
         return result
 
 
@@ -187,15 +181,7 @@ def fight(atk, hpAtk, res, hpDef):
     return hpAtk, hpDef
 
 
-def ReloadCharacter():
-    pass
-
-
-def ReloadEnemy():
-    pass
-
-
-def dropItem(request):
+def DropItem(request):
     if random.randint(1, 2) == 1:
         stuffRarity = random.randint(1, 10)
         if 1 <= stuffRarity <= 4:
@@ -206,7 +192,6 @@ def dropItem(request):
             stuffRarity = 'Epic'
         else:
             stuffRarity = 'Legendary'
-
         stuffClass = random.randint(1, 5)
         if stuffClass == 1:
             stuffClassName = 'Consumable'
@@ -233,7 +218,6 @@ def dropItem(request):
             stuffPull = Weapon.objects.filter(rarity=stuffRarity)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
-
         if stuffClassName == 'Consumable':
             data = {
                 'isItemDropped': True,
@@ -275,15 +259,6 @@ def dropItem(request):
     return JsonResponse(data)
 
 
-def ChangeWeapon(*args, **kwargs):
-    return JsonResponse({
-        'stuffClassName': kwargs['stuffClassName'],
-        'weapon': kwargs['weapon'].name,
-        'oldStuff': 'oldStuff',
-        'newStuff': 'newStuff'
-    })
-
-
 def ChangeStuff(*args, **kwargs):
     oldStuff = ''
     newStuff = ''
@@ -302,7 +277,6 @@ def ChangeStuff(*args, **kwargs):
                 newStuff = getattr(kwargs['inventory'], prop)
             except:
                 pass
-
     return JsonResponse({
         'stuffClassName': kwargs['stuffClassName'],
         'oldStuff': oldStuff,
@@ -311,11 +285,11 @@ def ChangeStuff(*args, **kwargs):
 
 
 def AddConsumable(*args, **kwargs):
-    i_c = InventoryConsumable.get(inventory=kwargs['inventory'],
-                                  consumable__name='')
+    kwargs['inventory'].consumables.add(kwargs['consumable'])
+    i_c = InventoryConsumable.objects.get(inventory=kwargs['inventory'],
+                                          consumable=kwargs['consumable'])
     i_c.quantity += 1
     i_c.save()
-
     return JsonResponse({
         'stuffClassName': kwargs['stuffClassName'],
         'stuffPk': kwargs['consumable'].name,
@@ -324,36 +298,19 @@ def AddConsumable(*args, **kwargs):
     })
 
 
-def changeItem(*args, **kwargs):
+def ChangeItem(*args, **kwargs):
     currentParty = get_object_or_404(Party, pk=kwargs['partyPk'])
     currentCharacter = currentParty.character
     characterInventory = currentCharacter.inventory
-
     if kwargs['stuffClassName'] == 'Consumable':
         return AddConsumable(inventory=characterInventory,
                              consumable=get_object_or_404(Consumable,
                                                           pk=kwargs['stuffPk']),
                              stuffClassName=kwargs['stuffClassName'])
-    # elif kwargs['stuffClassName'] == 'Weapon':
-    #     return ChangeWeapon(inventory=characterInventory,
-    #                         weapon=get_object_or_404(Weapon,
-    #                                                  pk=kwargs['stuffPk']),
-    #                         stuffClassName=kwargs['stuffClassName'])
     else:
         return ChangeStuff(inventory=characterInventory,
                            stuffClassName=kwargs['stuffClassName'],
                            stuffPk=kwargs['stuffPk'])
-
-
-# class GenerateMinionTest(View):
-#     def get_success_url(self):
-#         return reverse('home')
-#
-#     def get(self):
-#         adventurer = Character.objects.filter(pk=['adventurerId'])
-#         for i in range(9):
-#             minion_temp = Minion(adventurer, i)
-#             minion_temp.save()
 
 
 def NextEnemy(**kwargs):
@@ -419,6 +376,29 @@ def GenerateEnemy(**kwargs):
     new_boss = BossAlain.create(stage, adventurer, next=minions[8])
     new_boss.save()
 
+def UseItem(*args, **kwargs):
+    currentCharacter = get_object_or_404(Character, pk=kwargs['characterPk'])
+    currentConsumable = get_object_or_404(Consumable, pk=kwargs['consumablePk'])
+    
+    i_c = InventoryConsumable.objects.get(inventory=currentCharacter.inventory,
+                                          consumable=currentConsumable)
+    consumableName = i_c.consumable.name
+    consumableOldQuantity = i_c.quantity
+    i_c.quantity -= 1
+    i_c.save()
+    if i_c.quantity == 0:
+        i_c.delete()
+    consumableNewQuantity = i_c.quantity
+    
+    currentCharacter.modifyCarac(currentConsumable)
+    currentCharacter.save()
+    return JsonResponse({'consumableName': consumableName,
+                         'consumableOldQuantity': consumableOldQuantity,
+                         'consumableNewQuantity': consumableNewQuantity,
+                         'character': ReloadCharacter(
+                             currentCharacter=currentCharacter)
+                         })
+
 
 class GenerateBoss(RedirectView):
     permanent = False
@@ -441,3 +421,16 @@ class EnemyList(ListView):
         context = super().get_context_data(**kwargs)
         context['minions'] = Minion.objects.all()
         return context
+
+
+def ReloadCharacter(*args, **kwargs):
+    currentCharacter = kwargs['currentCharacter']
+    return currentCharacter.reload()
+
+
+def PlayTour():
+    pass
+
+
+def ReloadEnemy(*args, **kwargs):
+    pass
