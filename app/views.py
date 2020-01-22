@@ -335,7 +335,8 @@ def ChangeStuff(*args, **kwargs):
         'newStuffIntelligence': newStuff.intelligence,
         'newStuffAgility': newStuff.agility,
         'newStuffPhysicalResistance': newStuff.physicalResistance,
-        'newStuffMagicalResistance': newStuff.magicalResistance
+        'newStuffMagicalResistance': newStuff.magicalResistance,
+        'character': ReloadCharacter(currentCharacter=kwargs['inventory'].character)
     })
 
 
@@ -352,7 +353,8 @@ def AddConsumable(*args, **kwargs):
         'newStuffHpMax': kwargs['consumable'].hp,
         'newStuffStrength': kwargs['consumable'].strength,
         'newStuffIntelligence': kwargs['consumable'].intelligence,
-        'newStuffAgility': kwargs['consumable'].agility
+        'newStuffAgility': kwargs['consumable'].agility,
+        'newStuffQuantity': i_c.quantity
     })
 
 

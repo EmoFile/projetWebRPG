@@ -19,24 +19,98 @@ $(() => {
             dataType: 'json',
         }).done(function (result) {
             console.log(result);
-            if(result['stuffClassName'] === 'Head'){
-                console.log('Head')
+            // let $hpMax = document.getElementById('characterHpMax');
+            let $physicalResistence = document.getElementById('characterPhysicalResistence');
+            let $magicalResistence = document.getElementById('characterMagicalResistence');
+            let $strength = document.getElementById('characterStrength');
+            let $intelligence = document.getElementById('characterIntelligence');
+            let $agility = document.getElementById('characterAgility');
+            
+            if (result['stuffClassName'] === 'Head') {
+                console.log('Head');
+                let $headName = document.getElementById('headName');
+                let $headHpMax = document.getElementById('headHpMax');
+                let $headStrength = document.getElementById('headStrength');
+                let $headIntelligence = document.getElementById('headIntelligence');
+                let $headAgility = document.getElementById('headAgility');
+                let $headPhysicalResistance = document.getElementById('headPhysicalResistance');
+                let $headMagicalResistance = document.getElementById('headMagicalResistance');
                 
-            } else if(result['stuffClassName'] === 'Chest'){
-            // MODIFIE LE CHEST OU L'ATTRIBUER
-                console.log('Head')
-
-            } else if(result['stuffClassName'] === 'Leg'){
-            // MODIFIE LE LEG OU L'ATTRIBUER
-                console.log('Head')
-            } else if(result['stuffClassName'] === 'Weapon'){
-            // MODIFIE LE WEAPON OU L'ATTRIBUER
-                console.log('Head')
+                $headName.innerText = result['newStuff'];
+                $headHpMax.innerText = result['newStuffHpMax'];
+                $headStrength.innerText = result['newStuffStrength'];
+                $headIntelligence.innerText = result['newStuffIntelligence'];
+                $headAgility.innerText = result['newStuffAgility'];
+                $headPhysicalResistance.innerText = result['newStuffPhysicalResistance'];
+                $headMagicalResistance.innerText = result['newStuffMagicalResistance'];
+                
+            } else if (result['stuffClassName'] === 'Chest') {
+                // MODIFIE LE CHEST OU L'ATTRIBUER
+                console.log('Chest');
+                let $chestName = document.getElementById('chestName');
+                let $chestHpMax = document.getElementById('chestHpMax');
+                let $chestStrength = document.getElementById('chestStrength');
+                let $chestIntelligence = document.getElementById('chestIntelligence');
+                let $chestAgility = document.getElementById('chestAgility');
+                let $chestPhysicalResistance = document.getElementById('chestPhysicalResistance');
+                let $chestMagicalResistance = document.getElementById('chestMagicalResistance');
+                
+                $chestName.innerText = result['newStuff'];
+                $chestHpMax.innerText = result['newStuffHpMax'];
+                $chestStrength.innerText = result['newStuffStrength'];
+                $chestIntelligence.innerText = result['newStuffIntelligence'];
+                $chestAgility.innerText = result['newStuffAgility'];
+                $chestPhysicalResistance.innerText = result['newStuffPhysicalResistance'];
+                $chestMagicalResistance.innerText = result['newStuffMagicalResistance'];
+                
+            } else if (result['stuffClassName'] === 'Leg') {
+                // MODIFIE LE LEG OU L'ATTRIBUER
+                console.log('Leg');
+                let $legName = document.getElementById('legName');
+                let $legHpMax = document.getElementById('legHpMax');
+                let $legStrength = document.getElementById('legStrength');
+                let $legIntelligence = document.getElementById('legIntelligence');
+                let $legAgility = document.getElementById('legAgility');
+                let $legPhysicalResistance = document.getElementById('legPhysicalResistance');
+                let $legMagicalResistance = document.getElementById('legMagicalResistance');
+                
+                $legName.innerText = result['newStuff'];
+                $legHpMax.innerText = result['newStuffHpMax'];
+                $legStrength.innerText = result['newStuffStrength'];
+                $legIntelligence.innerText = result['newStuffIntelligence'];
+                $legAgility.innerText = result['newStuffAgility'];
+                $legPhysicalResistance.innerText = result['newStuffPhysicalResistance'];
+                $legMagicalResistance.innerText = result['newStuffMagicalResistance'];
+            } else if (result['stuffClassName'] === 'Weapon') {
+                // MODIFIE LE WEAPON OU L'ATTRIBUER
+                console.log('Weapon');
+                let $weaponName = document.getElementById('weaponName');
+                let $weaponHpMax = document.getElementById('weaponHpMax');
+                let $weaponStrength = document.getElementById('weaponStrength');
+                let $weaponIntelligence = document.getElementById('weaponIntelligence');
+                let $weaponAgility = document.getElementById('weaponAgility');
+                let $weaponPhysicalResistance = document.getElementById('weaponPhysicalResistance');
+                let $weaponMagicalResistance = document.getElementById('weaponMagicalResistance');
+                
+                $weaponName.innerText = result['newStuff'];
+                $weaponHpMax.innerText = result['newStuffHpMax'];
+                $weaponStrength.innerText = result['newStuffStrength'];
+                $weaponIntelligence.innerText = result['newStuffIntelligence'];
+                $weaponAgility.innerText = result['newStuffAgility'];
+                $weaponPhysicalResistance.innerText = result['newStuffPhysicalResistance'];
+                $weaponMagicalResistance.innerText = result['newStuffMagicalResistance'];
             } else {
-            // MODIFIE LE CONSUMABLE OU L'ATTRIBUER
-                console.log('Consum')
-
+                // MODIFIE LE CONSUMABLE OU L'ATTRIBUER
+                console.log('Consumable')
+                
             }
+            // $hpMax.innerText = result['character']['hpMax'];
+            $physicalResistence.innerText = result['character']['physicalResistance'];
+            $magicalResistence.innerText = result['character']['magicalResistance'];
+            $strength.innerText = result['character']['strength'];
+            $intelligence.innerText = result['character']['intelligence'];
+            $agility.innerText = result['character']['agility'];
+            $('#itemModal').modal('hide')
         });
     });
     
@@ -149,8 +223,7 @@ $(() => {
                 
             }
         });
-    })
-    ;
+    });
     $('#nextStage').click(function () {
         let $pkEnemy = document.getElementById('pkEnemy').innerText;
         $.ajax({
