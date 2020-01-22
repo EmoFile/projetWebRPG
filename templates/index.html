@@ -24,7 +24,7 @@
             {% for party in partys %}
                 <tr>
                     <td>
-                        {{ party.date }}
+                        {{ party.date|date:"SHORT_DATE_FORMAT" }}
                     </td>
                     <td>
                         {{ party.user.username }}
@@ -39,22 +39,22 @@
                         {{ party.character.characterClass.name }}
                     </td>
                     <td>
-                        {{ party.character.hpMax }}
+                        {{ party.character.getHpMax }}
                     </td>
                     <td>
-                        {{ party.character.strength }}
+                        {{ party.character.getStrength }}
                     </td>
                     <td>
-                        {{ party.character.agility }}
+                        {{ party.character.getIntelligence }}
                     </td>
                     <td>
-                        {{ party.character.intelligence }}
+                        {{ party.character.getIntelligence }}
                     </td>
                     <td>
-                        {{ party.character.physicalResistance }}
+                        {{ party.character.getPhysicalResistance }}
                     </td>
                     <td>
-                        {{ party.character.magicalResistance }}
+                        {{ party.character.getMagicalResistance }}
                     </td>
                 </tr>
 

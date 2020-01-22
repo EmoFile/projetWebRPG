@@ -329,7 +329,13 @@ def ChangeStuff(*args, **kwargs):
     return JsonResponse({
         'stuffClassName': kwargs['stuffClassName'],
         'oldStuff': oldStuff,
-        'newStuff': newStuff.name
+        'newStuff': newStuff.name,
+        'newStuffHpMax': newStuff.hpMax,
+        'newStuffStrength': newStuff.strength,
+        'newStuffIntelligence': newStuff.intelligence,
+        'newStuffAgility': newStuff.agility,
+        'newStuffPhysicalResistance': newStuff.physicalResistance,
+        'newStuffMagicalResistance': newStuff.magicalResistance
     })
 
 
@@ -341,9 +347,12 @@ def AddConsumable(*args, **kwargs):
     i_c.save()
     return JsonResponse({
         'stuffClassName': kwargs['stuffClassName'],
-        'stuffPk': kwargs['consumable'].name,
-        'oldStuff': 'oldStuff',
-        'newStuff': 'newStuff'
+        'stuffPk': kwargs['consumable'].pk,
+        'newStuff': kwargs['consumable'].name,
+        'newStuffHpMax': kwargs['consumable'].hp,
+        'newStuffStrength': kwargs['consumable'].strength,
+        'newStuffIntelligence': kwargs['consumable'].intelligence,
+        'newStuffAgility': kwargs['consumable'].agility
     })
 
 

@@ -20,15 +20,22 @@ $(() => {
         }).done(function (result) {
             console.log(result);
             if(result['stuffClassName'] === 'Head'){
-            // MODIFIE LE HEAD OU L'ATTRIBUER
+                console.log('Head')
+                
             } else if(result['stuffClassName'] === 'Chest'){
             // MODIFIE LE CHEST OU L'ATTRIBUER
+                console.log('Head')
+
             } else if(result['stuffClassName'] === 'Leg'){
             // MODIFIE LE LEG OU L'ATTRIBUER
+                console.log('Head')
             } else if(result['stuffClassName'] === 'Weapon'){
             // MODIFIE LE WEAPON OU L'ATTRIBUER
+                console.log('Head')
             } else {
             // MODIFIE LE CONSUMABLE OU L'ATTRIBUER
+                console.log('Consum')
+
             }
         });
     });
