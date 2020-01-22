@@ -19,7 +19,8 @@
                 <tbody>
                 <tr>
                     <th scope="row" class="text-success">HP:</th>
-                    <td><p id="characterHp"> {{ currentCharacter.hp }}/{{ currentCharacter.hpMax }}</p>
+                    <td>
+                        <p> <span id="characterHp">{{ currentCharacter.hp }}</span>/<span id="characterHpMax">{{ currentCharacter.hpMax }}</span></p>
                     </td>
                 </tr>
                 <tr>
@@ -238,19 +239,84 @@
         </div>
         <div class="col-3">
             Ennemy Info
-            <p id="pkEnemy">{{ firstEnemy.enemyPk }}</p>
+            <p id="pkEnemy">{{ enemy.enemyPk }}</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            <p id="characterName">{{ enemy.enemyName }}</p>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row" class="text-success">HP:</th>
+                        <td>
+                            <p>
+                                <span id="enemyHp"> {{ enemy.enemyHp }}</span>
+                                <span>/</span>
+                                <span id="enemyHpMax">{{ enemy.enemyHpMax }}</span>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-primary">
+                            ARM:
+                        </th>
+                        <td>
+                            <p id="enemyPhysicalResistance">
+                                {{ enemy.enemyPhysicalResistance }}
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-secondary">
+                            RES:
+                        </th>
+                        <td>
+                            <p id="enemyMagicalResistance">
+                                {{ enemy.enemyMagicalResistance }}
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-danger">
+                            STR:
+                        </th>
+                        <td>
+                            <p id="enemyStrength">
+                                {{ enemy.enemyStrength }}
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-info">
+                            INT:
+                        </th>
+                        <td>
+                            <p id="enemyIntelligence">
+                                {{ enemy.enemyIntelligence }}
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-warning">
+                            AGI:
+                        </th>
+                        <td>
+                            <p id="enemyAgility">
+                                {{ enemy.enemyAgility }}
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <!-- Button trigger modal -->
-        <button type="button" id="dropButton" class="btn btn-primary"
-                data-toggle="modal" data-target="#itemModal">
-            Drop Item
-        </button>
-         <button type="button" id="playRound" class="btn btn-secondary">
-            Play da round
-        </button>
-         <button type="button" id="nextStage" class="btn btn-danger">
-            Next Stage
-        </button>
+        <span id="buttonPlayRound">
+        </span>
+        <span id="buttonNextStage">
+        </span>
     </div>
 
     <!-- Modal -->

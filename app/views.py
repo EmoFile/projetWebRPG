@@ -3,7 +3,7 @@ import random
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.http import response, JsonResponse, request
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
 from django.urls import reverse, reverse_lazy
@@ -116,13 +116,38 @@ class LogInView(LoginView):
 class PlayGameView(TemplateView):
     template_name = 'playGame.html'
 
+    def get(self, *args, **kwargs):
+        party = get_object_or_404(Party, pk=self.kwargs['pk'])
+        if party.isEnded:
+            return redirect(reverse('home'))
+        return super().get(self)
+
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['title'] = 'Play Game'
         party = get_object_or_404(Party, pk=self.kwargs['pk'])
         result['party'] = party
         result['currentCharacter'] = party.character.reload()
-        result['firstEnemy'] = NextEnemy(pkParty=party.pk)
+        print(party.enemies.all().last())
+        print(party.enemies.all().count())
+        if party.enemies.all().count() > 0:
+            enemy = party.enemies.all().last()
+            p_e = get_object_or_404(PartyEnemy, party=party, enemy=enemy)
+            result['enemy'] = {
+                            'partyStage': party.stage,
+                            'enemyPk': enemy.pk,
+                            'enemyName': enemy.name,
+                            'enemyHp': p_e.hp,
+                            'enemyHpMax': enemy.hpMax,
+                            'enemyStrength': enemy.strength,
+                            'enemyAgility': enemy.agility,
+                            'enemyIntelligence': enemy.intelligence,
+                            'enemyPhysicalResistance': enemy.physical_resistance,
+                            'enemyMagicalResistance': enemy.magical_resistance,
+                            'partyIsEnded': party.isEnded
+            }
+        else:
+            result['enemy'] = NextEnemy(pkParty=party.pk)
         return result
 
 
@@ -188,10 +213,18 @@ class PlayRound(generic.View):
         if adventurer.hp <= 0:
             party.isEnded = True
             party.save()
-            return JsonResponse(None, safe=False)
+            return JsonResponse({'isEnded': party.isEnded,
+                                 'enemy': {
+                                     'hp': p_e.hp
+                                 },
+                                 'character': {
+                                     'hp': adventurer.hp
+                                 }
+                                 })
 
         elif p_e.hp <= 0:
             return JsonResponse({'dropItem': DropItem(),
+                                 'isEnded': party.isEnded,
                                  'enemy': {
                                      'hp': p_e.hp
                                  },
@@ -201,6 +234,7 @@ class PlayRound(generic.View):
                                  })
         else:
             return JsonResponse({
+                'isEnded': party.isEnded,
                 'enemy': {
                     'hp': p_e.hp
                 },
@@ -390,6 +424,7 @@ def NextEnemy(**kwargs):
         'enemyPk': next_enemy.pk,
         'enemyName': next_enemy.name,
         'enemyHpMax': next_enemy.hpMax,
+        'enemyHp': next_enemy.hpMax,
         'enemyStrength': next_enemy.strength,
         'enemyAgility': next_enemy.agility,
         'enemyIntelligence': next_enemy.intelligence,

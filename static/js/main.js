@@ -1,3 +1,77 @@
+const BUTTON = {
+    init($pkParty, $buttonNextStage, $buttonPlayRound, $spanPlayRound, $spanNextStage){
+        this.pkParty =  $pkParty;
+        this.buttonNextStage = $buttonNextStage;
+        this.buttonPlayRound = $buttonPlayRound;
+        this.spanPlayRound = $spanPlayRound;
+        this.spanNexStage = $spanNextStage;
+        console.log("init")
+    },
+    addRound(){
+        this.spanPlayRound.append(this.buttonPlayRound);
+        this.onBindRound();
+    },
+    addNextStage(){
+        this.spanNexStage.append(this.buttonNextStage);
+        this.onBindNextStage();
+    },
+    onBindRound(){
+        console.log(this);
+        this.pkEnemy = document.getElementById('pkEnemy').innerText;
+        let $this = this;
+        $('#playRound').click(function () {
+            console.log($this)
+        $.ajax({
+            url: '/playRound/' + $this.pkParty + '/' + $this.pkEnemy,
+            type: 'get',
+            dataType: 'json',
+        }).done(function (result) {
+            console.log(result);
+            document.getElementById('enemyHp').innerText = result['enemy']['hp'];
+            document.getElementById('characterHp').innerText = result['character']['hp'];
+            $this.onDelete(result['isEnded'], result['enemy']['hp']);
+        });
+        });
+    },
+    onBindNextStage() {
+        console.log("bind next stage");
+        this.pkEnemy = document.getElementById('pkEnemy').innerText;
+        let $this = this;
+       $('#nextStage').click(function () {
+        console.log($this)
+        $.ajax({
+            url: '/nextEnemy/' + $this.pkParty + '/' + $this.pkEnemy,
+            type: 'get',
+            dataType: 'json',
+        }).done(function (result) {
+            console.log(result);
+            document.getElementById('pkEnemy').innerText = result['enemyPk'];
+            console.log(result['enemyHpMax']);
+            document.getElementById('enemyHp').innerText = document.getElementById('enemyHpMax').innerText = result['enemyHpMax'];
+            document.getElementById('enemyPhysicalResistance').innerText = result['enemyPhysicalResistance'];
+            document.getElementById('enemyStrength').innerText = result['enemyStrength'];
+            document.getElementById('enemyAgility').innerText = result['enemyAgility'];
+            document.getElementById('enemyIntelligence').innerText = result['enemyIntelligence'];
+            document.getElementById('enemyMagicalResistance').innerText = result['enemyMagicalResistance'];
+            $this.buttonNextStage.remove();
+            $this.spanPlayRound.append($this.buttonPlayRound);
+            $this.onBindRound();
+        });
+    });
+    },
+    onDelete(isEnded, enemyHp){
+        if(isEnded)
+            this.buttonPlayRound.remove();
+        else if (enemyHp <= 0 ){
+            this.buttonPlayRound.remove();
+            this.spanNexStage.append(this.buttonNextStage);
+            this.onBindNextStage();
+        }
+    },
+
+};
+
+
 $(() => {
     let $url = document.location.pathname;
     console.log($url);
@@ -11,6 +85,32 @@ $(() => {
     }
     console.log($pkParty);
 
+    let $buttonNextStage = document.createElement('button');
+    $buttonNextStage.setAttribute('type', 'button');
+    $buttonNextStage.setAttribute('id', 'nextStage');
+    $buttonNextStage.setAttribute('class', 'btn btn-danger');
+    $buttonNextStage.textContent = "NextStage";
+
+    let $buttonPlayRound = document.createElement('button');
+    $buttonPlayRound.setAttribute('type', 'button');
+    $buttonPlayRound.setAttribute('id', 'playRound');
+    $buttonPlayRound.setAttribute('class', 'btn btn-secondary');
+    $buttonPlayRound.textContent = "Play round";
+
+    let $spanNextStage = document.getElementById('buttonNextStage');
+    let $spanPlayRound = document.getElementById('buttonPlayRound');
+
+    let $hpEnemy = document.getElementById('enemyHp');
+    console.log($hpEnemy.textContent);
+    BUTTON.init($pkParty, $buttonNextStage, $buttonPlayRound, $spanPlayRound, $spanNextStage);
+    console.log("ici")
+    console.log("notre play button : ")
+    if ($hpEnemy.textContent <= 0){
+        BUTTON.addNextStage()
+    }
+    else{
+        BUTTON.addRound()
+    }
     $('#dropButton').click(function () {
         $.ajax({
             url: '/dropItem',
@@ -114,6 +214,7 @@ $(() => {
             console.log(result);
             let $quantity = document.getElementById('quantity/' + $coupleCharacterConsumable);
             let $hp = document.getElementById('characterHp');
+            let $hpMax = document.getElementById('characterHpMax');
             let $physicalResistence = document.getElementById('characterPhysicalResistence');
             let $magicalResistence = document.getElementById('characterMagicalResistence');
             let $strength = document.getElementById('characterStrength');
@@ -124,7 +225,8 @@ $(() => {
             } else {
                 $quantity.parentElement.hidden = true;
             }
-            $hp.textContent = result['character']['hp'] + '/' + result['character']['hpMax'];
+            $hp.textContent = result['character']['hp'];
+            $hpMax.textContent = result['character']['hpMax'];
             $physicalResistence.textContent = result['character']['physicalResistance'];
             $magicalResistence.textContent = result['character']['magicalResistance'];
             $strength.textContent = result['character']['strength'];
@@ -132,25 +234,6 @@ $(() => {
             $agility.textContent = result['character']['agility'];
         });
     });
-    $('#playRound').click(function () {
-        let $pkEnemy = document.getElementById('pkEnemy').innerText;
-        $.ajax({
-            url: '/playRound/' + $pkParty + '/' + $pkEnemy,
-            type: 'get',
-            dataType: 'json',
-        }).done(function (result) {
-            console.log(result);
-        });
-    });
-    $('#nextStage').click(function () {
-        let $pkEnemy = document.getElementById('pkEnemy').innerText;
-        $.ajax({
-            url: '/nextEnemy/' + $pkParty + '/' + $pkEnemy,
-            type: 'get',
-            dataType: 'json',
-        }).done(function (result) {
-            console.log(result);
-            document.getElementById('pkEnemy').innerText = result['enemyPk'];
-        });
-    });
+
+
 });
