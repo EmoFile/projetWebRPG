@@ -19,7 +19,7 @@ from app.models import CharacterClass, Character, Inventory, Party, Minion, \
 
 class IndexView(TemplateView):
     template_name = 'index.html'
-
+    
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['characterClasses'] = CharacterClass.objects.all()
@@ -32,7 +32,7 @@ class IndexView(TemplateView):
 class CharacterDetailView(DetailView):
     model = Character
     template_name = 'characterDetail.html'
-
+    
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['title'] = 'Character Detail'
@@ -43,16 +43,16 @@ class GenerateCharacterView(CreateView):
     model = Character
     form_class = CharacterForm
     template_name = 'characterForm.html'
-
+    
     def get_success_url(self):
         party = get_object_or_404(Party, character=self.object)
         return reverse('playGame', kwargs={'pk': party.pk})
-
+    
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['title'] = 'Create Character'
         return result
-
+    
     def get(self, *args, **kwargs):
         currentCharacterClass = get_object_or_404(CharacterClass,
                                                   pk=self.kwargs['pk'])
@@ -70,7 +70,7 @@ class GenerateCharacterView(CreateView):
         self.request.session[
             'MagicalResistance'] = currentCharacterClass.generateMR()
         return super().get(self)
-
+    
     def form_valid(self, form):
         # Création de l'objet sans enregistrement en base
         self.object = form.save(commit=False)
@@ -108,14 +108,14 @@ class SignUpView(CreateView):
 class LogInView(LoginView):
     form_class = AuthenticationForm
     template_name = 'logIn.html'
-
+    
     def get_success_url(self):
         return reverse('home')
 
 
 class PlayGameView(TemplateView):
     template_name = 'playGame.html'
-
+    
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['title'] = 'Play Game'
@@ -128,7 +128,7 @@ class PlayGameView(TemplateView):
 
 class PlayRound(generic.View):
     http_method_names = ['get']
-
+    
     def get(self, request, **kwargs):
         """
 
@@ -142,7 +142,7 @@ class PlayRound(generic.View):
         enemy = get_object_or_404(Minion, pk=kwargs['pkEnemy'])
         p_e = PartyEnemy.objects.get(party=party,
                                      enemy=enemy)
-
+        
         if random.randint(0, 1):
             atkEnemy = enemy.strength
             resAdventurer = adventurer.getPhysicalResistance()
@@ -151,7 +151,7 @@ class PlayRound(generic.View):
             atkEnemy = enemy.intelligence
             resAdventurer = adventurer.getMagicalResistance()
             defEnemy = enemy.magical_resistance
-
+        
         if adventurer.characterClass.name == 'Warrior':
             atkAdventurer = adventurer.getStrength()
             defAdventurer = adventurer.getPhysicalResistance()
@@ -160,7 +160,7 @@ class PlayRound(generic.View):
             atkAdventurer = adventurer.getIntelligence()
             resEnemy = enemy.magical_resistance
             defAdventurer = adventurer.getMagicalResistance()
-
+        
         if adventurer.agility > enemy.agility:
             hpTab = fight(atkAdventurer, adventurer.hp, defAdventurer, resEnemy, p_e.hp)
             adventurer.hp = hpTab[0]
@@ -188,10 +188,11 @@ class PlayRound(generic.View):
         if adventurer.hp <= 0:
             party.isEnded = True
             party.save()
-            return JsonResponse(None, safe=False)
-
+            return JsonResponse({'isEnded': party.isEnded})
+        
         elif p_e.hp <= 0:
-            return JsonResponse({'dropItem': DropItem(),
+            return JsonResponse({'isEnded': party.isEnded,
+                                 'dropItem': DropItem(),
                                  'enemy': {
                                      'hp': p_e.hp
                                  },
@@ -200,14 +201,14 @@ class PlayRound(generic.View):
                                  }
                                  })
         else:
-            return JsonResponse({
-                'enemy': {
-                    'hp': p_e.hp
-                },
-                'character': {
-                    'hp': adventurer.hp
-                }
-            })
+            return JsonResponse({'isEnded': party.isEnded,
+                                 'enemy': {
+                                     'hp': p_e.hp
+                                 },
+                                 'character': {
+                                     'hp': adventurer.hp
+                                 }
+                                 })
 
 
 def fight(atk, hpAtk, atkDef, res, hpDef):
@@ -400,7 +401,7 @@ def NextEnemy(**kwargs):
 
 class NextEnemyView(generic.View):
     http_method_names = ['get']
-
+    
     def get(self, request, **kwargs):
         return JsonResponse(NextEnemy(**kwargs), safe=False)
 
@@ -444,7 +445,7 @@ def GenerateEnemy(**kwargs):
 def UseItem(*args, **kwargs):
     currentCharacter = get_object_or_404(Character, pk=kwargs['characterPk'])
     currentConsumable = get_object_or_404(Consumable, pk=kwargs['consumablePk'])
-
+    
     i_c = InventoryConsumable.objects.get(inventory=currentCharacter.inventory,
                                           consumable=currentConsumable)
     consumableName = i_c.consumable.name
@@ -454,7 +455,7 @@ def UseItem(*args, **kwargs):
     if i_c.quantity == 0:
         i_c.delete()
     consumableNewQuantity = i_c.quantity
-
+    
     currentCharacter.modifyCarac(currentConsumable)
     currentCharacter.save()
     return JsonResponse({'consumableName': consumableName,
@@ -469,7 +470,7 @@ class EnemyList(ListView):
     template_name = 'listEnemy.html'
     model = Minion
     paginate_by = 100  # if pagination is desired
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['minions'] = Minion.objects.all()

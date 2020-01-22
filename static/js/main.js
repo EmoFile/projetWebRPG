@@ -3,67 +3,14 @@ $(() => {
     console.log($url);
     console.log($url.lastIndexOf("/"));
     console.log($url.length);
-
+    
     let $pkParty = '';
-
+    
     for ($i = $url.lastIndexOf("/") + 1; $i < $url.length; $i++) {
         $pkParty += $url[$i];
     }
     console.log($pkParty);
-
-    $('#dropButton').click(function () {
-        $.ajax({
-            url: '/dropItem',
-            type: 'get',
-            dataType: 'json',
-        }).done(function (result) {
-            console.log(result);
-
-
-            let $modalTitle = document.getElementById('itemModalLabel');
-            let $stuffClassName = document.getElementById('stuffClassName');
-            let $stuffPk = document.getElementById('stuffPk');
-            let $levelRequired = document.getElementById('levelRequired');
-            let $classRequired = document.getElementById('classRequired');
-            let $rarity = document.getElementById('rarity');
-            let $hpMax = document.getElementById('hpMax');
-            let $hp = document.getElementById('hp');
-            let $physicalResistence = document.getElementById('physicalResistence');
-            let $magicalResistence = document.getElementById('magicalResistence');
-            let $strength = document.getElementById('strength');
-            let $intelligence = document.getElementById('intelligence');
-            let $agility = document.getElementById('agility');
-
-            if (result['isItemDropped'] !== false) {
-                $modalTitle.textContent = result['ItemDropped']['name'];
-                $rarity.textContent = 'Rarity: ' + result['ItemDropped']['rarity'] + '\n';
-                $stuffClassName.textContent = result['stuffClassName'];
-                $stuffPk.textContent = result['pk'];
-
-                if (result['stuffClassName'] === 'Consumable') {
-                    $hp.textContent = 'Hp: ' + result['ItemDropped']['hp'] + '\n';
-                } else {
-                    $levelRequired.textContent = 'Level required: ' + result['ItemDropped']['requiredLevel'] + '\n';
-                    $classRequired.textContent = 'Class: ' + result['ItemDropped']['requiredClass'] + '\n';
-                    $hpMax.textContent = 'Hp max: ' + result['ItemDropped']['hpMax'] + '\n';
-                    $physicalResistence.textContent = 'Physical resistence: ' + result['ItemDropped']['physicalResistence'] + '\n';
-                    $magicalResistence.textContent = 'Magical resistence: ' + result['ItemDropped']['magicalResistence'] + '\n';
-                }
-                $strength.textContent = 'Strength: ' + result['ItemDropped']['strength'] + '\n';
-                $intelligence.textContent = 'Intelligence: ' + result['ItemDropped']['intelligence'] + '\n';
-                $agility.textContent = 'Agility: ' + result['ItemDropped']['agility'] + '\n';
-            } else {
-                $modalTitle.textContent = 'No loot here !';
-            }
-            $('#itemModal').on('shown.bs.modal', function () {
-
-                $('#dropButton').trigger('focus')
-            });
-
-        });
-
-    });
-
+    
     $('#changeItem').click(function () {
         $.ajax({
             url: '/changeItem/' + $pkParty + '/' + document.getElementById('stuffClassName').textContent
@@ -72,10 +19,20 @@ $(() => {
             dataType: 'json',
         }).done(function (result) {
             console.log(result);
-
+            if(result['stuffClassName'] === 'Head'){
+            // MODIFIE LE HEAD OU L'ATTRIBUER
+            } else if(result['stuffClassName'] === 'Chest'){
+            // MODIFIE LE CHEST OU L'ATTRIBUER
+            } else if(result['stuffClassName'] === 'Leg'){
+            // MODIFIE LE LEG OU L'ATTRIBUER
+            } else if(result['stuffClassName'] === 'Weapon'){
+            // MODIFIE LE WEAPON OU L'ATTRIBUER
+            } else {
+            // MODIFIE LE CONSUMABLE OU L'ATTRIBUER
+            }
         });
     });
-
+    
     $('#closeModal').click(function () {
         let $modalTitle = document.getElementById('itemModalLabel');
         let $levelRequired = document.getElementById('levelRequired');
@@ -100,7 +57,7 @@ $(() => {
         $intelligence.textContent = '';
         $agility.textContent = '';
     });
-
+    
     $(".useItem").click(function () {
         let $urlUseItem = $(this).attr('urlUseItem');
         let $coupleCharacterConsumable = $(this).attr('coupleCharacterConsumable');
@@ -139,9 +96,54 @@ $(() => {
             type: 'get',
             dataType: 'json',
         }).done(function (result) {
-            console.log(result);
+            console.log('Hp ennemy: ' + result['enemy']['hp']);
+            console.log('Hp character: ' + result['character']['hp']);
+            if (result['dropItem']) {
+                console.log('Y a un drop un drop mec !!!');
+                console.log(result['dropItem']);
+                
+                let $modalTitle = document.getElementById('itemModalLabel');
+                let $stuffClassName = document.getElementById('stuffClassName');
+                let $stuffPk = document.getElementById('stuffPk');
+                let $levelRequired = document.getElementById('levelRequired');
+                let $classRequired = document.getElementById('classRequired');
+                let $rarity = document.getElementById('rarity');
+                let $hpMax = document.getElementById('hpMax');
+                let $hp = document.getElementById('hp');
+                let $physicalResistence = document.getElementById('physicalResistence');
+                let $magicalResistence = document.getElementById('magicalResistence');
+                let $strength = document.getElementById('strength');
+                let $intelligence = document.getElementById('intelligence');
+                let $agility = document.getElementById('agility');
+                
+                if (result['dropItem']['isItemDropped'] !== false) {
+                    $modalTitle.textContent = result['dropItem']['ItemDropped']['name'];
+                    $rarity.textContent = 'Rarity: ' + result['dropItem']['ItemDropped']['rarity'] + '\n';
+                    $stuffClassName.textContent = result['dropItem']['stuffClassName'];
+                    $stuffPk.textContent = result['dropItem']['pk'];
+                    
+                    if (result['dropItem']['stuffClassName'] === 'Consumable') {
+                        $hp.textContent = 'Hp: ' + result['dropItem']['ItemDropped']['hp'] + '\n';
+                    } else {
+                        $levelRequired.textContent = 'Level required: ' + result['dropItem']['ItemDropped']['requiredLevel'] + '\n';
+                        $classRequired.textContent = 'Class: ' + result['dropItem']['ItemDropped']['requiredClass'] + '\n';
+                        $hpMax.textContent = 'Hp max: ' + result['dropItem']['ItemDropped']['hpMax'] + '\n';
+                        $physicalResistence.textContent = 'Physical resistence: ' + result['dropItem']['ItemDropped']['physicalResistence'] + '\n';
+                        $magicalResistence.textContent = 'Magical resistence: ' + result['dropItem']['ItemDropped']['magicalResistence'] + '\n';
+                    }
+                    $strength.textContent = 'Strength: ' + result['dropItem']['ItemDropped']['strength'] + '\n';
+                    $intelligence.textContent = 'Intelligence: ' + result['dropItem']['ItemDropped']['intelligence'] + '\n';
+                    $agility.textContent = 'Agility: ' + result['dropItem']['ItemDropped']['agility'] + '\n';
+                } else {
+                    $modalTitle.textContent = 'No loot here !';
+                }
+                // $('#itemModal').show();
+                $('#itemModal').modal('show')
+                
+            }
         });
-    });
+    })
+    ;
     $('#nextStage').click(function () {
         let $pkEnemy = document.getElementById('pkEnemy').innerText;
         $.ajax({
@@ -153,4 +155,5 @@ $(() => {
             document.getElementById('pkEnemy').innerText = result['enemyPk'];
         });
     });
-});
+})
+;
