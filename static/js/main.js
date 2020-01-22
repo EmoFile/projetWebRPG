@@ -3,13 +3,14 @@ $(() => {
     console.log($url);
     console.log($url.lastIndexOf("/"));
     console.log($url.length);
-    
+
     let $pkParty = '';
+
     for ($i = $url.lastIndexOf("/") + 1; $i < $url.length; $i++) {
         $pkParty += $url[$i];
     }
     console.log($pkParty);
-    
+
     $('#dropButton').click(function () {
         $.ajax({
             url: '/dropItem',
@@ -17,8 +18,8 @@ $(() => {
             dataType: 'json',
         }).done(function (result) {
             console.log(result);
-            
-            
+
+
             let $modalTitle = document.getElementById('itemModalLabel');
             let $stuffClassName = document.getElementById('stuffClassName');
             let $stuffPk = document.getElementById('stuffPk');
@@ -32,13 +33,13 @@ $(() => {
             let $strength = document.getElementById('strength');
             let $intelligence = document.getElementById('intelligence');
             let $agility = document.getElementById('agility');
-            
+
             if (result['isItemDropped'] !== false) {
                 $modalTitle.textContent = result['ItemDropped']['name'];
                 $rarity.textContent = 'Rarity: ' + result['ItemDropped']['rarity'] + '\n';
                 $stuffClassName.textContent = result['stuffClassName'];
                 $stuffPk.textContent = result['pk'];
-                
+
                 if (result['stuffClassName'] === 'Consumable') {
                     $hp.textContent = 'Hp: ' + result['ItemDropped']['hp'] + '\n';
                 } else {
@@ -55,14 +56,14 @@ $(() => {
                 $modalTitle.textContent = 'No loot here !';
             }
             $('#itemModal').on('shown.bs.modal', function () {
-                
+
                 $('#dropButton').trigger('focus')
             });
-            
+
         });
-        
+
     });
-    
+
     $('#changeItem').click(function () {
         $.ajax({
             url: '/changeItem/' + $pkParty + '/' + document.getElementById('stuffClassName').textContent
@@ -74,7 +75,7 @@ $(() => {
 
         });
     });
-    
+
     $('#closeModal').click(function () {
         let $modalTitle = document.getElementById('itemModalLabel');
         let $levelRequired = document.getElementById('levelRequired');
@@ -99,7 +100,7 @@ $(() => {
         $intelligence.textContent = '';
         $agility.textContent = '';
     });
-    
+
     $(".useItem").click(function () {
         let $urlUseItem = $(this).attr('urlUseItem');
         let $coupleCharacterConsumable = $(this).attr('coupleCharacterConsumable');
@@ -129,6 +130,27 @@ $(() => {
             $strength.textContent = result['character']['strength'];
             $intelligence.textContent = result['character']['intelligence'];
             $agility.textContent = result['character']['agility'];
+        });
+    });
+    $('#playRound').click(function () {
+        let $pkEnemy = document.getElementById('pkEnemy').innerText;
+        $.ajax({
+            url: '/playRound/' + $pkParty + '/' + $pkEnemy,
+            type: 'get',
+            dataType: 'json',
+        }).done(function (result) {
+            console.log(result);
+        });
+    });
+    $('#nextStage').click(function () {
+        let $pkEnemy = document.getElementById('pkEnemy').innerText;
+        $.ajax({
+            url: '/nextEnemy/' + $pkParty + '/' + $pkEnemy,
+            type: 'get',
+            dataType: 'json',
+        }).done(function (result) {
+            console.log(result);
+            document.getElementById('pkEnemy').innerText = result['enemyPk'];
         });
     });
 });

@@ -91,8 +91,7 @@ class Character(models.Model):
                                         validators=[MinValueValidator(0)],
                                         blank=False,
                                         null=False)
-    hp = models.PositiveIntegerField(default=10,
-                                     validators=[MinValueValidator(0)],
+    hp = models.IntegerField(default=10,
                                      blank=False,
                                      null=False)
     strength = models.IntegerField(default=1,
@@ -401,11 +400,12 @@ class Party(models.Model):
                              on_delete=models.PROTECT)
     character = models.OneToOneField(Character,
                                      on_delete=models.PROTECT)
-    stage = models.PositiveIntegerField(default=1,
-                                        validators=[MinValueValidator(1)],
+    stage = models.PositiveIntegerField(default=0,
+                                        validators=[MinValueValidator(0)],
                                         blank=False,
                                         null=False)
     date = models.DateField("Date", default=datetime.date.today)
+    isEnded = models.BooleanField(default=False)
     enemies = models.ManyToManyField('Enemy', through='PartyEnemy')
 
     class Meta:
@@ -418,7 +418,7 @@ class Party(models.Model):
 
 
 class Enemy(models.Model):
-    default = {'validators': [MinValueValidator(0)],
+    default = {
                'blank': False,
                'null': False}
     name = models.CharField(max_length=20,
@@ -433,7 +433,7 @@ class Enemy(models.Model):
     physical_resistance = models.IntegerField(default=0, **default)
     magical_resistance = models.IntegerField(default=0, **default)
     is_boss = models.BooleanField(default=False)
-    next = models.ForeignKey('self', default=None, on_delete=models.PROTECT, blank=True, null=True)
+    next = models.ForeignKey('self', default=None, on_delete=models.CASCADE, blank=True, null=True)
 
     def is_minion(self):
         return hasattr(self, 'minion')
@@ -450,31 +450,31 @@ class Enemy(models.Model):
         :param name:
         :return: Enemy
         """
-        hpMax = random.randint(
-            round(adventurer.hpMax + (adventurer.hpMax * min_percent) / 100),
-            round(adventurer.hpMax + (adventurer.hpMax * max_percent) / 100))
-        strength = random.randint(
-            round(adventurer.physicalResistance - (
-                    adventurer.physicalResistance * min_percent_def) / 100),
-            round(adventurer.physicalResistance - (
+        hpMax = round(random.uniform(
+            adventurer.hpMax + (adventurer.hpMax * min_percent) / 100,
+            adventurer.hpMax + (adventurer.hpMax * max_percent) / 100))
+        strength = round(random.uniform(
+            adventurer.physicalResistance - (
+                    adventurer.physicalResistance * min_percent_def) / 100,
+            adventurer.physicalResistance - (
                     adventurer.physicalResistance * max_percent_def) / 100))
-        intelligence = random.randint(
-            round(adventurer.magicalResistance - (
-                    adventurer.magicalResistance * min_percent_def) / 100),
-            round(adventurer.magicalResistance - (
+        intelligence = round(random.uniform(
+            adventurer.magicalResistance - (
+                    adventurer.magicalResistance * min_percent_def) / 100,
+            adventurer.magicalResistance - (
                     adventurer.magicalResistance * max_percent_def) / 100))
-        physical_resistance = random.randint(
-            round(adventurer.strength + (
-                    adventurer.strength * min_percent_def) / 100),
-            round(adventurer.strength + (
+        physical_resistance = round(random.uniform(
+            adventurer.strength + (
+                    adventurer.strength * min_percent_def) / 100,
+            adventurer.strength + (
                     adventurer.strength * max_percent_def) / 100))
-        magical_resistance = random.randint(
-            round(adventurer.intelligence + (
-                    adventurer.intelligence * min_percent_def) / 100),
-            round(adventurer.intelligence + (
+        magical_resistance = round(random.uniform(
+            adventurer.intelligence + (
+                    adventurer.intelligence * min_percent_def) / 100,
+            adventurer.intelligence + (
                     adventurer.intelligence * max_percent_def) / 100))
-        agility = random.randint(adventurer.agility - 10,
-                                 adventurer.agility + 10)
+        agility = round(random.uniform(adventurer.agility - 10,
+                                 adventurer.agility + 10))
         hp = hpMax
         return cls(hpMax=hpMax, strength=strength, intelligence=intelligence,
                    physical_resistance=physical_resistance,
@@ -554,9 +554,12 @@ class PartyEnemy(models.Model):
                               on_delete=models.PROTECT)
     enemy = models.ForeignKey(Enemy,
                               on_delete=models.PROTECT)
-    hp = models.PositiveIntegerField(default=0,
+    hp = models.IntegerField(default=0,
                                      blank=False,
                                      null=False)
+
+    def __str__(self):
+        return f'{self.id}: {self.party.character.name} | {self.enemy.name} | {self.hp}'
 
 # @receiver(pre_save, sender=Enemy)
 # def pre_save_enemy_handle(sender, instance, created, **kwargs):

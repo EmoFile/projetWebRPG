@@ -7,6 +7,7 @@ from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse, reverse_lazy
+from django.views import generic
 from django.views.generic import TemplateView, CreateView, DetailView, ListView
 from django.views.generic.base import RedirectView
 
@@ -14,7 +15,6 @@ from app.forms import CharacterForm
 from app.models import CharacterClass, Character, Inventory, Party, Minion, \
     BossAlain, Consumable, Head, Chest, Leg, \
     Weapon, InventoryConsumable, Enemy, PartyEnemy
-
 
 
 class IndexView(TemplateView):
@@ -122,66 +122,114 @@ class PlayGameView(TemplateView):
         party = get_object_or_404(Party, pk=self.kwargs['pk'])
         result['party'] = party
         result['currentCharacter'] = party.character.reload()
+        result['firstEnemy'] = NextEnemy(pkParty=party.pk)
         return result
 
 
-def PlayRound(**kwargs):
-    """
+class PlayRound(generic.View):
+    http_method_names = ['get']
 
-    :param kwargs:
-    :mandatory pkParty, pkEnemy:
-    :optional:
-    :return:
-    """
-    party = get_object_or_404(Party, pk=kwargs['pkParty'])
-    adventurer = party.character
-    enemy = get_object_or_404(Minion, pk=kwargs['pkEnemy'])
-    p_e = PartyEnemy.objects.get(party=party,
-                                 enemy=enemy)
-    if adventurer.agility > enemy.agility:
-        if adventurer.characterClass.name == 'Warior':
-            atk = adventurer.getStrength
-            res = enemy.physical_resistance
-        else:
-            atk = adventurer.getInteligence
-            res = enemy.magical_resistance
-        hpTab = fight(atk, adventurer.hp, res, enemy.hp)
-        adventurer.hp = hpTab[0]
-        enemy.hp = hpTab[1]
-        if enemy.hp > 0:
-            if adventurer.hp > 0:
-                '''l'enemi attaque'''
-    else:
+    def get(self, request, **kwargs):
+        """
+
+        :param kwargs:
+        :mandatory pkParty, pkEnemy:
+        :optional:
+        :return:
+        """
+        party = get_object_or_404(Party, pk=kwargs['pkParty'])
+        adventurer = party.character
+        enemy = get_object_or_404(Minion, pk=kwargs['pkEnemy'])
+        p_e = PartyEnemy.objects.get(party=party,
+                                     enemy=enemy)
+
         if random.randint(0, 1):
-            atk = enemy.strength
-            res = adventurer.getPhysicalresistence()
+            atkEnemy = enemy.strength
+            resAdventurer = adventurer.getPhysicalResistance()
+            defEnemy = enemy.physical_resistance
         else:
-            atk = enemy.intelligence
-            res = adventurer.getMagicalResistence()
-        hpTab = fight(atk, enemy.hp, res, adventurer.hp)
-        enemy.hp = hpTab[0]
-        adventurer.hp = hpTab[1]
-        # on attaque
+            atkEnemy = enemy.intelligence
+            resAdventurer = adventurer.getMagicalResistance()
+            defEnemy = enemy.magical_resistance
+
+        if adventurer.characterClass.name == 'Warrior':
+            atkAdventurer = adventurer.getStrength()
+            defAdventurer = adventurer.getPhysicalResistance()
+            resEnemy = enemy.physical_resistance
+        else:
+            atkAdventurer = adventurer.getIntelligence()
+            resEnemy = enemy.magical_resistance
+            defAdventurer = adventurer.getMagicalResistance()
+
+        if adventurer.agility > enemy.agility:
+            hpTab = fight(atkAdventurer, adventurer.hp, defAdventurer, resEnemy, p_e.hp)
+            adventurer.hp = hpTab[0]
+            p_e.hp = hpTab[1]
+            adventurer.save()
+            p_e.save()
+            if p_e.hp > 0 and adventurer.hp > 0:
+                hpTab = fight(atkEnemy, p_e.hp, defEnemy, resAdventurer, adventurer.hp)
+                p_e.hp = hpTab[0]
+                adventurer.hp = hpTab[1]
+                p_e.save()
+                adventurer.save()
+        else:
+            hpTab = fight(atkEnemy, p_e.hp, defEnemy, resAdventurer, adventurer.hp)
+            p_e.hp = hpTab[0]
+            adventurer.hp = hpTab[1]
+            p_e.save()
+            adventurer.save()
+            if p_e.hp > 0 and adventurer.hp > 0:
+                hpTab = fight(atkAdventurer, adventurer.hp, defAdventurer, resEnemy, p_e.hp)
+                adventurer.hp = hpTab[0]
+                p_e.hp = hpTab[1]
+                adventurer.save()
+                p_e.save()
+        if adventurer.hp <= 0:
+            party.isEnded = True
+            party.save()
+            return JsonResponse(None, safe=False)
+
+        elif p_e.hp <= 0:
+            return JsonResponse({'dropItem': DropItem(),
+                                 'enemy': {
+                                     'hp': p_e.hp
+                                 },
+                                 'character': {
+                                     'hp': adventurer.hp
+                                 }
+                                 })
+        else:
+            return JsonResponse({
+                'enemy': {
+                    'hp': p_e.hp
+                },
+                'character': {
+                    'hp': adventurer.hp
+                }
+            })
 
 
-def fight(atk, hpAtk, res, hpDef):
+def fight(atk, hpAtk, atkDef, res, hpDef):
     aD20 = random.randint(0, 20)
     dD20 = random.randint(0, 20)
-    damage = atk + aD20
+    assault = atk + aD20
     protection = res + dD20
     if aD20 == 1:
+        damage = assault - atkDef
         print('echec critque')
         hpAtk -= damage
     else:
+        damage = assault - protection
         if aD20 == 20:
             print('réussite critque')
             damage *= 2
-        if (damage - protection) > 0:
-            hpDef -= damage - protection
+        if damage > 0:
+            hpDef -= damage
     return hpAtk, hpDef
 
 
-def DropItem(request):
+def DropItem(**kwargs):
     if random.randint(1, 2) == 1:
         stuffRarity = random.randint(1, 10)
         if 1 <= stuffRarity <= 4:
@@ -256,7 +304,7 @@ def DropItem(request):
             }
     else:
         data = {'isItemDropped': False}
-    return JsonResponse(data)
+    return data
 
 
 def ChangeStuff(*args, **kwargs):
@@ -325,7 +373,7 @@ def NextEnemy(**kwargs):
     adventurer = party.character
     if kwargs.get('pkEnemy') is None:
         if Enemy.objects.count() == 0:
-            GenerateEnemy(adventurer=adventurer, stage=1)
+            GenerateEnemy(adventurer=adventurer, stage=party.stage)
         next_enemy = Enemy.objects.first()
     else:
         l_enemy = get_object_or_404(Enemy, pk=kwargs['pkEnemy'])
@@ -335,7 +383,11 @@ def NextEnemy(**kwargs):
     PartyEnemy.objects.create(party=party,
                               enemy=next_enemy,
                               hp=next_enemy.hp)
-    return JsonResponse({
+    party.stage += 1
+    party.save()
+    return {
+        'partyStage': party.stage,
+        'enemyPk': next_enemy.pk,
         'enemyName': next_enemy.name,
         'enemyHpMax': next_enemy.hpMax,
         'enemyStrength': next_enemy.strength,
@@ -343,7 +395,14 @@ def NextEnemy(**kwargs):
         'enemyIntelligence': next_enemy.intelligence,
         'enemyPhysicalResistance': next_enemy.physical_resistance,
         'enemyMagicalResistance': next_enemy.magical_resistance
-    })
+    }
+
+
+class NextEnemyView(generic.View):
+    http_method_names = ['get']
+
+    def get(self, request, **kwargs):
+        return JsonResponse(NextEnemy(**kwargs), safe=False)
 
 
 def GenerateEnemy(**kwargs):
@@ -365,21 +424,27 @@ def GenerateEnemy(**kwargs):
         last.next = minions[0]
         last.save()
     minion_prev = None
-    for minion in reverse(minions):
+    for minion in minions[::-1]:
         if minion_prev is None:
             minion_prev = minion
         else:
-            minion_prev.next = minion
-            minion_prev.save()
+            minion.next = minion_prev
+            minion.save()
+            minion_prev = minion
         # PartyEnemy.objects.create(party=party, enemy=minion)
-    stage = kwargs['stage'] + 9
-    new_boss = BossAlain.create(stage, adventurer, next=minions[8])
+    stage = kwargs['stage'] + 10
+    new_boss = BossAlain.create(stage, adventurer)
+    print(stage)
+    print(new_boss)
     new_boss.save()
+    minions[8].next = new_boss
+    minions[8].save()
+
 
 def UseItem(*args, **kwargs):
     currentCharacter = get_object_or_404(Character, pk=kwargs['characterPk'])
     currentConsumable = get_object_or_404(Consumable, pk=kwargs['consumablePk'])
-    
+
     i_c = InventoryConsumable.objects.get(inventory=currentCharacter.inventory,
                                           consumable=currentConsumable)
     consumableName = i_c.consumable.name
@@ -389,7 +454,7 @@ def UseItem(*args, **kwargs):
     if i_c.quantity == 0:
         i_c.delete()
     consumableNewQuantity = i_c.quantity
-    
+
     currentCharacter.modifyCarac(currentConsumable)
     currentCharacter.save()
     return JsonResponse({'consumableName': consumableName,
@@ -398,18 +463,6 @@ def UseItem(*args, **kwargs):
                          'character': ReloadCharacter(
                              currentCharacter=currentCharacter)
                          })
-
-
-class GenerateBoss(RedirectView):
-    permanent = False
-    query_string = False
-    pattern_name = 'playGame'
-
-    def get_redirect_url(self, *args, **kwargs):
-        adventurer = get_object_or_404(Character, pk=kwargs['pk'])
-        boss_temp = BossAlain.create(100, adventurer)
-        boss_temp.save()
-        return super().get_redirect_url(*args, **kwargs)
 
 
 class EnemyList(ListView):

@@ -20,7 +20,7 @@ from app import views
 
 from app.views import IndexView, GenerateCharacterView, CharacterDetailView, \
     SignUpView, LogInView, PlayGameView, \
-    DropItem, EnemyList, ChangeItem, UseItem
+    DropItem, EnemyList, ChangeItem, UseItem, PlayRound, NextEnemy, NextEnemyView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,6 +37,8 @@ urlpatterns = [
          name='useItem'),
     path('changeItem/<int:partyPk>/<str:stuffClassName>/<int:stuffPk>',
          ChangeItem, name='changeItem'),
-    path('ArticleListView/', EnemyList.as_view(), name='listEnemy')
+    path('ArticleListView/', EnemyList.as_view(), name='listEnemy'),
+    path('playRound/<int:pkParty>/<int:pkEnemy>', PlayRound.as_view(), name='playRound'),
+    path('nextEnemy/<int:pkParty>/<int:pkEnemy>', NextEnemyView.as_view(), name='nextEnemy')
 
 ]
