@@ -101,8 +101,42 @@ $(() => {
                 $weaponMagicalResistance.innerText = result['newStuffMagicalResistance'];
             } else {
                 // MODIFIE LE CONSUMABLE OU L'ATTRIBUER
-                console.log('Consumable')
-                
+                console.log('Consumable');
+                console.log('useItem/' + $pkParty + '/' + result['stuffPk']);
+                console.log(document.getElementById('quantity/' + $pkParty + '/' + result['stuffPk']));
+                if (document.getElementById('quantity/' + $pkParty + '/' + result['stuffPk']) === null) {
+                    let $div = document.getElementById('consumablesPanel');
+                    let $table = document.createElement('table');
+                    let $tr = document.createElement('tr');
+                    let $th = document.createElement('th');
+                    let $tdqunatity = document.createElement('td');
+                    let $tdusebutton = document.createElement('td');
+                    let $pqunatity = document.createElement('p');
+                    let $usebutton = document.createElement('button');
+                    $table.setAttribute('class', 'table table-borderless');
+                    $th.setAttribute('scope', 'row');
+                    $th.innerText = result['newStuff'];
+                    $pqunatity.setAttribute('id', 'quantity/' + $pkParty + '/' + result['stuffPk']);
+                    $pqunatity.innerText = result['newStuffQuantity'];
+                    $usebutton.setAttribute('urlUseItem', 'quantity/' + $pkParty + '/' + result['stuffPk']);
+                    $usebutton.setAttribute('coupleCharacterConsumable', $pkParty + '/' + result['stuffPk']);
+                    $usebutton.setAttribute('type', 'button');
+                    $usebutton.setAttribute('class', 'useItem btn btn-success useItem');
+                    $usebutton.innerText = 'Use';
+                    
+                    $tdusebutton.append($usebutton);
+                    $tdqunatity.append($pqunatity);
+                    $tr.append($tdusebutton);
+                    $tr.append($tdqunatity);
+                    $tr.append($th);
+                    $table.append($tr);
+                    $div.append($table)
+                    
+                    
+                } else {
+                    let $quantity = document.getElementById('quantity/' + $pkParty + '/' + result['stuffPk']);
+                    $quantity.innerText = result['newStuffQuantity']
+                }
             }
             // $hpMax.innerText = result['character']['hpMax'];
             $physicalResistence.innerText = result['character']['physicalResistance'];
