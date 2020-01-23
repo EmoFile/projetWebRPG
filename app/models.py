@@ -537,9 +537,9 @@ class BossAlain(Enemy):
         max_percent_def = (7 * k - 69) / 3
 
         min_percent = max_percent = name = None
-        for (percent, p_min, p_max, title) in [(100, 70, 100, 'King'),
-                                               (50, 60, 70, 'General'),
-                                               (10, 50, 60, 'Soldier')]:
+        for (percent, p_min, p_max, title) in [(100, 70, 100, 'King Alain'),
+                                               (50, 60, 70, 'General Alain'),
+                                               (10, 50, 60, 'Soldier Alain')]:
             if (stage % percent) == 0:
                 min_percent = p_min
                 max_percent = p_max

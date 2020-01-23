@@ -335,6 +335,7 @@ $(() => {
             document.getElementById('enemyAgility').innerText = result['enemyAgility'];
             document.getElementById('enemyIntelligence').innerText = result['enemyIntelligence'];
             document.getElementById('enemyMagicalResistance').innerText = result['enemyMagicalResistance'];
+            document.getElementById('enemyName').innerText = result['enemyName'];
             $buttonPlayRound.show();
         });
     });

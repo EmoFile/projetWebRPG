@@ -123,9 +123,12 @@ class PlayGameView(LoginRequiredMixin, TemplateView):
     login_url = 'logIn'
     template_name = 'playGame.html'
     
-    def get(self, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         party = get_object_or_404(Party, pk=self.kwargs['pk'])
-        if party.isEnded:
+        print(request.user.pk)
+        if request.user.pk != party.user.pk:
+            return redirect(reverse('home'))
+        elif party.isEnded:
             return redirect(reverse('home'))
         return super().get(self)
     
