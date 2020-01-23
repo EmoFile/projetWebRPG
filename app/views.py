@@ -171,7 +171,7 @@ class PlayRound(generic.View):
         """
         party = get_object_or_404(Party, pk=kwargs['pkParty'])
         adventurer = party.character
-        enemy = get_object_or_404(Minion, pk=kwargs['pkEnemy'])
+        enemy = get_object_or_404(Enemy, pk=kwargs['pkEnemy'])
         p_e = PartyEnemy.objects.get(party=party,
                                      enemy=enemy)
         
