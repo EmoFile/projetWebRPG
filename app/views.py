@@ -230,7 +230,7 @@ class PlayRound(generic.View):
                                  })
         
         elif p_e.hp <= 0:
-            return JsonResponse({'dropItem': DropItem(),
+            return JsonResponse({'dropItem': DropItem(adventurer=adventurer),
                                  'isEnded': party.isEnded,
             
                                  'enemy': {
@@ -290,22 +290,22 @@ def DropItem(**kwargs):
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 2:
             stuffClassName = 'Head'
-            stuffPull = Head.objects.filter(rarity=stuffRarity)
+            stuffPull = Head.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 3:
             stuffClassName = 'Chest'
-            stuffPull = Chest.objects.filter(rarity=stuffRarity)
+            stuffPull = Chest.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 4:
             stuffClassName = 'Leg'
-            stuffPull = Leg.objects.filter(rarity=stuffRarity)
+            stuffPull = Leg.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         else:
             stuffClassName = 'Weapon'
-            stuffPull = Weapon.objects.filter(rarity=stuffRarity)
+            stuffPull = Weapon.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         if stuffClassName == 'Consumable':
