@@ -79,8 +79,8 @@ const BUTTON = {
         console.log("bind next stage");
         this.pkEnemy = document.getElementById('pkEnemy').innerText;
         let $this = this;
-        $('#nextStage').click(function () {
-            console.log($this)
+        $('#nextStage').one('click', function () {
+            console.log($this);
             $.ajax({
                 url: '/nextEnemy/' + $this.pkParty + '/' + $this.pkEnemy,
                 type: 'get',
@@ -141,7 +141,7 @@ const ITEM = {
                     document.getElementById(result['consumableName']).remove();
                     // $quantity.parentElement.hidden = true;
                 }
-                $hp.textContent = result['character']['hp'] + '/' + result['character']['hpMax'];
+                $hp.textContent = result['character']['hp'];
                 $physicalResistence.textContent = result['character']['physicalResistance'];
                 $magicalResistence.textContent = result['character']['magicalResistance'];
                 $strength.textContent = result['character']['strength'];
