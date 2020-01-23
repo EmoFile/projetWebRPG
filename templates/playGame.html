@@ -325,10 +325,10 @@
             <div>
                 <div id="consumablesPanel">
                     {#                    {% if party.character.inventory.consumables != Null %}#}
-                    {% if party.character.inventory.inventoryconsumable_set.all == 0 %}
+                    {% if party.character.inventory.inventoryconsumable_set.all != 0 %}
                         {% for consumable in party.character.inventory.inventoryconsumable_set.all %}
                             <div>
-                                <table class="table table-borderless">
+                                <table class="table table-borderless" id="{{ consumable.consumable.name }}">
                                     <tr>
                                         <th scope="row">{{ consumable.consumable.name }}</th>
                                         <td>
