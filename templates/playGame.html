@@ -1,14 +1,473 @@
 {% extends 'base.html' %}
 {% block table-score %}
-    {{ party.character.name }}
-    {{ party.character.characterClass.name }}
-    {{ party.character.level }}
-    {{ party.character.hp }}/{{ party.character.hpMax }}
-    {{ party.character.strength }}
-    {{ party.character.intelligence }}
-    {{ party.character.agility }}
-    {{ party.character.physicalResistance }}
-    {{ party.character.magicalResistance }}
+    <div class="row container-fluid">
+        <div class="col-4">
+            <span id="characterPk" hidden>{{ party.character.pk }}</span>
+            <table class="table table-borderless">
+                <thead>
+                <tr>
+                    <th scope="col"><p
+                        id="characterName">{{ party.character.name }}</p>
+                    </th>
+                    <th scope="col"><p
+                        id="characterClass">{{ party.character.characterClass.name }}</p>
+                    </th>
+                    <th scope="col"><p class="inline"
+                                       id="characterLevel">
+                        Lvl: {{ party.character.level }}</p></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row" class="text-success">HP:</th>
+                    <td>
+                        <p><span id="characterHp">{{ currentCharacter.hp }}</span>/<span
+                            id="characterHpMax">{{ currentCharacter.hpMax }}</span></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-primary">ARM:</th>
+                    <td><p
+                        id="characterPhysicalResistence">{{ currentCharacter.physicalResistance }}</p>
+                        ({{ party.character.physicalResistance }})
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-secondary">RES:</th>
+                    <td><p
+                        id="characterMagicalResistence">
+                        {{ currentCharacter.magicalResistance }}</p>({{ party.character.magicalResistance }})
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-danger">STR:</th>
+                    <td><p
+                        id="characterStrength">
+                        {{ currentCharacter.strength }}</p>({{ party.character.strength }})
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-info">INT:</th>
+                    <td><p
+                        id="characterIntelligence">
+                        {{ currentCharacter.intelligence }}</p>({{ party.character.intelligence }})
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-warning">AGI:</th>
+                    <td><p
+                        id="characterAgility">
+                        {{ currentCharacter.agility }}</p>({{ party.character.agility }})
+                    </td>
+                </tr>
+                </tbody>
+            </table>
 
-    <button id="dropButton">Drop</button>
+            <div>
+                <div>
+                    {% if party.character.inventory.head != Null %}
+                        <table class="table table-borderless">
+                            <tr>
+                                <th scope="row"><span id="headName">{{ party.character.inventory.head.name }}</span>
+                                </th>
+                                <td>
+                                    <span id="headHpMax"
+                                          class="text-success">{{ party.character.inventory.head.hpMax }}</span>
+                                </td>
+                                <td>
+                                    <span id="headPhysicalResistance"
+                                          class="text-primary">{{ party.character.inventory.head.physicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="headMagicalResistance"
+                                          class="text-secondary">{{ party.character.inventory.head.magicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="headStrength"
+                                          class="text-danger">{{ party.character.inventory.head.strength }}</span>
+                                </td>
+                                <td>
+                                    <span id="headIntelligence"
+                                          class="text-info">{{ party.character.inventory.head.intelligence }}</span>
+                                </td>
+                                <td>
+                                    <span id="headAgility"
+                                          class="text-warning">{{ party.character.inventory.head.agility }}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    {% else %}
+                        <table class="table table-borderless">
+                            <tr>
+                                <th scope="row"><span id="headName">No helmet</span></th>
+                                <td>
+                                    <span id="headHpMax"
+                                          class="text-success"></span>
+                                </td>
+                                <td>
+                                    <span id="headPhysicalResistance"
+                                          class="text-primary"></span>
+                                </td>
+                                <td>
+                                    <span id="headMagicalResistance"
+                                          class="text-secondary"></span>
+                                </td>
+                                <td>
+                                    <span id="headStrength"
+                                          class="text-danger"></span>
+                                </td>
+                                <td>
+                                    <span id="headIntelligence"
+                                          class="text-info"></span>
+                                </td>
+                                <td>
+                                    <span id="headAgility"
+                                          class="text-warning"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    {% endif %}
+                </div>
+
+                <div>
+                    {% if party.character.inventory.chest != Null %}
+                        <table class="table table-borderless">
+                            <tr>
+                                <th scope="row"><span id="chestName">{{ party.character.inventory.chest.name }}</span>
+                                </th>
+                                <td>
+                                    <span id="chestHpMax"
+                                          class="text-success">{{ party.character.inventory.chest.hpMax }}</span>
+                                </td>
+                                <td>
+                                    <span id="chestPhysicalResistance"
+                                          class="text-primary">{{ party.character.inventory.chest.physicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="chestMagicalResistance"
+                                          class="text-secondary">{{ party.character.inventory.chest.magicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="chestStrength"
+                                          class="text-danger">{{ party.character.inventory.chest.strength }}</span>
+                                </td>
+                                <td>
+                                    <span id="chestIntelligence"
+                                          class="text-info">{{ party.character.inventory.chest.intelligence }}</span>
+                                </td>
+                                <td>
+                                    <span id="chestAgility"
+                                          class="text-warning">{{ party.character.inventory.chest.agility }}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    {% else %}
+                        <table class="table table-borderless">
+                            <tr>
+                                <th scope="row"><span id="chestName">No breathplate</span>
+                                </th>
+                                <td>
+                                    <span id="chestHpMax"
+                                          class="text-success">{{ party.character.inventory.chest.hpMax }}</span>
+                                </td>
+                                <td>
+                                    <span id="chestPhysicalResistance"
+                                          class="text-primary">{{ party.character.inventory.chest.physicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="chestMagicalResistance"
+                                          class="text-secondary">{{ party.character.inventory.chest.magicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="chestStrength"
+                                          class="text-danger">{{ party.character.inventory.chest.strength }}</span>
+                                </td>
+                                <td>
+                                    <span id="chestIntelligence"
+                                          class="text-info">{{ party.character.inventory.chest.intelligence }}</span>
+                                </td>
+                                <td>
+                                    <span id="chestAgility"
+                                          class="text-warning">{{ party.character.inventory.chest.agility }}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    {% endif %}
+                </div>
+
+                <div>
+                    {% if party.character.inventory.leg != Null %}
+                        <table class="table table-borderless">
+                            <tr>
+                                <th scope="row"><span id="legName">{{ party.character.inventory.leg.name }}</span></th>
+                                <td>
+                                    <span id="legHpMax"
+                                          class="text-success">{{ party.character.inventory.leg.hpMax }}</span>
+                                </td>
+                                <td>
+                                    <span id="legPhysicalResistance"
+                                          class="text-primary">{{ party.character.inventory.leg.physicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="legMagicalResistance"
+                                          class="text-secondary">{{ party.character.inventory.leg.magicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="legStrength"
+                                          class="text-danger">{{ party.character.inventory.leg.strength }}</span>
+                                </td>
+                                <td>
+                                    <span id="legIntelligence"
+                                          class="text-info">{{ party.character.inventory.leg.intelligence }}</span>
+                                </td>
+                                <td>
+                                    <span id="legAgility"
+                                          class="text-warning">{{ party.character.inventory.leg.agility }}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    {% else %}
+                        <table class="table table-borderless">
+                            <tr>
+                                <th scope="row"><span id="legName">No leg</span></th>
+                                <td>
+                                    <span id="legHpMax"
+                                          class="text-success">{{ party.character.inventory.leg.hpMax }}</span>
+                                </td>
+                                <td>
+                                    <span id="legPhysicalResistance"
+                                          class="text-primary">{{ party.character.inventory.leg.physicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="legMagicalResistance"
+                                          class="text-secondary">{{ party.character.inventory.leg.magicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="legStrength"
+                                          class="text-danger">{{ party.character.inventory.leg.strength }}</span>
+                                </td>
+                                <td>
+                                    <span id="legIntelligence"
+                                          class="text-info">{{ party.character.inventory.leg.intelligence }}</span>
+                                </td>
+                                <td>
+                                    <span id="legAgility"
+                                          class="text-warning">{{ party.character.inventory.leg.agility }}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    {% endif %}
+                </div>
+                <div>
+                    {% if party.character.inventory.weapon != Null %}
+                        <table class="table table-borderless">
+                            <tr>
+                                <th scope="row"><span id="weaponName">{{ party.character.inventory.weapon.name }}</span>
+                                </th>
+                                <td>
+                                    <span id="weaponHpMax"
+                                          class="text-success">{{ party.character.inventory.weapon.hpMax }}</span>
+                                </td>
+                                <td>
+                                    <span id="weaponPhysicalResistance"
+                                          class="text-primary">{{ party.character.inventory.weapon.physicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="weaponMagicalResistance"
+                                          class="text-secondary">{{ party.character.inventory.weapon.magicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="weaponStrength"
+                                          class="text-danger">{{ party.character.inventory.weapon.strength }}</span>
+                                </td>
+                                <td>
+                                    <span id="weaponIntelligence"
+                                          class="text-info">{{ party.character.inventory.weapon.intelligence }}</span>
+                                </td>
+                                <td>
+                                    <span id="weaponAgility"
+                                          class="text-warning">{{ party.character.inventory.weapon.agility }}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    {% else %}
+                        <table class="table table-borderless">
+                            <tr>
+                                <th scope="row"><span id="weaponName">No weapon</span>
+                                </th>
+                                <td>
+                                    <span id="weaponHpMax"
+                                          class="text-success">{{ party.character.inventory.weapon.hpMax }}</span>
+                                </td>
+                                <td>
+                                    <span id="weaponPhysicalResistance"
+                                          class="text-primary">{{ party.character.inventory.weapon.physicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="weaponMagicalResistance"
+                                          class="text-secondary">{{ party.character.inventory.weapon.magicalResistance }}</span>
+                                </td>
+                                <td>
+                                    <span id="weaponStrength"
+                                          class="text-danger">{{ party.character.inventory.weapon.strength }}</span>
+                                </td>
+                                <td>
+                                    <span id="weaponIntelligence"
+                                          class="text-info">{{ party.character.inventory.weapon.intelligence }}</span>
+                                </td>
+                                <td>
+                                    <span id="weaponAgility"
+                                          class="text-warning">{{ party.character.inventory.weapon.agility }}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
+            <div>
+                <div id="consumablesPanel">
+                    {#                    {% if party.character.inventory.consumables != Null %}#}
+                    {% if party.character.inventory.inventoryconsumable_set.all != 0 %}
+                        {% for consumable in party.character.inventory.inventoryconsumable_set.all %}
+                            <div>
+                                <table class="table table-borderless" id="{{ consumable.consumable.name }}">
+                                    <tr>
+                                        <th scope="row">{{ consumable.consumable.name }}</th>
+                                        <td>
+                                            <p id="quantity/{{ party.character.pk }}/{{ consumable.consumable.pk }}">{{ consumable.quantity }}</p>
+                                        </td>
+                                        <td>
+                                            <button type="button"
+                                                    urlUseItem="quantity/{{ party.pk }}/{{ consumable.consumable.pk }}"
+                                                    coupleCharacterConsumable="{{ party.character.pk }}/{{ consumable.consumable.pk }}"
+                                                    class="useItem btn btn-success">
+                                                Use
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        No consumable
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <span id="buttonPlayRound"></span>
+            <span id="buttonNextStage"></span>
+        </div>
+        <div class="col-4">
+            Ennemy Info
+            <p id="pkEnemy">{{ enemy.enemyPk }}</p>
+            <table>
+                <thead>
+                <tr>
+                    <th scope="col">
+                        <p id="characterName">{{ enemy.enemyName }}</p>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row" class="text-success">HP:</th>
+                    <td>
+                        <p>
+                            <span id="enemyHp"> {{ enemy.enemyHp }}</span>
+                            <span>/</span>
+                            <span id="enemyHpMax">{{ enemy.enemyHpMax }}</span>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-primary">
+                        ARM:
+                    </th>
+                    <td>
+                        <p id="enemyPhysicalResistance">
+                            {{ enemy.enemyPhysicalResistance }}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-secondary">
+                        RES:
+                    </th>
+                    <td>
+                        <p id="enemyMagicalResistance">
+                            {{ enemy.enemyMagicalResistance }}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-danger">
+                        STR:
+                    </th>
+                    <td>
+                        <p id="enemyStrength">
+                            {{ enemy.enemyStrength }}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-info">
+                        INT:
+                    </th>
+                    <td>
+                        <p id="enemyIntelligence">
+                            {{ enemy.enemyIntelligence }}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-warning">
+                        AGI:
+                    </th>
+                    <td>
+                        <p id="enemyAgility">
+                            {{ enemy.enemyAgility }}
+                        </p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="itemModal" tabindex="-1" role="dialog"
+         aria-labelledby="itemModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="itemModalLabel">Modal
+                        title</h5>
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="itemModalBody">
+                    <p id="levelRequired"></p>
+                    <p id="classRequired"></p>
+                    <p id="rarity"></p>
+                    <p id="hpMax"></p>
+                    <p id="hp"></p>
+                    <p id="physicalResistence"></p>
+                    <p id="magicalResistence"></p>
+                    <p id="strength"></p>
+                    <p id="intelligence"></p>
+                    <p id="agility"></p>
+                    <p id="stuffClassName" hidden></p>
+                    <p id="stuffPk" hidden></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="closeModal" class="btn btn-secondary" data-dismiss="modal">Pass</button>
+                    <button type="button" id="changeItem" class="btn btn-primary">Keep</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
