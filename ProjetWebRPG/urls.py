@@ -33,7 +33,7 @@ urlpatterns = [
     path('signUp/', SignUpView.as_view(), name='signUp'),
     path('logIn/', LogInView.as_view(), name='logIn'),
     path('dropItem', DropItem, name='dropItem'),
-    path('quantity/<int:characterPk>/<int:consumablePk>', UseItem,
+    path('quantity/<int:partyPk>/<int:consumablePk>', UseItem,
          name='useItem'),
     path('changeItem/<int:partyPk>/<str:stuffClassName>/<int:stuffPk>',
          ChangeItem, name='changeItem'),

@@ -1,7 +1,7 @@
 const ITEM = {
     bindItem(){
          $(".useItem").click(function () {
-             console.log("click")
+             console.log("click");
             let $urlUseItem = $(this).attr('urlUseItem');
             let $coupleCharacterConsumable = $(this).attr('coupleCharacterConsumable');
             console.log($urlUseItem);
@@ -11,7 +11,7 @@ const ITEM = {
                 type: 'get',
                 dataType: 'json',
             }).done(function (result) {
-                console.log("done")
+                console.log("done");
                 console.log(result);
                 let $quantity = document.getElementById('quantity/' + $coupleCharacterConsumable);
                 let $hp = document.getElementById('characterHp');
@@ -23,7 +23,8 @@ const ITEM = {
                 if (result['consumableNewQuantity'] > 0) {
                     $quantity.textContent = result['consumableNewQuantity'];
                 } else {
-                    $quantity.parentElement.hidden = true;
+                    document.getElementById(result['consumableName']).remove();
+                    // $quantity.parentElement.hidden = true;
                 }
                 $hp.textContent = result['character']['hp'] + '/' + result['character']['hpMax'];
                 $physicalResistence.textContent = result['character']['physicalResistance'];
@@ -34,7 +35,7 @@ const ITEM = {
             });
         });
     }
-}
+};
 
 $(() => {
     let $url = document.location.pathname;
@@ -152,6 +153,7 @@ $(() => {
                     let $pqunatity = document.createElement('p');
                     let $usebutton = document.createElement('button');
                     $table.setAttribute('class', 'table table-borderless');
+                    $table.setAttribute('id', result['newStuff']);
                     $th.setAttribute('scope', 'row');
                     $th.innerText = result['newStuff'];
                     $pqunatity.setAttribute('id', 'quantity/' + $pkParty + '/' + result['stuffPk']);

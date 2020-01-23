@@ -454,10 +454,10 @@ def GenerateEnemy(**kwargs):
 
 
 def UseItem(*args, **kwargs):
-    currentCharacter = get_object_or_404(Character, pk=kwargs['characterPk'])
+    currentParty = get_object_or_404(Party, pk=kwargs['partyPk'])
     currentConsumable = get_object_or_404(Consumable, pk=kwargs['consumablePk'])
     
-    i_c = InventoryConsumable.objects.get(inventory=currentCharacter.inventory,
+    i_c = InventoryConsumable.objects.get(inventory=currentParty.character.inventory,
                                           consumable=currentConsumable)
     consumableName = i_c.consumable.name
     consumableOldQuantity = i_c.quantity
@@ -467,13 +467,13 @@ def UseItem(*args, **kwargs):
         i_c.delete()
     consumableNewQuantity = i_c.quantity
     
-    currentCharacter.modifyCarac(currentConsumable)
-    currentCharacter.save()
+    currentParty.character.modifyCarac(currentConsumable)
+    currentParty.character.save()
     return JsonResponse({'consumableName': consumableName,
                          'consumableOldQuantity': consumableOldQuantity,
                          'consumableNewQuantity': consumableNewQuantity,
                          'character': ReloadCharacter(
-                             currentCharacter=currentCharacter)
+                             currentCharacter=currentParty.character)
                          })
 
 
