@@ -1,7 +1,8 @@
 import random
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.http import response, JsonResponse, request
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -39,7 +40,8 @@ class CharacterDetailView(DetailView):
         return result
 
 
-class GenerateCharacterView(CreateView):
+class GenerateCharacterView(LoginRequiredMixin, CreateView):
+    login_url = 'logIn'
     model = Character
     form_class = CharacterForm
     template_name = 'characterForm.html'
@@ -113,7 +115,12 @@ class LogInView(LoginView):
         return reverse('home')
 
 
-class PlayGameView(TemplateView):
+class LogoutView(LogoutView):
+    next_page = 'home'
+
+
+class PlayGameView(LoginRequiredMixin, TemplateView):
+    login_url = 'logIn'
     template_name = 'playGame.html'
     
     def get(self, *args, **kwargs):
