@@ -69,34 +69,34 @@ $(() => {
     console.log($url);
     console.log($url.lastIndexOf("/"));
     console.log($url.length);
-
+    
     let $pkParty = '';
-
+    
     for ($i = $url.lastIndexOf("/") + 1; $i < $url.length; $i++) {
         $pkParty += $url[$i];
     }
     console.log($pkParty);
-
+    
     let $buttonNextStage = $('<button></button>')
         .attr('type', 'button')
         .attr('id', 'nextStage')
         .attr('class', 'btn btn-danger')
         .html("Next Stage")
         .hide();
-
+    
     let $buttonPlayRound = $('<button></button>')
         .attr('type', 'button')
         .attr('id', 'playRound')
         .attr('class', 'btn btn-secondary')
         .html("Play round")
         .hide();
-
+    
     let $spanNextStage = $('#buttonNextStage');
     let $spanPlayRound = $('#buttonPlayRound');
-
+    
     $spanNextStage.append($buttonNextStage);
     $spanPlayRound.append($buttonPlayRound);
-
+    
     let $hpEnemy = document.getElementById('enemyHp');
     console.log($hpEnemy.textContent);
     console.log("ici")
@@ -106,9 +106,9 @@ $(() => {
     } else {
         $buttonPlayRound.show()
     }
-
+    
     $('#changeItem').hide();
-
+    
     $('#changeItem').click(function () {
         $.ajax({
             url: '/changeItem/' + $pkParty + '/' + document.getElementById('stuffClassName').textContent
@@ -117,13 +117,13 @@ $(() => {
             dataType: 'json',
         }).done(function (result) {
             console.log(result);
-            // let $hpMax = document.getElementById('characterHpMax');
+            let $hpMax = document.getElementById('characterHpMax');
             let $physicalResistence = document.getElementById('characterPhysicalResistence');
             let $magicalResistence = document.getElementById('characterMagicalResistence');
             let $strength = document.getElementById('characterStrength');
             let $intelligence = document.getElementById('characterIntelligence');
             let $agility = document.getElementById('characterAgility');
-
+            console.log($strength);
             if (result['stuffClassName'] === 'Head') {
                 console.log('Head');
                 let $headName = document.getElementById('headName');
@@ -133,7 +133,7 @@ $(() => {
                 let $headAgility = document.getElementById('headAgility');
                 let $headPhysicalResistance = document.getElementById('headPhysicalResistance');
                 let $headMagicalResistance = document.getElementById('headMagicalResistance');
-
+                
                 $headName.innerText = result['newStuff'];
                 $headHpMax.innerText = result['newStuffHpMax'];
                 $headStrength.innerText = result['newStuffStrength'];
@@ -141,7 +141,7 @@ $(() => {
                 $headAgility.innerText = result['newStuffAgility'];
                 $headPhysicalResistance.innerText = result['newStuffPhysicalResistance'];
                 $headMagicalResistance.innerText = result['newStuffMagicalResistance'];
-
+                
             } else if (result['stuffClassName'] === 'Chest') {
                 // MODIFIE LE CHEST OU L'ATTRIBUER
                 console.log('Chest');
@@ -152,7 +152,7 @@ $(() => {
                 let $chestAgility = document.getElementById('chestAgility');
                 let $chestPhysicalResistance = document.getElementById('chestPhysicalResistance');
                 let $chestMagicalResistance = document.getElementById('chestMagicalResistance');
-
+                
                 $chestName.innerText = result['newStuff'];
                 $chestHpMax.innerText = result['newStuffHpMax'];
                 $chestStrength.innerText = result['newStuffStrength'];
@@ -160,7 +160,7 @@ $(() => {
                 $chestAgility.innerText = result['newStuffAgility'];
                 $chestPhysicalResistance.innerText = result['newStuffPhysicalResistance'];
                 $chestMagicalResistance.innerText = result['newStuffMagicalResistance'];
-
+                
             } else if (result['stuffClassName'] === 'Leg') {
                 // MODIFIE LE LEG OU L'ATTRIBUER
                 console.log('Leg');
@@ -171,7 +171,7 @@ $(() => {
                 let $legAgility = document.getElementById('legAgility');
                 let $legPhysicalResistance = document.getElementById('legPhysicalResistance');
                 let $legMagicalResistance = document.getElementById('legMagicalResistance');
-
+                
                 $legName.innerText = result['newStuff'];
                 $legHpMax.innerText = result['newStuffHpMax'];
                 $legStrength.innerText = result['newStuffStrength'];
@@ -189,7 +189,7 @@ $(() => {
                 let $weaponAgility = document.getElementById('weaponAgility');
                 let $weaponPhysicalResistance = document.getElementById('weaponPhysicalResistance');
                 let $weaponMagicalResistance = document.getElementById('weaponMagicalResistance');
-
+                
                 $weaponName.innerText = result['newStuff'];
                 $weaponHpMax.innerText = result['newStuffHpMax'];
                 $weaponStrength.innerText = result['newStuffStrength'];
@@ -222,7 +222,7 @@ $(() => {
                     $usebutton.setAttribute('type', 'button');
                     $usebutton.setAttribute('class', 'useItem btn btn-success useItem');
                     $usebutton.innerText = 'Use';
-
+                    
                     $tdusebutton.append($usebutton);
                     $tdqunatity.append($pqunatity);
                     $tr.append($tdusebutton);
@@ -231,7 +231,7 @@ $(() => {
                     $table.append($tr);
                     $div.append($table);
                     ITEM.bindItem();
-
+                    
                 } else {
                     let $quantity = document.getElementById('quantity/' + $pkParty + '/' + result['stuffPk']);
                     $quantity.innerText = result['newStuffQuantity']
@@ -239,8 +239,8 @@ $(() => {
             }
             console.log("avant le result.character");
             console.log(result);
-            // $hpMax.innerText = result['character']['hpMax'];
-            if (result['stuffClassName'] === 'Weapon') {
+            if (result['stuffClassName'] !== 'Consumable') {
+                $hpMax.innerText = result['character']['hpMax'];
                 $physicalResistence.innerText = result['character']['physicalResistance'];
                 $magicalResistence.innerText = result['character']['magicalResistance'];
                 $strength.innerText = result['character']['strength'];
@@ -251,7 +251,7 @@ $(() => {
             closeModal();
         });
     });
-
+    
     $('#closeModal').click(function () {
         closeModal();
     });
@@ -268,7 +268,7 @@ $(() => {
             if (result['dropItem']) {
                 console.log('Y a un drop un drop mec !!!');
                 console.log(result['dropItem']);
-
+                
                 let $modalTitle = document.getElementById('itemModalLabel');
                 let $stuffClassName = document.getElementById('stuffClassName');
                 let $stuffPk = document.getElementById('stuffPk');
@@ -282,14 +282,14 @@ $(() => {
                 let $strength = document.getElementById('strength');
                 let $intelligence = document.getElementById('intelligence');
                 let $agility = document.getElementById('agility');
-
+                
                 if (result['dropItem']['isItemDropped'] !== false) {
                     $('#changeItem').show();
                     $modalTitle.textContent = result['dropItem']['ItemDropped']['name'];
                     $rarity.textContent = 'Rarity: ' + result['dropItem']['ItemDropped']['rarity'] + '\n';
                     $stuffClassName.textContent = result['dropItem']['stuffClassName'];
                     $stuffPk.textContent = result['dropItem']['pk'];
-
+                    
                     if (result['dropItem']['stuffClassName'] === 'Consumable') {
                         $hp.textContent = 'Hp: ' + result['dropItem']['ItemDropped']['hp'] + '\n';
                     } else {
@@ -317,7 +317,7 @@ $(() => {
             }
         });
     });
-
+    
     $('#nextStage').click(function () {
         let $pkEnemy = document.getElementById('pkEnemy').innerText;
         $buttonNextStage.hide();
