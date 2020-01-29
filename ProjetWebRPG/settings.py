@@ -23,10 +23,6 @@ SECRET_KEY = 's7od8@jus+@(x=cw-t2a8z+u85*oyjq!tcdpa+=yrsnst=9f_u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.environ.get('ENV') == 'PRODUCTION':
-    DEBUG = False
-    # ...
-    # Simplified static file serving.
-    # https://warehouse.python.org/project/whitenoise/
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     # Static files settings
     PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -37,13 +33,18 @@ if os.environ.get('ENV') == 'PRODUCTION':
     STATICFILES_DIRS = (
         os.path.join(PROJECT_ROOT, 'static'),
     )
+    DEBUG = False
+    # ...
+    # Simplified static file serving.
+    # https://warehouse.python.org/project/whitenoise/
+    
 else:
     DEBUG = True
     STATICFILES_DIRS = (
         os.path.join(BASE_DIR, "static"),
     )
 
-ALLOWED_HOSTS = ['projetWebRPG.herokuapp.com']
+ALLOWED_HOSTS = ['projetwebrpg.herokuapp.com']
 
 # Application definition
 
