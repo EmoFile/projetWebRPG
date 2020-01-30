@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
 
-
 # Create your models here.
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -58,22 +57,22 @@ class CharacterClass(models.Model):
         return f'{self.id}: {self.name}'
 
     def generateHpMax(self):
-        return random.randint(self.minHpMax, self.maxHpMax,1)
+        return random.randrange(self.minHpMax, self.maxHpMax, 1)
 
     def generateStrength(self):
-        return random.randint(self.minStrength, self.maxStrength,1)
+        return random.randrange(self.minStrength, self.maxStrength, 1)
 
     def generateAgility(self):
-        return random.randint(self.minAgility, self.maxAgility,1)
+        return random.randrange(self.minAgility, self.maxAgility, 1)
 
     def generateIntelligence(self):
-        return random.randint(self.minInt, self.maxInt,1)
+        return random.randrange(self.minInt, self.maxInt, 1)
 
     def generatePR(self):
-        return random.randint(self.minPhysRes, self.maxPhysRes,1)
+        return random.randrange(self.minPhysRes, self.maxPhysRes, 1)
 
     def generateMR(self):
-        return random.randint(self.minMagRes, self.maxMagRes,1)
+        return random.randrange(self.minMagRes, self.maxMagRes, 1)
 
 
 class Character(models.Model):
@@ -88,16 +87,16 @@ class Character(models.Model):
                                         validators=[MinValueValidator(1)],
                                         blank=False,
                                         null=False)
-    xp =  models.PositiveIntegerField(default=0,
-                                        blank=False,
-                                        null=False)
+    xp = models.PositiveIntegerField(default=0,
+                                     blank=False,
+                                     null=False)
     hpMax = models.PositiveIntegerField(default=10,
                                         validators=[MinValueValidator(0)],
                                         blank=False,
                                         null=False)
     hp = models.IntegerField(default=10,
-                                     blank=False,
-                                     null=False)
+                             blank=False,
+                             null=False)
     strength = models.IntegerField(default=1,
                                    blank=False,
                                    null=False)
@@ -115,7 +114,7 @@ class Character(models.Model):
                                             null=False)
     inventory = models.OneToOneField('Inventory',
                                      on_delete=models.PROTECT)
-    
+
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Lvl: {self.level}' \
@@ -127,7 +126,7 @@ class Character(models.Model):
                f'|Int: {self.intelligence}' \
                f'|Pr: {self.physicalResistance}' \
                f'|Mr: {self.magicalResistance}]'
-    
+
     def modifyCarac(self, item):
         if item._meta.object_name == 'Consumable':
             self.hp += item.hp
@@ -142,7 +141,7 @@ class Character(models.Model):
             self.intelligence += item.intelligence
             self.physicalResistance += item.physicalResistance
             self.magicalResistance += item.magicalResistance
-    
+
     def getHpMax(self):
         hpMax = self.hpMax
         if self.inventory.head is not None:
@@ -154,7 +153,7 @@ class Character(models.Model):
         if self.inventory.weapon is not None:
             hpMax += self.inventory.weapon.hpMax
         return hpMax
-    
+
     def getStrength(self):
         strength = self.strength
         if self.inventory.head is not None:
@@ -166,7 +165,7 @@ class Character(models.Model):
         if self.inventory.weapon is not None:
             strength += self.inventory.weapon.strength
         return strength
-    
+
     def getAgility(self):
         agility = self.agility
         if self.inventory.head is not None:
@@ -178,7 +177,7 @@ class Character(models.Model):
         if self.inventory.weapon is not None:
             agility += self.inventory.weapon.agility
         return agility
-    
+
     def getIntelligence(self):
         intelligence = self.intelligence
         if self.inventory.head is not None:
@@ -190,7 +189,7 @@ class Character(models.Model):
         if self.inventory.weapon is not None:
             intelligence += self.inventory.weapon.intelligence
         return intelligence
-    
+
     def getPhysicalResistance(self):
         physicalResistance = self.physicalResistance
         if self.inventory.head is not None:
@@ -202,7 +201,7 @@ class Character(models.Model):
         if self.inventory.weapon is not None:
             physicalResistance += self.inventory.weapon.physicalResistance
         return physicalResistance
-    
+
     def getMagicalResistance(self):
         magicalResistance = self.magicalResistance
         if self.inventory.head is not None:
@@ -424,8 +423,8 @@ class Party(models.Model):
 
 class Enemy(models.Model):
     default = {
-               'blank': False,
-               'null': False}
+        'blank': False,
+        'null': False}
     name = models.CharField(max_length=20,
                             default='un mec',
                             blank=False,
@@ -479,7 +478,7 @@ class Enemy(models.Model):
             adventurer.intelligence + (
                     adventurer.intelligence * max_percent_def) / 100))
         agility = round(random.uniform(adventurer.agility - 10,
-                                 adventurer.agility + 10))
+                                       adventurer.agility + 10))
         hp = hpMax
         return cls(hpMax=hpMax, strength=strength, intelligence=intelligence,
                    physical_resistance=physical_resistance,
@@ -494,7 +493,7 @@ class Minion(Enemy):
                f'|hp: {self.hp}' \
                f'|Str: {self.strength}' \
                f'|Ag: {self.agility}' \
-               f'|Int: {self.intelligence}'\
+               f'|Int: {self.intelligence}' \
                f'|Next: {str(self.next) if self.next is not None else None}]'
 
     @classmethod
@@ -521,7 +520,7 @@ class BossAlain(Enemy):
                f'|hp: {self.hp}' \
                f'|Str: {self.strength}' \
                f'|Ag: {self.agility}' \
-               f'|Int: {self.intelligence}'\
+               f'|Int: {self.intelligence}' \
                f'|Next {str(self.next) if self.next is not None else None}]'
 
     @classmethod
@@ -560,8 +559,8 @@ class PartyEnemy(models.Model):
     enemy = models.ForeignKey(Enemy,
                               on_delete=models.PROTECT)
     hp = models.IntegerField(default=0,
-                                     blank=False,
-                                     null=False)
+                             blank=False,
+                             null=False)
 
     def __str__(self):
         return f'{self.id}: {self.party.character.name} | {self.enemy.name} | {self.hp}'
