@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import sentry_sdk
-from django.conf import settings
+# from django.conf import settings
 from sentry_sdk.integrations.django import DjangoIntegration
 
 sentry_sdk.init(
@@ -23,14 +23,6 @@ sentry_sdk.init(
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=True
 )
-
-env_vars = {
-    'ADMIN': {},
-    'DB_HOST': {'required': True},
-    'DB_NAME': {'required': True},
-    'DB_USER': {'required': True},
-    'DB_PASSWORD': {'required': True},
-}
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -61,10 +53,10 @@ if os.environ.get('ENV') == 'PRODUCTION':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': settings['DB_NAME'],
-            'USER': settings['DB_USER'],
-            'PASSWORD': settings['DB_PASSWORD'],
-            'HOST': settings['DB_HOST'],
+            'NAME': os.environ.get('DB_NAME'),
+            'USER': os.environ.get('DB_USER'),
+            'PASSWORD': os.environ.get('DB_PASSWORD'),
+            'HOST': os.environ.get('DB_HOST'),
             'PORT': '5432',
         }
     }
