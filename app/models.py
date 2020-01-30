@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
 
+
 # Create your models here.
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -57,22 +58,22 @@ class CharacterClass(models.Model):
         return f'{self.id}: {self.name}'
 
     def generateHpMax(self):
-        return random.randint(self.minHpMax, self.maxHpMax)
+        return random.randint(self.minHpMax, self.maxHpMax,1)
 
     def generateStrength(self):
-        return random.randint(self.minStrength, self.maxStrength)
+        return random.randint(self.minStrength, self.maxStrength,1)
 
     def generateAgility(self):
-        return random.randint(self.minAgility, self.maxAgility)
+        return random.randint(self.minAgility, self.maxAgility,1)
 
     def generateIntelligence(self):
-        return random.randint(self.minInt, self.maxInt)
+        return random.randint(self.minInt, self.maxInt,1)
 
     def generatePR(self):
-        return random.randint(self.minPhysRes, self.maxPhysRes)
+        return random.randint(self.minPhysRes, self.maxPhysRes,1)
 
     def generateMR(self):
-        return random.randint(self.minMagRes, self.maxMagRes)
+        return random.randint(self.minMagRes, self.maxMagRes,1)
 
 
 class Character(models.Model):
