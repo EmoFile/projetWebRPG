@@ -1,0 +1,8 @@
+1. Lifesteel (joueur comme enemie)
+2. Drop d'un objet != celui équiper (1fois)
+3. Génération des enemie fait par rapport au brut du caractère
+4. amélioration: Réussite critique touche quand même
+5. Stage doit s'actuliser
+6. modal item qui ne se vide pas surement a cause du spam
+7. Regler max point de vie
+8. 
