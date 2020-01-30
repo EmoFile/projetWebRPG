@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
 
+
 # Create your models here.
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -57,22 +58,22 @@ class CharacterClass(models.Model):
         return f'{self.id}: {self.name}'
 
     def generateHpMax(self):
-        return random.randrange(self.minHpMax, self.maxHpMax, 1)
+        return random.randint(self.minHpMax, self.maxHpMax)
 
     def generateStrength(self):
-        return random.randrange(self.minStrength, self.maxStrength, 1)
+        return random.randint(self.minStrength, self.maxStrength)
 
     def generateAgility(self):
-        return random.randrange(self.minAgility, self.maxAgility, 1)
+        return random.randint(self.minAgility, self.maxAgility)
 
     def generateIntelligence(self):
-        return random.randrange(self.minInt, self.maxInt, 1)
+        return random.randint(self.minInt, self.maxInt)
 
     def generatePR(self):
-        return random.randrange(self.minPhysRes, self.maxPhysRes, 1)
+        return random.randint(self.minPhysRes, self.maxPhysRes)
 
     def generateMR(self):
-        return random.randrange(self.minMagRes, self.maxMagRes, 1)
+        return random.randint(self.minMagRes, self.maxMagRes)
 
 
 class Character(models.Model):
@@ -87,16 +88,16 @@ class Character(models.Model):
                                         validators=[MinValueValidator(1)],
                                         blank=False,
                                         null=False)
-    xp = models.PositiveIntegerField(default=0,
-                                     blank=False,
-                                     null=False)
+    xp =  models.PositiveIntegerField(default=0,
+                                        blank=False,
+                                        null=False)
     hpMax = models.PositiveIntegerField(default=10,
                                         validators=[MinValueValidator(0)],
                                         blank=False,
                                         null=False)
     hp = models.IntegerField(default=10,
-                             blank=False,
-                             null=False)
+                                     blank=False,
+                                     null=False)
     strength = models.IntegerField(default=1,
                                    blank=False,
                                    null=False)
@@ -423,8 +424,8 @@ class Party(models.Model):
 
 class Enemy(models.Model):
     default = {
-        'blank': False,
-        'null': False}
+               'blank': False,
+               'null': False}
     name = models.CharField(max_length=20,
                             default='un mec',
                             blank=False,
@@ -478,7 +479,7 @@ class Enemy(models.Model):
             adventurer.intelligence + (
                     adventurer.intelligence * max_percent_def) / 100))
         agility = round(random.uniform(adventurer.agility - 10,
-                                       adventurer.agility + 10))
+                                 adventurer.agility + 10))
         hp = hpMax
         return cls(hpMax=hpMax, strength=strength, intelligence=intelligence,
                    physical_resistance=physical_resistance,
@@ -493,7 +494,7 @@ class Minion(Enemy):
                f'|hp: {self.hp}' \
                f'|Str: {self.strength}' \
                f'|Ag: {self.agility}' \
-               f'|Int: {self.intelligence}' \
+               f'|Int: {self.intelligence}'\
                f'|Next: {str(self.next) if self.next is not None else None}]'
 
     @classmethod
@@ -520,7 +521,7 @@ class BossAlain(Enemy):
                f'|hp: {self.hp}' \
                f'|Str: {self.strength}' \
                f'|Ag: {self.agility}' \
-               f'|Int: {self.intelligence}' \
+               f'|Int: {self.intelligence}'\
                f'|Next {str(self.next) if self.next is not None else None}]'
 
     @classmethod
@@ -559,8 +560,8 @@ class PartyEnemy(models.Model):
     enemy = models.ForeignKey(Enemy,
                               on_delete=models.PROTECT)
     hp = models.IntegerField(default=0,
-                             blank=False,
-                             null=False)
+                                     blank=False,
+                                     null=False)
 
     def __str__(self):
         return f'{self.id}: {self.party.character.name} | {self.enemy.name} | {self.hp}'
