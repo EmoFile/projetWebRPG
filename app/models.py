@@ -87,6 +87,9 @@ class Character(models.Model):
                                         validators=[MinValueValidator(1)],
                                         blank=False,
                                         null=False)
+    xp =  models.PositiveIntegerField(default=0,
+                                        blank=False,
+                                        null=False)
     hpMax = models.PositiveIntegerField(default=10,
                                         validators=[MinValueValidator(0)],
                                         blank=False,
@@ -111,7 +114,7 @@ class Character(models.Model):
                                             null=False)
     inventory = models.OneToOneField('Inventory',
                                      on_delete=models.PROTECT)
-
+    
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Lvl: {self.level}' \
@@ -226,6 +229,7 @@ class Character(models.Model):
 class Item(models.Model):
     class Meta:
         abstract = True
+        unique_together = [['name']]
 
     COMMON = 'Common'
     RARE = 'Rare'
@@ -533,9 +537,9 @@ class BossAlain(Enemy):
         max_percent_def = (7 * k - 69) / 3
 
         min_percent = max_percent = name = None
-        for (percent, p_min, p_max, title) in [(100, 70, 100, 'King'),
-                                               (50, 60, 70, 'General'),
-                                               (10, 50, 60, 'Soldier')]:
+        for (percent, p_min, p_max, title) in [(100, 70, 100, 'King Alain'),
+                                               (50, 60, 70, 'General Alain'),
+                                               (10, 50, 60, 'Soldier Alain')]:
             if (stage % percent) == 0:
                 min_percent = p_min
                 max_percent = p_max
