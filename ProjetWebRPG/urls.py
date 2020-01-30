@@ -17,8 +17,10 @@ from django.contrib import admin
 from django.urls import path
 
 from app import views
-from app.views import IndexView, GenerateCharacterView, CharacterDetailView, SignUpView, LogInView, PlayGameView, \
-    dropItem, GenerateMinionTest, EnemyList, GenerateBoss, changeItem
+
+from app.views import IndexView, GenerateCharacterView, CharacterDetailView, \
+    SignUpView, LogInView, PlayGameView, \
+    DropItem, EnemyList, ChangeItem, UseItem, PlayRound, NextEnemy, NextEnemyView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,9 +32,13 @@ urlpatterns = [
     path('playGame/<int:pk>', PlayGameView.as_view(), name='playGame'),
     path('signUp/', SignUpView.as_view(), name='signUp'),
     path('logIn/', LogInView.as_view(), name='logIn'),
-    path('playGame/dropItem', dropItem, name='dropItem'),
-    path('playGame/changeItem/<int:partyPk>/<str:stuffClassName>/<int:stuffPk>', changeItem, name='changeItem'),
-    path('testGenerateEnemy/<int:pk>', GenerateMinionTest.as_view(), name='minionTest'),
-    path('GenerateBoss/<int:pk>', GenerateBoss.as_view(), name='BossGenerate'),
-    path('ArticleListView/', EnemyList.as_view(), name='listEnemy')
+    path('dropItem', DropItem, name='dropItem'),
+    path('quantity/<int:partyPk>/<int:consumablePk>', UseItem,
+         name='useItem'),
+    path('changeItem/<int:partyPk>/<str:stuffClassName>/<int:stuffPk>',
+         ChangeItem, name='changeItem'),
+    path('ArticleListView/', EnemyList.as_view(), name='listEnemy'),
+    path('playRound/<int:pkParty>/<int:pkEnemy>', PlayRound.as_view(), name='playRound'),
+    path('nextEnemy/<int:pkParty>/<int:pkEnemy>', NextEnemyView.as_view(), name='nextEnemy')
+
 ]
