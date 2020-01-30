@@ -1,1 +1,1 @@
-web: gunicorn projetWebRPG.wsgi
+web: gunicorn projetwebrpg.wsgi
