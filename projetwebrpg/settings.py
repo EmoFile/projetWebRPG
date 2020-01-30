@@ -39,16 +39,16 @@ if os.environ.get('ENV') == 'PRODUCTION':
     # ...
     # Simplified static file serving.
     # https://warehouse.python.org/project/whitenoise/
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    # Static files settings
-    PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+    # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    # # Static files settings
+    # PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+    #
+    # STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+    #
+    # # Extra places for collectstatic to find static files.
 
-    STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-    # Extra places for collectstatic to find static files.
-    STATICFILES_DIRS = (
-        os.path.join(PROJECT_ROOT, 'static'),
-    )
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
