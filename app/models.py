@@ -90,6 +90,7 @@ class Character(models.Model):
                             blank=False,
                             null=False)
     characterClass = models.ForeignKey(CharacterClass,
+                                       default=1,
                                        on_delete=models.CASCADE,
                                        related_name='characterClass')
     level = models.PositiveIntegerField(default=1,
@@ -120,6 +121,7 @@ class Character(models.Model):
                                             blank=False,
                                             null=False)
     inventory = models.OneToOneField('Inventory',
+                                     default=1,
                                      on_delete=models.PROTECT)
 
     def __str__(self):
@@ -191,6 +193,7 @@ class Stuff(Item):
 class Weapon(Stuff):
     oneHanded = models.BooleanField(default=True)
     characterClass = models.ForeignKey(CharacterClass,
+                                       default=1,
                                        on_delete=models.CASCADE,
                                        related_name='weaponCharacterClass')
 
@@ -206,6 +209,7 @@ class Weapon(Stuff):
 
 class Head(Stuff):
     characterClass = models.ForeignKey(CharacterClass,
+                                       default=1,
                                        on_delete=models.CASCADE,
                                        related_name='headCharacterClass')
 
@@ -223,6 +227,7 @@ class Head(Stuff):
 
 class Chest(Stuff):
     characterClass = models.ForeignKey(CharacterClass,
+                                       default=1,
                                        on_delete=models.CASCADE,
                                        related_name='chestCharacterClass')
 
@@ -240,6 +245,7 @@ class Chest(Stuff):
 
 class Leg(Stuff):
     characterClass = models.ForeignKey(CharacterClass,
+                                       default=1,
                                        on_delete=models.CASCADE,
                                        related_name='legCharacterClass')
 
@@ -285,6 +291,16 @@ class Inventory(models.Model):
                             related_name='legInventory',
                             blank=True,
                             null=True)
+    weapon1 = models.ForeignKey(Weapon,
+                                on_delete=models.CASCADE,
+                                related_name='weapon1Inventory',
+                                blank=True,
+                                null=True)
+    weapon2 = models.ForeignKey(Weapon,
+                                on_delete=models.CASCADE,
+                                related_name='weapon2Inventory',
+                                blank=True,
+                                null=True)
     consumables = models.ManyToManyField('Consumable',
                                          through='InventoryConsumable')
 
@@ -455,4 +471,3 @@ class BossAlain(Enemy):
             print("t'es pas censé être la mec t'a lancer une fonction au mauvais stage")
         return super(BossAlain, cls).create(adventurer, min_percent, max_percent, min_percent_def,
                                             max_percent_def, name)
-

@@ -203,11 +203,32 @@ def dropItem(request):
 
 
 def ChangeWeapon(*args, **kwargs):
+    currentWeapon = kwargs['weapon']
+    inventory = kwargs['inventory']
+    oldStuff = ''
+    newStuff = currentWeapon
+    if not currentWeapon.isOneHanded:
+        inventory.weapon1 = currentWeapon
+        inventory.weapon2 = None
+    else:
+        if inventory.weapon1 is None:
+            inventory.weapon1 = currentWeapon
+        elif inventory.weapon2 is None:
+            inventory.weapon2 = currentWeapon
+        else:
+            if inventory.weapon1.requiredLevel < inventory.weapon1.requiredLevel:
+                inventory.weapon1 = currentWeapon
+            else:
+                inventory.weapon2 = currentWeapon
+
+    inventory.save()
     return JsonResponse({
         'stuffClassName': kwargs['stuffClassName'],
-        'weapon': kwargs['weapon'].name,
-        'oldStuff': 'oldStuff',
-        'newStuff': 'newStuff'
+        'weapon': currentWeapon.name,
+        'oldStuff': oldStuff,
+        'newStuff': newStuff,
+        'weapon1': inventory.weapon1,
+        'weapon2': inventory.weapon2
     })
 
 
@@ -215,19 +236,19 @@ def ChangeStuff(*args, **kwargs):
     oldStuff = ''
     newStuff = ''
     if kwargs['stuffClassName'] == 'Head':
-        if kwargs['inventory'].head != None:
+        if kwargs['inventory'].head is not None:
             oldStuff = kwargs['inventory'].head.name
         kwargs['inventory'].head = get_object_or_404(Head, pk=kwargs['stuffPk'])
         kwargs['inventory'].save()
         newStuff = kwargs['inventory'].head
     elif kwargs['stuffClassName'] == 'Chest':
-        if kwargs['inventory'].chest != None:
+        if kwargs['inventory'].chest is not None:
             oldStuff = kwargs['inventory'].chest.name
         kwargs['inventory'].chest = get_object_or_404(Chest, pk=kwargs['stuffPk'])
         kwargs['inventory'].save()
         newStuff = kwargs['inventory'].chest
     elif kwargs['stuffClassName'] == 'Leg':
-        if kwargs['inventory'].leg != None:
+        if kwargs['inventory'].leg is not None:
             oldStuff = kwargs['inventory'].leg.name
         kwargs['inventory'].leg = get_object_or_404(Leg, pk=kwargs['stuffPk'])
         kwargs['inventory'].save()
@@ -241,11 +262,20 @@ def ChangeStuff(*args, **kwargs):
 
 
 def AddConsumable(*args, **kwargs):
+    kwargs['inventory'].consumables.add(kwargs['consumable'])
+    TEST = ''
+    for obj in kwargs['inventory'].inventoryconsumable_set.all():
+        if obj.pk == kwargs['consumable'].pk:
+            TEST = 'OUI'
+
+    kwargs['inventory'].save()
+
     return JsonResponse({
         'stuffClassName': kwargs['stuffClassName'],
         'stuffPk': kwargs['consumable'].name,
         'oldStuff': 'oldStuff',
-        'newStuff': 'newStuff'
+        'newStuff': 'newStuff',
+        'TEST': TEST
     })
 
 
