@@ -1,5 +1,5 @@
 """
-ASGI config for ProjetWebRPG project.
+ASGI config for projetwebrpg project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
