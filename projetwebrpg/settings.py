@@ -82,7 +82,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
-ROOT_URLCONF = 'ProjetWebRPG.urls'
+ROOT_URLCONF = 'projetwebrpg.urls'
 
 TEMPLATES = [
     {
@@ -101,7 +101,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ProjetWebRPG.wsgi.application'
+WSGI_APPLICATION = 'projetwebrpg.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
