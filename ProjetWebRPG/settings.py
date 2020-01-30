@@ -18,33 +18,46 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 's7od8@jus+@(x=cw-t2a8z+u85*oyjq!tcdpa+=yrsnst=9f_u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.environ.get('ENV') == 'PRODUCTION':
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+    DEBUG = False
+    ALLOWED_HOSTS = ['projetwebrpg.herokuapp.com']
+    # ...
+    # Simplified static file serving.
+    # https://warehouse.python.org/project/whitenoise/
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     # Static files settings
     PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-    
+
     STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-    
+
     # Extra places for collectstatic to find static files.
     STATICFILES_DIRS = (
         os.path.join(PROJECT_ROOT, 'static'),
     )
-    DEBUG = False
-    # ...
-    # Simplified static file serving.
-    # https://warehouse.python.org/project/whitenoise/
-    
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'WebRPG_DB',
+        }
+    }
 else:
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = 's7od8@jus+@(x=cw-t2a8z+u85*oyjq!tcdpa+=yrsnst=9f_u'
     DEBUG = True
     STATICFILES_DIRS = (
         os.path.join(BASE_DIR, "static"),
     )
-
-ALLOWED_HOSTS = ['projetwebrpg.herokuapp.com']
+    ALLOWED_HOSTS = []
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 # Application definition
 
@@ -93,12 +106,6 @@ WSGI_APPLICATION = 'ProjetWebRPG.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
