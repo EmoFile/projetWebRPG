@@ -5,4 +5,9 @@
 5. Stage doit s'actuliser
 6. modal item qui ne se vide pas surement a cause du spam
 7. Regler max point de vie
-8. 
+8. ecrire les les noms des slots
+9. les rareté des equipement mis
+10. ecrire dans la modal dans quel slot ira l'item
+11. attendre la réponse json avant de remettre le bouton play round (faire comme next stage le suprimmer et
+a la fin le remttre)
+12. on peut next stage sans avoir tuer le mec en enlevant le hidden
