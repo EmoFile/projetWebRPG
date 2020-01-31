@@ -458,27 +458,27 @@ class Enemy(models.Model):
             adventurer.hpMax + (adventurer.hpMax * min_percent) / 100,
             adventurer.hpMax + (adventurer.hpMax * max_percent) / 100))
         strength = round(random.uniform(
-            adventurer.physicalResistance - (
-                    adventurer.physicalResistance * min_percent_def) / 100,
-            adventurer.physicalResistance - (
-                    adventurer.physicalResistance * max_percent_def) / 100))
+            adventurer.getPhysicalResistance() - (
+                    adventurer.getPhysicalResistance() * min_percent_def) / 100,
+            adventurer.getPhysicalResistance() - (
+                    adventurer.getPhysicalResistance() * max_percent_def) / 100))
         intelligence = round(random.uniform(
-            adventurer.magicalResistance - (
-                    adventurer.magicalResistance * min_percent_def) / 100,
-            adventurer.magicalResistance - (
-                    adventurer.magicalResistance * max_percent_def) / 100))
+            adventurer.getMagicalResistance() - (
+                    adventurer.getMagicalResistance() * min_percent_def) / 100,
+            adventurer.getMagicalResistance() - (
+                    adventurer.getMagicalResistance() * max_percent_def) / 100))
         physical_resistance = round(random.uniform(
-            adventurer.strength + (
-                    adventurer.strength * min_percent_def) / 100,
-            adventurer.strength + (
-                    adventurer.strength * max_percent_def) / 100))
+            adventurer.getStrength() + (
+                    adventurer.getStrength() * min_percent_def) / 100,
+            adventurer.getStrength() + (
+                    adventurer.getStrength() * max_percent_def) / 100))
         magical_resistance = round(random.uniform(
-            adventurer.intelligence + (
-                    adventurer.intelligence * min_percent_def) / 100,
-            adventurer.intelligence + (
-                    adventurer.intelligence * max_percent_def) / 100))
-        agility = round(random.uniform(adventurer.agility - 10,
-                                 adventurer.agility + 10))
+            adventurer.getIntelligence() + (
+                    adventurer.getIntelligence() * min_percent_def) / 100,
+            adventurer.getIntelligence() + (
+                    adventurer.getIntelligence() * max_percent_def) / 100))
+        agility = round(random.uniform(adventurer.getAgility() - 10,
+                                 adventurer.getAgility() + 10))
         hp = hpMax
         return cls(hpMax=hpMax, strength=strength, intelligence=intelligence,
                    physical_resistance=physical_resistance,
@@ -508,7 +508,7 @@ class Minion(Enemy):
         max_percent = (i + 2) * 3
         min_percent_def = (30 * i - 330) / 11
         max_percent_def = (7 * i - 69) / 3
-        name = "un sbire d'Alain"
+        name = "Minions of Alain"
         return super().create(adventurer, min_percent, max_percent,
                               min_percent_def, max_percent_def, name)
 
