@@ -1,5 +1,5 @@
 function closeModal() {
-    console.log('Vidage de la modale')
+    console.log('Vidage de la modale');
     let $modalTitle = document.getElementById('itemModalLabel');
     let $levelRequired = document.getElementById('levelRequired');
     let $classRequired = document.getElementById('classRequired');

@@ -223,17 +223,6 @@ class PlayRound(generic.View):
             party.isEnded = True
             party.save()
             return JsonResponse({'isEnded': party.isEnded})
-
-        elif p_e.hp <= 0:
-            return JsonResponse({'isEnded': party.isEnded,
-                                 'enemy': {
-                                     'hp': p_e.hp
-                                 },
-                                 'character': {
-                                     'hp': adventurer.hp
-                                 }
-                                 })
-
         elif p_e.hp <= 0:
             return JsonResponse({'dropItem': DropItem(adventurer=adventurer),
                                  'isEnded': party.isEnded,
