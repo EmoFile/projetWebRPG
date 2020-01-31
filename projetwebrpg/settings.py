@@ -37,19 +37,7 @@ if os.environ.get('ENV') == 'PRODUCTION':
     SECRET_KEY = os.environ.get('SECRET_KEY')
     DEBUG = False
     ALLOWED_HOSTS = ['projetwebrpg.herokuapp.com']
-    # ...
-    # Simplified static file serving.
-    # https://warehouse.python.org/project/whitenoise/
-    # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    # # Static files settings
-    # PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-    #
-    # STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-    #
-    # # Extra places for collectstatic to find static files.
-
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
