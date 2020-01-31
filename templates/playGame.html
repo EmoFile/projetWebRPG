@@ -1,61 +1,62 @@
 {% extends 'base.html' %}
 {% block table-score %}
     <div class="row container-fluid">
-        <div class="col-3">
+        <div class="col-4">
             <span id="characterPk" hidden>{{ party.character.pk }}</span>
-            <table class="table table-borderless">
+            <table>
                 <thead>
                 <tr>
-                    <th scope="col"><p
-                        id="characterName">{{ party.character.name }}</p>
+                    <th scope="col"><span
+                        id="characterName">{{ party.character.name }}</span>
                     </th>
-                    <th scope="col"><p
-                        id="characterClass">{{ party.character.characterClass.name }}</p>
+                    <th scope="col"><span
+                        id="characterClass">{{ party.character.characterClass.name }}</span>
                     </th>
-                    <th scope="col"><p class="inline"
-                                       id="characterLevel">
-                        Lvl: {{ party.character.level }}</p></th>
+                    <th scope="col"><span class="inline"
+                                          id="characterLevel">
+                        Lvl: {{ party.character.level }}</span></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <th scope="row" class="text-success">HP:</th>
-                    <td><p id="characterHp"> {{ currentCharacter.hp }}/{{ currentCharacter.hpMax }}</p>
+                    <td>
+                        <span id="characterHp">{{ currentCharacter.hp }}</span>/<span
+                        id="characterHpMax">{{ currentCharacter.hpMax }}</span>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row" class="text-primary">ARM:</th>
-                    <td><p
-                        id="characterPhysicalResistence">{{ currentCharacter.physicalResistance }}</p>
-                        ({{ party.character.physicalResistance }})
+                    <td><span
+                        id="characterPhysicalResistence">{{ currentCharacter.physicalResistance }}</span> ({{ party.character.physicalResistance }})
                     </td>
                 </tr>
                 <tr>
                     <th scope="row" class="text-secondary">RES:</th>
-                    <td><p
+                    <td><span
                         id="characterMagicalResistence">
-                        {{ currentCharacter.magicalResistance }}</p>({{ party.character.magicalResistance }})
+                        {{ currentCharacter.magicalResistance }}</span> ({{ party.character.magicalResistance }})
                     </td>
                 </tr>
                 <tr>
                     <th scope="row" class="text-danger">STR:</th>
-                    <td><p
+                    <td><span
                         id="characterStrength">
-                        {{ currentCharacter.strength }}</p>({{ party.character.strength }})
+                        {{ currentCharacter.strength }}</span> ({{ party.character.strength }})
                     </td>
                 </tr>
                 <tr>
                     <th scope="row" class="text-info">INT:</th>
-                    <td><p
+                    <td><span
                         id="characterIntelligence">
-                        {{ currentCharacter.intelligence }}</p>({{ party.character.intelligence }})
+                        {{ currentCharacter.intelligence }}</span> ({{ party.character.intelligence }})
                     </td>
                 </tr>
                 <tr>
                     <th scope="row" class="text-warning">AGI:</th>
-                    <td><p
+                    <td><span
                         id="characterAgility">
-                        {{ currentCharacter.agility }}</p>({{ party.character.agility }})
+                        {{ currentCharacter.agility }}</span> ({{ party.character.agility }})
                     </td>
                 </tr>
                 </tbody>
@@ -332,11 +333,12 @@
                                     <tr>
                                         <th scope="row">{{ consumable.consumable.name }}</th>
                                         <td>
-                                            <p id="quantity/{{ party.character.pk }}/{{ consumable.consumable.pk }}">{{ consumable.quantity }}</p>
+                                            <span
+                                                id="quantity/{{ party.character.pk }}/{{ consumable.consumable.pk }}">{{ consumable.quantity }}</span>
                                         </td>
                                         <td>
                                             <button type="button"
-                                                    urlUseItem="useItem/{{ party.character.pk }}/{{ consumable.consumable.pk }}"
+                                                    urlUseItem="quantity/{{ party.pk }}/{{ consumable.consumable.pk }}"
                                                     coupleCharacterConsumable="{{ party.character.pk }}/{{ consumable.consumable.pk }}"
                                                     class="useItem btn btn-success">
                                                 Use
@@ -352,24 +354,90 @@
                 </div>
             </div>
         </div>
-        <div class="col-6">
-            Battle report
+        <div class="col-4">
+            <div>
+                <span class="h1">Stage: </span>
+                <span id="stage" class="h1">{{ party.stage }}</span>
+            </div>
+            <div>
+                <span id="buttonPlayRound"></span>
+                <span id="buttonNextStage"></span>
+            </div>
         </div>
-        <div class="col-3">
-            Ennemy Info
-            <p id="pkEnemy">{{ firstEnemy.enemyPk }}</p>
+        <div class="col-4">
+            <p id="pkEnemy" hidden>{{ enemy.enemyPk }}</p>
+            <table>
+                <thead>
+                <tr>
+                    <th scope="col">
+                        <span id="enemyName">{{ enemy.enemyName }}</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row" class="text-success">HP:</th>
+                    <td>
+                        <span>
+                            <span id="enemyHp"> {{ enemy.enemyHp }}</span>
+                            <span>/</span>
+                            <span id="enemyHpMax">{{ enemy.enemyHpMax }}</span>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-primary">
+                        ARM:
+                    </th>
+                    <td>
+                        <span id="enemyPhysicalResistance">
+                            {{ enemy.enemyPhysicalResistance }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-secondary">
+                        RES:
+                    </th>
+                    <td>
+                        <span id="enemyMagicalResistance">
+                            {{ enemy.enemyMagicalResistance }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-danger">
+                        STR:
+                    </th>
+                    <td>
+                        <span id="enemyStrength">
+                            {{ enemy.enemyStrength }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-info">
+                        INT:
+                    </th>
+                    <td>
+                        <span id="enemyIntelligence">
+                            {{ enemy.enemyIntelligence }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-warning">
+                        AGI:
+                    </th>
+                    <td>
+                        <span id="enemyAgility">
+                            {{ enemy.enemyAgility }}
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-        <!-- Button trigger modal -->
-        <button type="button" id="dropButton" class="btn btn-primary"
-                data-toggle="modal" data-target="#itemModal">
-            Drop Item
-        </button>
-        <button type="button" id="playRound" class="btn btn-secondary">
-            Play da round
-        </button>
-        <button type="button" id="nextStage" class="btn btn-danger">
-            Next Stage
-        </button>
     </div>
 
     <!-- Modal -->

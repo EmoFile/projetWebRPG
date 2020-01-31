@@ -1,9 +1,10 @@
 import random
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.http import response, JsonResponse, request
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
 from django.urls import reverse, reverse_lazy
@@ -12,8 +13,7 @@ from django.views.generic import TemplateView, CreateView, DetailView, ListView
 from django.views.generic.base import RedirectView
 
 from app.forms import CharacterForm
-from app.models import CharacterClass, Character, Inventory, Party, Minion, \
-    BossAlain, Consumable, Head, Chest, Leg, \
+from app.models import CharacterClass, Character, Inventory, Party, Minion, BossAlain, Consumable, Head, Chest, Leg, \
     Weapon, InventoryConsumable, Enemy, PartyEnemy
 
 
@@ -39,7 +39,8 @@ class CharacterDetailView(DetailView):
         return result
 
 
-class GenerateCharacterView(CreateView):
+class GenerateCharacterView(LoginRequiredMixin, CreateView):
+    login_url = 'logIn'
     model = Character
     form_class = CharacterForm
     template_name = 'characterForm.html'
@@ -113,8 +114,22 @@ class LogInView(LoginView):
         return reverse('home')
 
 
-class PlayGameView(TemplateView):
+class LogoutView(LogoutView):
+    next_page = 'home'
+
+
+class PlayGameView(LoginRequiredMixin, TemplateView):
+    login_url = 'logIn'
     template_name = 'playGame.html'
+
+    def get(self, request, *args, **kwargs):
+        party = get_object_or_404(Party, pk=self.kwargs['pk'])
+        print(request.user.pk)
+        if request.user.pk != party.user.pk:
+            return redirect(reverse('home'))
+        elif party.isEnded:
+            return redirect(reverse('home'))
+        return super().get(self)
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
@@ -122,7 +137,26 @@ class PlayGameView(TemplateView):
         party = get_object_or_404(Party, pk=self.kwargs['pk'])
         result['party'] = party
         result['currentCharacter'] = party.character.reload()
-        result['firstEnemy'] = NextEnemy(pkParty=party.pk)
+        print(party.enemies.all().last())
+        print(party.enemies.all().count())
+        if party.enemies.all().count() > 0:
+            enemy = party.enemies.all().last()
+            p_e = get_object_or_404(PartyEnemy, party=party, enemy=enemy)
+            result['enemy'] = {
+                'partyStage': party.stage,
+                'enemyPk': enemy.pk,
+                'enemyName': enemy.name,
+                'enemyHp': p_e.hp,
+                'enemyHpMax': enemy.hpMax,
+                'enemyStrength': enemy.strength,
+                'enemyAgility': enemy.agility,
+                'enemyIntelligence': enemy.intelligence,
+                'enemyPhysicalResistance': enemy.physical_resistance,
+                'enemyMagicalResistance': enemy.magical_resistance,
+                'partyIsEnded': party.isEnded
+            }
+        else:
+            result['enemy'] = NextEnemy(pkParty=party.pk)
         return result
 
 
@@ -139,7 +173,7 @@ class PlayRound(generic.View):
         """
         party = get_object_or_404(Party, pk=kwargs['pkParty'])
         adventurer = party.character
-        enemy = get_object_or_404(Minion, pk=kwargs['pkEnemy'])
+        enemy = get_object_or_404(Enemy, pk=kwargs['pkEnemy'])
         p_e = PartyEnemy.objects.get(party=party,
                                      enemy=enemy)
 
@@ -192,7 +226,18 @@ class PlayRound(generic.View):
 
         elif p_e.hp <= 0:
             return JsonResponse({'isEnded': party.isEnded,
-                                 'dropItem': DropItem(),
+                                 'enemy': {
+                                     'hp': p_e.hp
+                                 },
+                                 'character': {
+                                     'hp': adventurer.hp
+                                 }
+                                 })
+
+        elif p_e.hp <= 0:
+            return JsonResponse({'dropItem': DropItem(adventurer=adventurer),
+                                 'isEnded': party.isEnded,
+
                                  'enemy': {
                                      'hp': p_e.hp
                                  },
@@ -201,14 +246,15 @@ class PlayRound(generic.View):
                                  }
                                  })
         else:
-            return JsonResponse({'isEnded': party.isEnded,
-                                 'enemy': {
-                                     'hp': p_e.hp
-                                 },
-                                 'character': {
-                                     'hp': adventurer.hp
-                                 }
-                                 })
+            return JsonResponse({
+                'isEnded': party.isEnded,
+                'enemy': {
+                    'hp': p_e.hp
+                },
+                'character': {
+                    'hp': adventurer.hp
+                }
+            })
 
 
 def fight(atk, hpAtk, atkDef, res, hpDef):
@@ -249,22 +295,22 @@ def DropItem(**kwargs):
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 2:
             stuffClassName = 'Head'
-            stuffPull = Head.objects.filter(rarity=stuffRarity)
+            stuffPull = Head.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 3:
             stuffClassName = 'Chest'
-            stuffPull = Chest.objects.filter(rarity=stuffRarity)
+            stuffPull = Chest.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 4:
             stuffClassName = 'Leg'
-            stuffPull = Leg.objects.filter(rarity=stuffRarity)
+            stuffPull = Leg.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         else:
             stuffClassName = 'Weapon'
-            stuffPull = Weapon.objects.filter(rarity=stuffRarity)
+            stuffPull = Weapon.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         if stuffClassName == 'Consumable':
@@ -403,6 +449,7 @@ def NextEnemy(**kwargs):
         'enemyPk': next_enemy.pk,
         'enemyName': next_enemy.name,
         'enemyHpMax': next_enemy.hpMax,
+        'enemyHp': next_enemy.hpMax,
         'enemyStrength': next_enemy.strength,
         'enemyAgility': next_enemy.agility,
         'enemyIntelligence': next_enemy.intelligence,
@@ -492,11 +539,3 @@ class EnemyList(ListView):
 def ReloadCharacter(*args, **kwargs):
     currentCharacter = kwargs['currentCharacter']
     return currentCharacter.reload()
-
-
-def PlayTour():
-    pass
-
-
-def ReloadEnemy(*args, **kwargs):
-    pass

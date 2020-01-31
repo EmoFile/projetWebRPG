@@ -46,6 +46,7 @@
     {% else %}
         <p>
             {{ request.user }}
+            <a href="{% url 'logOut' %}" class="btn btn-outline-danger">Log Out</a>
         </p>
     {% endif %}
 </nav>

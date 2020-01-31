@@ -1,0 +1,15 @@
+1. Lifesteel (joueur comme enemie)
+2. Drop d'un objet != celui équiper (1fois)
+3. Génération des enemie fait par rapport au brut du caractère
+4. amélioration: Réussite critique touche quand même
+5. Stage doit s'actuliser
+6. modal item qui ne se vide pas surement a cause du spam
+7. Regler max point de vie
+8. ecrire les les noms des slots
+9. les rareté des equipement mis
+10. ecrire dans la modal dans quel slot ira l'item
+11. attendre la réponse json avant de remettre le bouton play round (faire comme next stage le suprimmer et
+a la fin le remttre)
+12. on peut next stage sans avoir tuer le mec en enlevant le hidden donc faudra bloquer ça
+13. le spam play round avec entré permet de reroll les item il faudrait juste bloquer le combat dès qu'il est mort
+14. Descendre le taux de drop des legendaires a 1/100
