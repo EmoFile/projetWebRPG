@@ -265,12 +265,12 @@ def fight(atk, hpAtk, atkDef, res, hpDef):
 
 def DropItem(**kwargs):
     if random.randint(1, 2) == 1:
-        stuffRarity = random.randint(1, 10)
-        if 1 <= stuffRarity <= 4:
+        stuffRarity = random.randint(1, 100)
+        if 1 <= stuffRarity <= 50:
             stuffRarity = 'Common'
-        elif 5 <= stuffRarity <= 7:
+        elif 51 <= stuffRarity <= 89:
             stuffRarity = 'Rare'
-        elif 8 <= stuffRarity <= 9:
+        elif 90 <= stuffRarity <= 99:
             stuffRarity = 'Epic'
         else:
             stuffRarity = 'Legendary'
