@@ -52,25 +52,25 @@ class CharacterClass(models.Model):
     maxMagRes = models.IntegerField(default=10,
                                     blank=False,
                                     null=False)
-
+    
     def __str__(self):
         return f'{self.id}: {self.name}'
-
+    
     def generateHpMax(self):
         return random.randint(self.minHpMax, self.maxHpMax)
-
+    
     def generateStrength(self):
         return random.randint(self.minStrength, self.maxStrength)
-
+    
     def generateAgility(self):
         return random.randint(self.minAgility, self.maxAgility)
-
+    
     def generateIntelligence(self):
         return random.randint(self.minInt, self.maxInt)
-
+    
     def generatePR(self):
         return random.randint(self.minPhysRes, self.maxPhysRes)
-
+    
     def generateMR(self):
         return random.randint(self.minMagRes, self.maxMagRes)
 
@@ -81,22 +81,23 @@ class Character(models.Model):
                             blank=False,
                             null=False)
     characterClass = models.ForeignKey(CharacterClass,
+                                       default=1,
                                        on_delete=models.CASCADE,
                                        related_name='characterClass')
     level = models.PositiveIntegerField(default=1,
                                         validators=[MinValueValidator(1)],
                                         blank=False,
                                         null=False)
-    xp =  models.PositiveIntegerField(default=0,
-                                        blank=False,
-                                        null=False)
+    xp = models.PositiveIntegerField(default=0,
+                                     blank=False,
+                                     null=False)
     hpMax = models.PositiveIntegerField(default=10,
                                         validators=[MinValueValidator(0)],
                                         blank=False,
                                         null=False)
     hp = models.IntegerField(default=10,
-                                     blank=False,
-                                     null=False)
+                             blank=False,
+                             null=False)
     strength = models.IntegerField(default=1,
                                    blank=False,
                                    null=False)
@@ -113,6 +114,7 @@ class Character(models.Model):
                                             blank=False,
                                             null=False)
     inventory = models.OneToOneField('Inventory',
+                                     default=1,
                                      on_delete=models.PROTECT)
     
     def __str__(self):
@@ -213,16 +215,41 @@ class Character(models.Model):
         if self.inventory.weapon is not None:
             magicalResistance += self.inventory.weapon.magicalResistance
         return magicalResistance
-
+    
+    def xpRequired(self):
+        return 100 + 10 * (self.level - 1)
+    
     def reload(self):
+        if self.xp >= self.xpRequired():
+            self.xp -= 100 + 10 * (self.level - 1)
+            self.level += 1
+            self.hpMax += 5
+            self.save()
+            self.strength += 2
+            self.intelligence += 2
+            self.agility += 2
+            self.physicalResistance += 2
+            self.magicalResistance += 2
+            self.hp = self.getHpMax()
+            self.save()
         return {
+            'level': self.level,
+            'xp': self.xp,
+            'xpRequired': 100 + 10 * (self.level - 1),
             'hpMax': self.getHpMax(),
             'hp': self.hp,
             'strength': self.getStrength(),
             'agility': self.getAgility(),
             'intelligence': self.getIntelligence(),
             'physicalResistance': self.getPhysicalResistance(),
-            'magicalResistance': self.getMagicalResistance()
+            'magicalResistance': self.getMagicalResistance(),
+            'basic': {
+                'strength': self.strength,
+                'agility': self.agility,
+                'intelligence': self.intelligence,
+                'physicalResistance': self.physicalResistance,
+                'magicalResistance': self.magicalResistance
+            }
         }
 
 
@@ -230,7 +257,7 @@ class Item(models.Model):
     class Meta:
         abstract = True
         unique_together = [['name']]
-
+    
     COMMON = 'Common'
     RARE = 'Rare'
     EPIC = 'Epic'
@@ -263,7 +290,7 @@ class Item(models.Model):
 class Stuff(Item):
     class Meta:
         abstract = True
-
+    
     requiredLevel = models.PositiveIntegerField(default=1,
                                                 validators=[
                                                     MinValueValidator(1)],
@@ -283,9 +310,10 @@ class Stuff(Item):
 class Weapon(Stuff):
     oneHanded = models.BooleanField(default=True)
     characterClass = models.ForeignKey(CharacterClass,
+                                       default=1,
                                        on_delete=models.CASCADE,
                                        related_name='weaponCharacterClass')
-
+    
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Lvl: {self.requiredLevel}' \
@@ -298,9 +326,10 @@ class Weapon(Stuff):
 
 class Head(Stuff):
     characterClass = models.ForeignKey(CharacterClass,
+                                       default=1,
                                        on_delete=models.CASCADE,
                                        related_name='headCharacterClass')
-
+    
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Lvl: {self.requiredLevel}' \
@@ -315,9 +344,10 @@ class Head(Stuff):
 
 class Chest(Stuff):
     characterClass = models.ForeignKey(CharacterClass,
+                                       default=1,
                                        on_delete=models.CASCADE,
                                        related_name='chestCharacterClass')
-
+    
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Lvl: {self.requiredLevel}' \
@@ -332,9 +362,10 @@ class Chest(Stuff):
 
 class Leg(Stuff):
     characterClass = models.ForeignKey(CharacterClass,
+                                       default=1,
                                        on_delete=models.CASCADE,
                                        related_name='legCharacterClass')
-
+    
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Lvl: {self.requiredLevel}' \
@@ -352,7 +383,7 @@ class Consumable(Item):
                              validators=[MinValueValidator(0)],
                              blank=False,
                              null=False)
-
+    
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Hp: {self.hp}' \
@@ -377,6 +408,7 @@ class Inventory(models.Model):
                             related_name='legInventory',
                             blank=True,
                             null=True)
+    
     weapon = models.ForeignKey(Weapon,
                                on_delete=models.CASCADE,
                                related_name='weaponInventory',
@@ -394,7 +426,7 @@ class InventoryConsumable(models.Model):
     quantity = models.PositiveIntegerField(default=0,
                                            blank=False,
                                            null=False)
-
+    
     def __str__(self):
         return f'{self.id}: {self.consumable.name} {self.quantity}'
 
@@ -411,10 +443,10 @@ class Party(models.Model):
     date = models.DateField("Date", default=datetime.date.today)
     isEnded = models.BooleanField(default=False)
     enemies = models.ManyToManyField('Enemy', through='PartyEnemy')
-
+    
     class Meta:
         unique_together = ['character']
-
+    
     def __str__(self):
         return f'{self.id}: {self.user.username} ' \
                f'{self.character} ' \
@@ -423,8 +455,8 @@ class Party(models.Model):
 
 class Enemy(models.Model):
     default = {
-               'blank': False,
-               'null': False}
+        'blank': False,
+        'null': False}
     name = models.CharField(max_length=20,
                             default='un mec',
                             blank=False,
@@ -438,10 +470,10 @@ class Enemy(models.Model):
     magical_resistance = models.IntegerField(default=0, **default)
     is_boss = models.BooleanField(default=False)
     next = models.ForeignKey('self', default=None, on_delete=models.CASCADE, blank=True, null=True)
-
+    
     def is_minion(self):
         return hasattr(self, 'minion')
-
+    
     @classmethod
     def create(cls, adventurer, min_percent, max_percent, min_percent_def,
                max_percent_def, name, *args, **kwargs):
@@ -459,26 +491,26 @@ class Enemy(models.Model):
             adventurer.hpMax + (adventurer.hpMax * max_percent) / 100))
         strength = round(random.uniform(
             adventurer.physicalResistance - (
-                    adventurer.physicalResistance * min_percent_def) / 100,
+                adventurer.physicalResistance * min_percent_def) / 100,
             adventurer.physicalResistance - (
-                    adventurer.physicalResistance * max_percent_def) / 100))
+                adventurer.physicalResistance * max_percent_def) / 100))
         intelligence = round(random.uniform(
             adventurer.magicalResistance - (
-                    adventurer.magicalResistance * min_percent_def) / 100,
+                adventurer.magicalResistance * min_percent_def) / 100,
             adventurer.magicalResistance - (
-                    adventurer.magicalResistance * max_percent_def) / 100))
+                adventurer.magicalResistance * max_percent_def) / 100))
         physical_resistance = round(random.uniform(
             adventurer.strength + (
-                    adventurer.strength * min_percent_def) / 100,
+                adventurer.strength * min_percent_def) / 100,
             adventurer.strength + (
-                    adventurer.strength * max_percent_def) / 100))
+                adventurer.strength * max_percent_def) / 100))
         magical_resistance = round(random.uniform(
             adventurer.intelligence + (
-                    adventurer.intelligence * min_percent_def) / 100,
+                adventurer.intelligence * min_percent_def) / 100,
             adventurer.intelligence + (
-                    adventurer.intelligence * max_percent_def) / 100))
+                adventurer.intelligence * max_percent_def) / 100))
         agility = round(random.uniform(adventurer.agility - 10,
-                                 adventurer.agility + 10))
+                                       adventurer.agility + 10))
         hp = hpMax
         return cls(hpMax=hpMax, strength=strength, intelligence=intelligence,
                    physical_resistance=physical_resistance,
@@ -493,9 +525,9 @@ class Minion(Enemy):
                f'|hp: {self.hp}' \
                f'|Str: {self.strength}' \
                f'|Ag: {self.agility}' \
-               f'|Int: {self.intelligence}'\
+               f'|Int: {self.intelligence}' \
                f'|Next: {str(self.next) if self.next is not None else None}]'
-
+    
     @classmethod
     def create(cls, adventurer, i, **kwargs):
         """
@@ -520,9 +552,9 @@ class BossAlain(Enemy):
                f'|hp: {self.hp}' \
                f'|Str: {self.strength}' \
                f'|Ag: {self.agility}' \
-               f'|Int: {self.intelligence}'\
+               f'|Int: {self.intelligence}' \
                f'|Next {str(self.next) if self.next is not None else None}]'
-
+    
     @classmethod
     def create(cls, stage, adventurer, **kwargs):
         """
@@ -535,7 +567,7 @@ class BossAlain(Enemy):
         k = random.randint(7, 9)
         min_percent_def = (30 * k - 330) / 11
         max_percent_def = (7 * k - 69) / 3
-
+        
         min_percent = max_percent = name = None
         for (percent, p_min, p_max, title) in [(100, 70, 100, 'King Alain'),
                                                (50, 60, 70, 'General Alain'),
@@ -559,9 +591,9 @@ class PartyEnemy(models.Model):
     enemy = models.ForeignKey(Enemy,
                               on_delete=models.PROTECT)
     hp = models.IntegerField(default=0,
-                                     blank=False,
-                                     null=False)
-
+                             blank=False,
+                             null=False)
+    
     def __str__(self):
         return f'{self.id}: {self.party.character.name} | {self.enemy.name} | {self.hp}'
 

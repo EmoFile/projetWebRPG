@@ -1,41 +1,44 @@
 {% extends 'base.html' %}
 
 {% block page-top %}
+    <div class="h5 font-weight-bold text-primary text-uppercase mb-1">
+        Nom: {{ character.name }} <br>
+        Classe: {{ character.characterClass.name }} <br>
+        Niveau: {{ character.level }} <br>
+        HP: {{ character.hp }}/{{ character.hpMax }} <br><br>
 
+        Force: {{ character.strength }} <br>
+        Intelligence: {{ character.intelligence }} <br>
+        Agility: {{ character.agility }} <br>
+        Physical resistance: {{ character.physicalResistance }} <br>
+        Magical resistance: {{ character.magicalResistance }} <br>
 
-	<div class="h5 font-weight-bold text-primary text-uppercase mb-1">
-		Nom: {{ character.name }} <br>
-		Classe: {{ character.characterClass.name }} <br>
-		Niveau: {{ character.level }} <br>
-		HP: {{ character.hp }}/{{ character.hpMax }} <br><br>
+        Head:
+        {% if character.inventory.head.name == Null %}
+            Pas de d'équipement
+        {% else %}
+            {{ character.inventory.head.name }}
+        {% endif %} <br>
 
-		Force: {{ character.strength }} <br>
-		Intelligence: {{ character.intelligence }} <br>
-		Agility: {{ character.agility }} <br>
-		Physical resistance: {{ character.physicalResistance }} <br>
-		Magical resistance: {{ character.magicalResistance }} <br>
+        Chest:
+        {% if character.inventory.chest.name == Null %}
+            Pas de d'équipement
+        {% else %}
+            {{ character.inventory.chest.name }}
+        {% endif %} <br>
 
-		Head:
-		{% if character.inventory.head.name == Null %}
-			Pas de d'équipement
-		{% else %}
-			{{ character.inventory.head.name }}
-		{% endif %} <br>
+        Leg:
+        {% if character.inventory.leg.name == Null %}
+            Pas de d'équipement
+        {% else %}
+            {{ character.inventory.leg.name }}
+        {% endif %} <br>
 
-		Chest:
-		{% if character.inventory.chest.name == Null %}
-			Pas de d'équipement
-		{% else %}
-			{{ character.inventory.chest.name }}
-		{% endif %} <br>
-
-		Leg:
-		{% if character.inventory.leg.name == Null %}
-			Pas de d'équipement
-		{% else %}
-			{{ character.inventory.leg.name }}
-		{% endif %} <br>
-	</div>
-
-
+        <div>
+            {% for obj in character.inventory.inventoryconsumable_set.all %}
+                {{ obj.consumable.name }}
+                {{ obj.quantity }}
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
