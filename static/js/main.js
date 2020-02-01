@@ -274,7 +274,10 @@ $(() => {
             document.getElementById('characterHpMax').innerText = result['character']['hpMax'];
             document.getElementById('characterLevel').innerText = result['character']['level'];
             document.getElementById('characterXp').innerText = result['character']['xp'];
-            document.getElementById('characterXpReguired').innerText = result['character']['xpRequired'];
+            document.getElementById('characterXpRequired').innerText = result['character']['xpRequired'];
+            console.log(document.getElementById('characterXpRequired'));
+            console.log(document.getElementById('characterXpRequired').innerText);
+            console.log(result['character']['xpRequired']);
             document.getElementById('characterPhysicalResistence').innerText = result['character']['physicalResistance'];
             document.getElementById('characterMagicalResistence').innerText = result['character']['magicalResistance'];
             document.getElementById('characterStrength').innerText = result['character']['strength'];
