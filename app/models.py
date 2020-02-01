@@ -242,7 +242,14 @@ class Character(models.Model):
             'agility': self.getAgility(),
             'intelligence': self.getIntelligence(),
             'physicalResistance': self.getPhysicalResistance(),
-            'magicalResistance': self.getMagicalResistance()
+            'magicalResistance': self.getMagicalResistance(),
+            'basic': {
+                'strength': self.strength,
+                'agility': self.agility,
+                'intelligence': self.intelligence,
+                'physicalResistance': self.physicalResistance,
+                'magicalResistance': self.magicalResistance
+            }
         }
 
 

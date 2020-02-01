@@ -58,6 +58,12 @@ const ITEM = {
                 $strength.textContent = result['character']['strength'];
                 $intelligence.textContent = result['character']['intelligence'];
                 $agility.textContent = result['character']['agility'];
+                
+                document.getElementById('characterBasicPhysicalResistence').innerText = '(' + result['character']['basic']['physicalResistance'] + ')';
+                document.getElementById('characterBasicMagicalResistence').innerText = '(' + result['character']['basic']['magicalResistance'] + ')';
+                document.getElementById('characterBasicStrength').innerText = '(' + result['character']['basic']['strength'] + ')';
+                document.getElementById('characterBasicAgility').innerText = '(' + result['character']['basic']['agility'] + ')';
+                document.getElementById('characterBasicIntelligence').innerText = '(' + result['character']['basic']['intelligence'] + ')';
             });
         });
     }
@@ -265,6 +271,20 @@ $(() => {
             console.log(result);
             document.getElementById('enemyHp').innerText = result['enemy']['hp'];
             document.getElementById('characterHp').innerText = result['character']['hp'];
+            document.getElementById('characterHpMax').innerText = result['character']['hpMax'];
+            document.getElementById('characterLevel').innerText = result['character']['level'];
+            document.getElementById('characterXp').innerText = result['character']['xp'];
+            document.getElementById('characterXpReguired').innerText = result['character']['xpRequired'];
+            document.getElementById('characterPhysicalResistence').innerText = result['character']['physicalResistance'];
+            document.getElementById('characterMagicalResistence').innerText = result['character']['magicalResistance'];
+            document.getElementById('characterStrength').innerText = result['character']['strength'];
+            document.getElementById('characterAgility').innerText = result['character']['agility'];
+            document.getElementById('characterIntelligence').innerText = result['character']['intelligence'];
+            document.getElementById('characterBasicPhysicalResistence').innerText = '(' + result['character']['basic']['physicalResistance'] + ')';
+            document.getElementById('characterBasicMagicalResistence').innerText = '(' + result['character']['basic']['magicalResistance'] + ')';
+            document.getElementById('characterBasicStrength').innerText = '(' + result['character']['basic']['strength'] + ')';
+            document.getElementById('characterBasicAgility').innerText = '(' + result['character']['basic']['agility'] + ')';
+            document.getElementById('characterBasicIntelligence').innerText = '(' + result['character']['basic']['intelligence'] + ')';
             if (result['dropItem']) {
                 console.log('Y a un drop un drop mec !!!');
                 console.log(result['dropItem']);

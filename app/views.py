@@ -222,18 +222,17 @@ class PlayRound(generic.View):
         if adventurer.hp <= 0:
             party.isEnded = True
             party.save()
-            return JsonResponse({'isEnded': party.isEnded})
+            return JsonResponse({'isEnded': party.isEnded,
+                                 'character': ReloadCharacter(currentCharacter=adventurer)})
         elif p_e.hp <= 0:
+            GettingXp(character=adventurer)
             return JsonResponse({'dropItem': DropItem(adventurer=adventurer),
                                  'isEnded': party.isEnded,
             
                                  'enemy': {
                                      'hp': p_e.hp
                                  },
-                                 'character': {
-                                     'hp': adventurer.hp,
-                                     'xp': GettingXp(character=adventurer)
-                                 }
+                                 'character': ReloadCharacter(currentCharacter=adventurer)
                                  })
         else:
             return JsonResponse({
@@ -241,9 +240,7 @@ class PlayRound(generic.View):
                 'enemy': {
                     'hp': p_e.hp
                 },
-                'character': {
-                    'hp': adventurer.hp
-                }
+                'character': ReloadCharacter(currentCharacter=adventurer)
             })
 
 
