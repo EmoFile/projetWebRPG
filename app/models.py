@@ -223,6 +223,14 @@ class Character(models.Model):
         if self.xp >= self.xpRequired():
             self.xp -= 100 + 10 * (self.level - 1)
             self.level += 1
+            self.hpMax += 5
+            self.save()
+            self.strength += 2
+            self.intelligence += 2
+            self.agility += 2
+            self.physicalResistance += 2
+            self.magicalResistance += 2
+            self.hp = self.getHpMax()
             self.save()
         return {
             'level': self.level,
