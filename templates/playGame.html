@@ -19,6 +19,13 @@
                 </thead>
                 <tbody>
                 <tr>
+                    <th scope="row">XP:</th>
+                    <td>
+                        <span id="characterXp">{{ currentCharacter.xp }}</span>/<span
+                        id="characterHpXpRequired">{{ currentCharacter.xpRequired }}</span>
+                    </td>
+                </tr>
+                <tr>
                     <th scope="row" class="text-success">HP:</th>
                     <td>
                         <span id="characterHp">{{ currentCharacter.hp }}</span>/<span
@@ -28,7 +35,8 @@
                 <tr>
                     <th scope="row" class="text-primary">ARM:</th>
                     <td><span
-                        id="characterPhysicalResistence">{{ currentCharacter.physicalResistance }}</span> ({{ party.character.physicalResistance }})
+                        id="characterPhysicalResistence">{{ currentCharacter.physicalResistance }}</span>
+                        ({{ party.character.physicalResistance }})
                     </td>
                 </tr>
                 <tr>

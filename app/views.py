@@ -545,3 +545,7 @@ def GettingXp(*args, **kwargs):
     currentCharacter.xp += xpGet
     currentCharacter.save()
     return currentCharacter.xp
+
+
+def LevelUp(*args, **kwargs):
+    pass
