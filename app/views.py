@@ -13,8 +13,7 @@ from django.views.generic import TemplateView, CreateView, DetailView, ListView
 from django.views.generic.base import RedirectView
 
 from app.forms import CharacterForm
-from app.models import CharacterClass, Character, Inventory, Party, Minion, \
-    BossAlain, Consumable, Head, Chest, Leg, \
+from app.models import CharacterClass, Character, Inventory, Party, Minion, BossAlain, Consumable, Head, Chest, Leg, \
     Weapon, InventoryConsumable, Enemy, PartyEnemy
 
 
@@ -227,21 +226,16 @@ class PlayRound(generic.View):
                                  'enemy': {
                                      'hp': p_e.hp
                                  },
-                                 'character': {
-                                     'hp': adventurer.hp
-                                 }
-                                 })
-        
+                                 'character': ReloadCharacter(currentCharacter=adventurer)})
         elif p_e.hp <= 0:
+            GettingXp(character=adventurer)
             return JsonResponse({'dropItem': DropItem(adventurer=adventurer),
                                  'isEnded': party.isEnded,
             
                                  'enemy': {
                                      'hp': p_e.hp
                                  },
-                                 'character': {
-                                     'hp': adventurer.hp
-                                 }
+                                 'character': ReloadCharacter(currentCharacter=adventurer)
                                  })
         else:
             return JsonResponse({
@@ -249,9 +243,7 @@ class PlayRound(generic.View):
                 'enemy': {
                     'hp': p_e.hp
                 },
-                'character': {
-                    'hp': adventurer.hp
-                }
+                'character': ReloadCharacter(currentCharacter=adventurer)
             })
 
 
@@ -386,6 +378,7 @@ def ChangeStuff(*args, **kwargs):
 
 def AddConsumable(*args, **kwargs):
     kwargs['inventory'].consumables.add(kwargs['consumable'])
+    
     i_c = InventoryConsumable.objects.get(inventory=kwargs['inventory'],
                                           consumable=kwargs['consumable'])
     i_c.quantity += 1
@@ -536,3 +529,23 @@ class EnemyList(ListView):
 def ReloadCharacter(*args, **kwargs):
     currentCharacter = kwargs['currentCharacter']
     return currentCharacter.reload()
+
+
+def GettingXp(*args, **kwargs):
+    currentCharacter = kwargs['character']
+    currentStage = currentCharacter.party.stage
+    for (stage, min_xp, max_xp) in [(100, 40, 50),
+                                    (50, 30, 40),
+                                    (10, 20, 30)]:
+        if (currentStage % stage) == 0:
+            xpGet = random.randint(min_xp, max_xp)
+            break
+        else:
+            xpGet = random.randint(10, 20)
+    currentCharacter.xp += xpGet
+    currentCharacter.save()
+    return currentCharacter.xp
+
+
+def LevelUp(*args, **kwargs):
+    pass
