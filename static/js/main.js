@@ -380,6 +380,7 @@ $(() => {
         }).done(function (result) {
             console.log(result);
             document.getElementById('pkEnemy').innerText = result['enemyPk'];
+            document.getElementById('stage').innerText = result['partyStage'];
             console.log(result['enemyHpMax']);
             document.getElementById('enemyHp').innerText = document.getElementById('enemyHpMax').innerText = result['enemyHpMax'];
             document.getElementById('enemyPhysicalResistance').innerText = result['enemyPhysicalResistance'];
