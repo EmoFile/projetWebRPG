@@ -7,5 +7,11 @@
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:C:\Users\richard\Desktop\CESI\PYTHON\ProjetWebRPG\db.sqlite3</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="db [2]" uuid="482b5ffb-e26f-4c29-b142-9f37102649bc">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\u049298\Desktop\PYTHON_DJANGO\projetWebRPG\db.sqlite3</jdbc-url>
+    </data-source>
   </component>
 </project>
