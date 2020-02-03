@@ -223,6 +223,9 @@ class PlayRound(generic.View):
             party.isEnded = True
             party.save()
             return JsonResponse({'isEnded': party.isEnded,
+                                 'enemy': {
+                                     'hp': p_e.hp
+                                 },
                                  'character': ReloadCharacter(currentCharacter=adventurer)})
         elif p_e.hp <= 0:
             GettingXp(character=adventurer)

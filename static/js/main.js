@@ -332,6 +332,7 @@ $(() => {
                 // $('#itemModal').show();
                 $('#itemModal').modal('show');
             }
+            console.log(result['isEnded']);
             if (result['isEnded'])
                 $buttonPlayRound.hide();
             else if (result['enemy']['hp'] <= 0) {
