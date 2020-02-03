@@ -41,37 +41,37 @@
                 <tr>
                     <th scope="row" class="text-secondary">RES:</th>
                     <td><span
-                        id="characterMagicalResistence">
+                            id="characterMagicalResistence">
                         {{ party.character.getMagicalResistance }}</span>
                         <span
-                            id="characterBasicMagicalResistence">({{ party.character.magicalResistance }})</span>
+                                id="characterBasicMagicalResistence">({{ party.character.magicalResistance }})</span>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row" class="text-danger">STR:</th>
                     <td><span
-                        id="characterStrength">
+                            id="characterStrength">
                         {{ party.character.getStrength }}</span>
                         <span
-                            id="characterBasicStrength">({{ party.character.strength }})</span>
+                                id="characterBasicStrength">({{ party.character.strength }})</span>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row" class="text-info">INT:</th>
                     <td><span
-                        id="characterIntelligence">
+                            id="characterIntelligence">
                         {{ party.character.getIntelligence }}</span>
                         <span
-                            id="characterBasicIntelligence">({{ party.character.intelligence }})</span>
+                                id="characterBasicIntelligence">({{ party.character.intelligence }})</span>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row" class="text-warning">AGI:</th>
                     <td><span
-                        id="characterAgility">
+                            id="characterAgility">
                         {{ party.character.getAgility }}</span>
                         <span
-                            id="characterBasicAgility">({{ party.character.agility }})</span>
+                                id="characterBasicAgility">({{ party.character.agility }})</span>
                     </td>
                 </tr>
                 </tbody>
@@ -82,8 +82,29 @@
                     {% if party.character.inventory.head != Null %}
                         <table class="table table-borderless">
                             <tr>
-                                <th scope="row"><span id="headName">{{ party.character.inventory.head.name }}</span>
+                                <th scope="row" id="headKind"><span>Helmet</span>
                                 </th>
+                                {% if party.character.inventory.head.rarity == 'Rare' %}
+                                    <td>
+                                        <span id="headName"
+                                              style="color: dodgerblue">{{ party.character.inventory.head.name }}</span>
+                                    </td>
+                                {% elif party.character.inventory.head.rarity == 'Epic' %}
+                                    <td>
+                                        <span id="headName"
+                                              style="color: blueviolet">{{ party.character.inventory.head.name }}</span>
+                                    </td>
+                                {% elif party.character.inventory.head.rarity == 'Legendary' %}
+                                    <td>
+                                        <span id="headName"
+                                              style="color: gold">{{ party.character.inventory.head.name }}</span>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <span id="headName"
+                                              style="color: limegreen">{{ party.character.inventory.head.name }}</span>
+                                    </td>
+                                {% endif %}
                                 <td>
                                     <span id="headHpMax"
                                           class="text-success">{{ party.character.inventory.head.hpMax }}</span>
@@ -113,7 +134,9 @@
                     {% else %}
                         <table class="table table-borderless">
                             <tr>
-                                <th scope="row"><span id="headName">No helmet</span></th>
+                                <th scope="row"><span id="headKind">Head</span>
+                                </th>
+                                <td scope="row"><span id="headName">No helmet</span></td>
                                 <td>
                                     <span id="headHpMax"
                                           class="text-success"></span>
@@ -147,8 +170,29 @@
                     {% if party.character.inventory.chest != Null %}
                         <table class="table table-borderless">
                             <tr>
-                                <th scope="row"><span id="chestName">{{ party.character.inventory.chest.name }}</span>
+                                <th scope="row" id="chestKind"><span>Chest</span>
                                 </th>
+                                {% if party.character.inventory.chest.rarity == 'Rare' %}
+                                    <td>
+                                        <span id="chestName"
+                                              style="color: dodgerblue">{{ party.character.inventory.chest.name }}</span>
+                                    </td>
+                                {% elif party.character.inventory.chest.rarity == 'Epic' %}
+                                    <td>
+                                        <span id="chestName"
+                                              style="color: blueviolet">{{ party.character.inventory.chest.name }}</span>
+                                    </td>
+                                {% elif party.character.inventory.chest.rarity == 'Legendary' %}
+                                    <td>
+                                        <span id="chestName"
+                                              style="color: gold">{{ party.character.inventory.chest.name }}</span>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <span id="chestName"
+                                              style="color: limegreen">{{ party.character.inventory.chest.name }}</span>
+                                    </td>
+                                {% endif %}
                                 <td>
                                     <span id="chestHpMax"
                                           class="text-success">{{ party.character.inventory.chest.hpMax }}</span>
@@ -178,8 +222,11 @@
                     {% else %}
                         <table class="table table-borderless">
                             <tr>
-                                <th scope="row"><span id="chestName">No breathplate</span>
+                                <th scope="row"><span id="chestKind">Chest</span>
                                 </th>
+
+                                <td scope="row"><span id="chestName">No breathplate</span>
+                                </td>
                                 <td>
                                     <span id="chestHpMax"
                                           class="text-success">{{ party.character.inventory.chest.hpMax }}</span>
@@ -213,10 +260,32 @@
                     {% if party.character.inventory.leg != Null %}
                         <table class="table table-borderless">
                             <tr>
-                                <th scope="row"><span id="legName">{{ party.character.inventory.leg.name }}</span></th>
+                                <th scope="row" id="legKind"><span>Leg</span>
+                                </th>
+                                {% if party.character.inventory.leg.rarity == 'Rare' %}
+                                    <td>
+                                        <span id="legName"
+                                              style="color: dodgerblue">{{ party.character.inventory.leg.name }}</span>
+                                    </td>
+                                {% elif party.character.inventory.leg.rarity == 'Epic' %}
+                                    <td>
+                                        <span id="legName"
+                                              style="color: blueviolet">{{ party.character.inventory.leg.name }}</span>
+                                    </td>
+                                {% elif party.character.inventory.leg.rarity == 'Legendary' %}
+                                    <td>
+                                        <span id="legName"
+                                              style="color: gold">{{ party.character.inventory.leg.name }}</span>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <span id="legName"
+                                              style="color: limegreen">{{ party.character.inventory.leg.name }}</span>
+                                    </td>
+                                {% endif %}
                                 <td>
-                                    <span id="legHpMax"
-                                          class="text-success">{{ party.character.inventory.leg.hpMax }}</span>
+                                <span id="legHpMax"
+                                      class="text-success">{{ party.character.inventory.leg.hpMax }}</span>
                                 </td>
                                 <td>
                                     <span id="legPhysicalResistance"
@@ -243,7 +312,9 @@
                     {% else %}
                         <table class="table table-borderless">
                             <tr>
-                                <th scope="row"><span id="legName">No leg</span></th>
+                                <th scope="row" id="legKind"><span>Leg</span>
+                                </th>
+                                <td scope="row"><span id="legName">No leg</span></td>
                                 <td>
                                     <span id="legHpMax"
                                           class="text-success">{{ party.character.inventory.leg.hpMax }}</span>
@@ -276,8 +347,29 @@
                     {% if party.character.inventory.weapon != Null %}
                         <table class="table table-borderless">
                             <tr>
-                                <th scope="row"><span id="weaponName">{{ party.character.inventory.weapon.name }}</span>
+                                <th scope="row" id="weaponKind"><span>Weapon</span>
                                 </th>
+                                {% if party.character.inventory.weapon.rarity == 'Rare' %}
+                                    <td>
+                                        <span id="weaponName"
+                                              style="color: dodgerblue">{{ party.character.inventory.weapon.name }}</span>
+                                    </td>
+                                {% elif party.character.inventory.weapon.rarity == 'Epic' %}
+                                    <td>
+                                        <span id="weaponName"
+                                              style="color: blueviolet">{{ party.character.inventory.weapon.name }}</span>
+                                    </td>
+                                {% elif party.character.inventory.weapon.rarity == 'Legendary' %}
+                                    <td>
+                                        <span id="weaponName"
+                                              style="color: gold">{{ party.character.inventory.weapon.name }}</span>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <span id="weaponName"
+                                              style="color: limegreen">{{ party.character.inventory.weapon.name }}</span>
+                                    </td>
+                                {% endif %}
                                 <td>
                                     <span id="weaponHpMax"
                                           class="text-success">{{ party.character.inventory.weapon.hpMax }}</span>
@@ -307,8 +399,10 @@
                     {% else %}
                         <table class="table table-borderless">
                             <tr>
-                                <th scope="row"><span id="weaponName">No weapon</span>
+                                <th scope="row" id="weaponKind"><span>Weapon</span>
                                 </th>
+                                <td scope="row"><span id="weaponName">No weapon</span>
+                                </td>
                                 <td>
                                     <span id="weaponHpMax"
                                           class="text-success">{{ party.character.inventory.weapon.hpMax }}</span>
@@ -349,7 +443,7 @@
                                         <th scope="row">{{ consumable.consumable.name }}</th>
                                         <td>
                                             <span
-                                                id="quantity/{{ party.character.pk }}/{{ consumable.consumable.pk }}">{{ consumable.quantity }}</span>
+                                                    id="quantity/{{ party.character.pk }}/{{ consumable.consumable.pk }}">{{ consumable.quantity }}</span>
                                         </td>
                                         <td>
                                             <button type="button"
@@ -472,6 +566,7 @@
                 <div class="modal-body" id="itemModalBody">
                     <p id="levelRequired"></p>
                     <p id="classRequired"></p>
+                    <p id="stuffClassName"></p>
                     <p id="rarity"></p>
                     <p id="hpMax"></p>
                     <p id="hp"></p>

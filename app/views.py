@@ -366,6 +366,7 @@ def ChangeStuff(*args, **kwargs):
         'stuffClassName': kwargs['stuffClassName'],
         'oldStuff': oldStuff,
         'newStuff': newStuff.name,
+        'newStuffRarity': newStuff.rarity,
         'newStuffHpMax': newStuff.hpMax,
         'newStuffStrength': newStuff.strength,
         'newStuffIntelligence': newStuff.intelligence,
