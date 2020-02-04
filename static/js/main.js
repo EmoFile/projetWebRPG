@@ -327,6 +327,7 @@ $(() => {
 
                 let $modalTitle = document.getElementById('itemModalLabel');
                 let $stuffClassName = document.getElementById('stuffClassName');
+                let $stuffKindName = document.getElementById('stuffKindName');
                 let $stuffPk = document.getElementById('stuffPk');
                 let $levelRequired = document.getElementById('levelRequired');
                 let $classRequired = document.getElementById('classRequired');
@@ -344,6 +345,7 @@ $(() => {
                     $modalTitle.textContent = result['dropItem']['ItemDropped']['name'];
                     $rarity.textContent = 'Rarity: ' + result['dropItem']['ItemDropped']['rarity'] + '\n';
                     $stuffClassName.textContent = result['dropItem']['stuffClassName'];
+                    $stuffKindName.textContent ='Type: ' + result['dropItem']['stuffClassName'];
                     $stuffPk.textContent = result['dropItem']['pk'];
 
                     if (result['dropItem']['stuffClassName'] === 'Consumable') {
