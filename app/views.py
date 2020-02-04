@@ -196,25 +196,25 @@ class PlayRound(generic.View):
             defAdventurer = adventurer.getMagicalResistance()
         
         if adventurer.agility > enemy.agility:
-            hpTab = fight(atkAdventurer, adventurer.hp, defAdventurer, resEnemy, p_e.hp)
+            hpTab = fight(atkAdventurer, defAdventurer, resEnemy)
             adventurer.setHp(-hpTab[0])
             p_e.hp -= hpTab[1]
             adventurer.save()
             p_e.save()
             if p_e.hp > 0 and adventurer.hp > 0:
-                hpTab = fight(atkEnemy, p_e.hp, defEnemy, resAdventurer, adventurer.hp)
+                hpTab = fight(atkEnemy, defEnemy, resAdventurer)
                 p_e.hp -= hpTab[0]
                 adventurer.setHp(-hpTab[1])
                 p_e.save()
                 adventurer.save()
         else:
-            hpTab = fight(atkEnemy, p_e.hp, defEnemy, resAdventurer, adventurer.hp)
+            hpTab = fight(atkEnemy, defEnemy, resAdventurer)
             p_e.hp -= hpTab[0]
             adventurer.setHp(-hpTab[1])
             p_e.save()
             adventurer.save()
             if p_e.hp > 0 and adventurer.hp > 0:
-                hpTab = fight(atkAdventurer, adventurer.hp, defAdventurer, resEnemy, p_e.hp)
+                hpTab = fight(atkAdventurer, defAdventurer, resEnemy)
                 adventurer.setHp(-hpTab[0])
                 p_e.hp -= hpTab[1]
                 adventurer.save()
@@ -247,11 +247,13 @@ class PlayRound(generic.View):
             })
 
 
-def fight(atk, hpAtk, atkDef, res, hpDef):
+def fight(atk, atkDef, res):
     aD20 = random.randint(0, 20)
     dD20 = random.randint(0, 20)
     assault = atk + aD20
     protection = res + dD20
+    hpAtk = 0
+    hpDef = 0
     if aD20 == 1:
         damage = assault - atkDef
         print('echec critque')
@@ -259,14 +261,11 @@ def fight(atk, hpAtk, atkDef, res, hpDef):
             hpAtk = damage
     else:
         damage = assault - protection
-        hpAtk = 0
         if aD20 == 20:
             print('réussite critque')
             damage *= 2
         if damage > 0:
             hpDef = damage
-        else:
-            hpDef = 0
     return hpAtk, hpDef
 
 
