@@ -260,11 +260,11 @@ $(() => {
                     $usebutton.setAttribute('class', 'useItem btn btn-success useItem');
                     $usebutton.innerText = 'Use';
 
-                    $tdusebutton.append($usebutton);
                     $tdqunatity.append($pqunatity);
-                    $tr.append($tdusebutton);
-                    $tr.append($tdqunatity);
+                    $tdusebutton.append($usebutton);
                     $tr.append($th);
+                    $tr.append($tdqunatity);
+                    $tr.append($tdusebutton);
                     $table.append($tr);
                     $div.append($table);
                     ITEM.bindItem();

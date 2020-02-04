@@ -437,25 +437,23 @@
                     {#                    {% if party.character.inventory.consumables != Null %}#}
                     {% if party.character.inventory.inventoryconsumable_set.all != 0 %}
                         {% for consumable in party.character.inventory.inventoryconsumable_set.all %}
-                            <div>
-                                <table class="table table-borderless" id="{{ consumable.consumable.name }}">
-                                    <tr>
-                                        <th scope="row">{{ consumable.consumable.name }}</th>
-                                        <td>
+                            <table class="table table-borderless" id="{{ consumable.consumable.name }}">
+                                <tr>
+                                    <th scope="row">{{ consumable.consumable.name }}</th>
+                                    <td>
                                             <span
                                                     id="quantity/{{ party.character.pk }}/{{ consumable.consumable.pk }}">{{ consumable.quantity }}</span>
-                                        </td>
-                                        <td>
-                                            <button type="button"
-                                                    urlUseItem="quantity/{{ party.pk }}/{{ consumable.consumable.pk }}"
-                                                    coupleCharacterConsumable="{{ party.character.pk }}/{{ consumable.consumable.pk }}"
-                                                    class="useItem btn btn-success">
-                                                Use
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+                                    </td>
+                                    <td>
+                                        <button type="button"
+                                                urlUseItem="quantity/{{ party.pk }}/{{ consumable.consumable.pk }}"
+                                                coupleCharacterConsumable="{{ party.character.pk }}/{{ consumable.consumable.pk }}"
+                                                class="useItem btn btn-success">
+                                            Use
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
                         {% endfor %}
                     {% else %}
                         No consumable
