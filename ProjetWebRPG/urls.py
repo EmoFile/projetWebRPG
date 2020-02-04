@@ -22,52 +22,43 @@ from app.views import IndexView, GenerateCharacterView, CharacterDetailView, \
     SignUpView, LogInView, PlayGameView, \
     DropItem, EnemyList, ChangeItem, UseItem, PlayRound, NextEnemyView, LogoutView
 
-
-"""
-Admin & Home
-"""
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='home'),
 
-]
+]  # Admin & Home URL
 
-
-"""
-Log System
-"""
 urlpatterns += [
     path('signUp/', SignUpView.as_view(), name='signUp'),
     path('logIn/', LogInView.as_view(), name='logIn'),
     path('logOut/', LogoutView.as_view(), name='logOut'),
-]
-
-
-"""
-Game System
-"""
-
+]  # Log system URL
 
 urlpatterns += [
-    path('generateCharacterByPk/<int:pk>', GenerateCharacterView.as_view(),
-         name='generateCharacterByPk'),
     path('playGame/<int:pk>', PlayGameView.as_view(), name='playGame'),
+]  # Game URL
+
+urlpatterns += [
+    path('playRound/<int:pkParty>/<int:pkEnemy>', PlayRound.as_view(), name='playRound'),
+]  # Round URL
+
+urlpatterns += [
     path('dropItem', DropItem, name='dropItem'),
     path('quantity/<int:partyPk>/<int:consumablePk>', UseItem,
          name='useItem'),
     path('changeItem/<int:partyPk>/<str:stuffClassName>/<int:stuffPk>',
          ChangeItem, name='changeItem'),
-    path('playRound/<int:pkParty>/<int:pkEnemy>', PlayRound.as_view(), name='playRound'),
 
-]
+]  # Item URL
 
-
-"""
-Other
-"""
 urlpatterns += [
-    path('characterDetail/<int:pk>', CharacterDetailView.as_view(),
-         name='characterDetail'),
     path('nextEnemy/<int:pkParty>/<int:pkEnemy>', NextEnemyView.as_view(), name='nextEnemy'),
     path('listEnemyView/', EnemyList.as_view(), name='listEnemy'),
-]
+]  # Enemy URL
+
+urlpatterns += [
+    path('generateCharacterByPk/<int:pk>', GenerateCharacterView.as_view(),
+         name='generateCharacterByPk'),
+    path('characterDetail/<int:pk>', CharacterDetailView.as_view(),
+         name='characterDetail'),
+]  # Character URL
