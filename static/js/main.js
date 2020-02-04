@@ -124,6 +124,7 @@ $(() => {
         }).done(function (result) {
             console.log(result);
             let $hpMax = document.getElementById('characterHpMax');
+            let $hp = document.getElementById('characterHp');
             let $physicalResistence = document.getElementById('characterPhysicalResistence');
             let $magicalResistence = document.getElementById('characterMagicalResistence');
             let $strength = document.getElementById('characterStrength');
@@ -274,7 +275,9 @@ $(() => {
             console.log("avant le result.character");
             console.log(result);
             if (result['stuffClassName'] !== 'Consumable') {
+                console.log(result['character'])
                 $hpMax.innerText = result['character']['hpMax'];
+                $hp.innerText = result['character']['hp'];
                 $physicalResistence.innerText = result['character']['physicalResistance'];
                 $magicalResistence.innerText = result['character']['magicalResistance'];
                 $strength.innerText = result['character']['strength'];
