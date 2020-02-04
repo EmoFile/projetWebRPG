@@ -197,26 +197,26 @@ class PlayRound(generic.View):
         
         if adventurer.agility > enemy.agility:
             hpTab = fight(atkAdventurer, adventurer.hp, defAdventurer, resEnemy, p_e.hp)
-            adventurer.hp = hpTab[0]
-            p_e.hp = hpTab[1]
+            adventurer.setHp(-hpTab[0])
+            p_e.hp -= hpTab[1]
             adventurer.save()
             p_e.save()
             if p_e.hp > 0 and adventurer.hp > 0:
                 hpTab = fight(atkEnemy, p_e.hp, defEnemy, resAdventurer, adventurer.hp)
-                p_e.hp = hpTab[0]
-                adventurer.hp = hpTab[1]
+                p_e.hp -= hpTab[0]
+                adventurer.setHp(-hpTab[1])
                 p_e.save()
                 adventurer.save()
         else:
             hpTab = fight(atkEnemy, p_e.hp, defEnemy, resAdventurer, adventurer.hp)
-            p_e.hp = hpTab[0]
-            adventurer.hp = hpTab[1]
+            p_e.hp -= hpTab[0]
+            adventurer.setHp(-hpTab[1])
             p_e.save()
             adventurer.save()
             if p_e.hp > 0 and adventurer.hp > 0:
                 hpTab = fight(atkAdventurer, adventurer.hp, defAdventurer, resEnemy, p_e.hp)
-                adventurer.hp = hpTab[0]
-                p_e.hp = hpTab[1]
+                adventurer.setHp(-hpTab[0])
+                p_e.hp -= hpTab[1]
                 adventurer.save()
                 p_e.save()
         if adventurer.hp <= 0:
@@ -255,14 +255,18 @@ def fight(atk, hpAtk, atkDef, res, hpDef):
     if aD20 == 1:
         damage = assault - atkDef
         print('echec critque')
-        hpAtk -= damage
+        if damage >= 0:
+            hpAtk = damage
     else:
         damage = assault - protection
+        hpAtk = 0
         if aD20 == 20:
             print('réussite critque')
             damage *= 2
         if damage > 0:
-            hpDef -= damage
+            hpDef = damage
+        else:
+            hpDef = 0
     return hpAtk, hpDef
 
 
@@ -354,12 +358,18 @@ def ChangeStuff(*args, **kwargs):
         if kwargs['stuffClassName'] == prop.capitalize():
             try:
                 obj = getattr(kwargs['inventory'], prop)
-                oldStuff = obj.name if obj else 'None'
+                if obj:
+                    oldStuff = obj.name
+                    kwargs['inventory'].character.setHpMax(-obj.hpMax)
+                else:
+                    oldStuff = 'None'
                 setattr(kwargs['inventory'],
                         prop,
                         get_object_or_404(cls, pk=kwargs['stuffPk']))
                 kwargs['inventory'].save()
                 newStuff = getattr(kwargs['inventory'], prop)
+                kwargs['inventory'].character.setHpMax(newStuff.hpMax)
+                kwargs['inventory'].character.save()
             except:
                 pass
     return JsonResponse({

@@ -1,3 +1,4 @@
+import math
 import random, datetime
 
 from django.contrib.auth.models import User
@@ -132,13 +133,13 @@ class Character(models.Model):
 
     def modifyCarac(self, item):
         if item._meta.object_name == 'Consumable':
-            self.hp += item.hp
+            self.setHp(item.hp)
             self.strength += item.strength
             self.agility += item.agility
             self.intelligence += item.intelligence
         else:
-            self.hpMax += item.hpMax
-            self.hp += item.hp
+            self.setHpMax(item.hpMax)
+            self.setHp(item.hp)
             self.strength += item.strength
             self.agility += item.agility
             self.intelligence += item.intelligence
@@ -146,16 +147,7 @@ class Character(models.Model):
             self.magicalResistance += item.magicalResistance
 
     def getHpMax(self):
-        hpMax = self.hpMax
-        if self.inventory.head is not None:
-            hpMax += self.inventory.head.hpMax
-        if self.inventory.chest is not None:
-            hpMax += self.inventory.chest.hpMax
-        if self.inventory.leg is not None:
-            hpMax += self.inventory.leg.hpMax
-        if self.inventory.weapon is not None:
-            hpMax += self.inventory.weapon.hpMax
-        return hpMax
+        return self.hpMax
 
     def getStrength(self):
         strength = self.strength
@@ -216,7 +208,21 @@ class Character(models.Model):
         if self.inventory.weapon is not None:
             magicalResistance += self.inventory.weapon.magicalResistance
         return magicalResistance
-    
+
+    def setHp(self, hp):
+        hp_temp = self.hp + hp
+        if hp_temp > self.hpMax:
+            self.hp = self.hpMax
+        else:
+            self.hp = hp_temp
+        return None
+
+    def setHpMax(self, hp):
+        hp_max = self.hpMax + hp
+        self.hp = math.ceil((self.hp * hp_max)/self.hpMax)
+        self.hpMax = hp_max
+        self.save()
+
     def xpRequired(self):
         return 100 + 10 * (self.level - 1)
     
