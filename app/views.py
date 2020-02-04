@@ -196,25 +196,25 @@ class PlayRound(generic.View):
             defAdventurer = adventurer.getMagicalResistance()
         
         if adventurer.agility > enemy.agility:
-            hpTab = fight(atkAdventurer, defAdventurer, resEnemy)
+            hpTab = fight(atkAdventurer, defAdventurer, adventurer.name, resEnemy, enemy.name)
             adventurer.setHp(-hpTab[0])
             p_e.hp -= hpTab[1]
             adventurer.save()
             p_e.save()
             if p_e.hp > 0 and adventurer.hp > 0:
-                hpTab = fight(atkEnemy, defEnemy, resAdventurer)
+                hpTab = fight(atkEnemy, defEnemy, enemy.name, resAdventurer, adventurer.name)
                 p_e.hp -= hpTab[0]
                 adventurer.setHp(-hpTab[1])
                 p_e.save()
                 adventurer.save()
         else:
-            hpTab = fight(atkEnemy, defEnemy, resAdventurer)
+            hpTab = fight(atkEnemy, defEnemy, enemy.name, resAdventurer, adventurer.name)
             p_e.hp -= hpTab[0]
             adventurer.setHp(-hpTab[1])
             p_e.save()
             adventurer.save()
             if p_e.hp > 0 and adventurer.hp > 0:
-                hpTab = fight(atkAdventurer, defAdventurer, resEnemy)
+                hpTab = fight(atkAdventurer, defAdventurer, adventurer.name, resEnemy, enemy.name)
                 adventurer.setHp(-hpTab[0])
                 p_e.hp -= hpTab[1]
                 adventurer.save()
@@ -247,22 +247,23 @@ class PlayRound(generic.View):
             })
 
 
-def fight(atk, atkDef, res):
+def fight(atk, atkDef, atkName, res, defName):
     aD20 = random.randint(0, 20)
     dD20 = random.randint(0, 20)
     assault = atk + aD20
     protection = res + dD20
     hpAtk = 0
     hpDef = 0
+    print('Voila que ' + atkName + ' attaque')
     if aD20 == 1:
         damage = assault - atkDef
-        print('echec critque')
+        print('mais il se rate lamentablement et fait un echec critque !!!!!')
         if damage >= 0:
             hpAtk = damage
     else:
         damage = assault - protection
         if aD20 == 20:
-            print('réussite critque')
+            print('et... au mon dieu !!! il transperce ' + defName + ' en faisant une réussite critque')
             damage *= 2
         if damage > 0:
             hpDef = damage
