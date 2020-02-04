@@ -4,6 +4,7 @@ function closeModal() {
     let $levelRequired = document.getElementById('levelRequired');
     let $classRequired = document.getElementById('classRequired');
     let $stuffClassName = document.getElementById('stuffClassName');
+    let $stuffKindName = document.getElementById('stuffKindName');
     let $rarity = document.getElementById('rarity');
     let $hpMax = document.getElementById('hpMax');
     let $hp = document.getElementById('hp');
@@ -17,6 +18,7 @@ function closeModal() {
     $hp.textContent = '';
     $levelRequired.textContent = '';
     $classRequired.textContent = '';
+    $stuffKindName.textContent = '';
     $stuffClassName.textContent = '';
     $hpMax.textContent = '';
     $physicalResistence.textContent = '';
