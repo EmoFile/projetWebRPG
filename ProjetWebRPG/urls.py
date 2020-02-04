@@ -22,24 +22,52 @@ from app.views import IndexView, GenerateCharacterView, CharacterDetailView, \
     SignUpView, LogInView, PlayGameView, \
     DropItem, EnemyList, ChangeItem, UseItem, PlayRound, NextEnemyView, LogoutView
 
+
+"""
+Admin & Home
+"""
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='home'),
-    path('generateCharacterByPk/<int:pk>', GenerateCharacterView.as_view(),
-         name='generateCharacterByPk'),
-    path('characterDetail/<int:pk>', CharacterDetailView.as_view(),
-         name='characterDetail'),
-    path('playGame/<int:pk>', PlayGameView.as_view(), name='playGame'),
+
+]
+
+
+"""
+Log System
+"""
+urlpatterns += [
     path('signUp/', SignUpView.as_view(), name='signUp'),
     path('logIn/', LogInView.as_view(), name='logIn'),
     path('logOut/', LogoutView.as_view(), name='logOut'),
+]
+
+
+"""
+Game System
+"""
+
+
+urlpatterns += [
+    path('generateCharacterByPk/<int:pk>', GenerateCharacterView.as_view(),
+         name='generateCharacterByPk'),
+    path('playGame/<int:pk>', PlayGameView.as_view(), name='playGame'),
     path('dropItem', DropItem, name='dropItem'),
     path('quantity/<int:partyPk>/<int:consumablePk>', UseItem,
          name='useItem'),
     path('changeItem/<int:partyPk>/<str:stuffClassName>/<int:stuffPk>',
          ChangeItem, name='changeItem'),
-    path('ArticleListView/', EnemyList.as_view(), name='listEnemy'),
     path('playRound/<int:pkParty>/<int:pkEnemy>', PlayRound.as_view(), name='playRound'),
-    path('nextEnemy/<int:pkParty>/<int:pkEnemy>', NextEnemyView.as_view(), name='nextEnemy')
 
+]
+
+
+"""
+Other
+"""
+urlpatterns += [
+    path('characterDetail/<int:pk>', CharacterDetailView.as_view(),
+         name='characterDetail'),
+    path('nextEnemy/<int:pkParty>/<int:pkEnemy>', NextEnemyView.as_view(), name='nextEnemy'),
+    path('listEnemyView/', EnemyList.as_view(), name='listEnemy'),
 ]
