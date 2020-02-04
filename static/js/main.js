@@ -387,18 +387,21 @@ $(() => {
             type: 'get',
             dataType: 'json',
         }).done(function (result) {
-            console.log(result);
-            document.getElementById('pkEnemy').innerText = result['enemyPk'];
-            document.getElementById('stage').innerText = result['partyStage'];
-            console.log(result['enemyHpMax']);
-            document.getElementById('enemyHp').innerText = document.getElementById('enemyHpMax').innerText = result['enemyHpMax'];
-            document.getElementById('enemyPhysicalResistance').innerText = result['enemyPhysicalResistance'];
-            document.getElementById('enemyStrength').innerText = result['enemyStrength'];
-            document.getElementById('enemyAgility').innerText = result['enemyAgility'];
-            document.getElementById('enemyIntelligence').innerText = result['enemyIntelligence'];
-            document.getElementById('enemyMagicalResistance').innerText = result['enemyMagicalResistance'];
-            document.getElementById('enemyName').innerText = result['enemyName'];
-            $buttonPlayRound.show();
+            console.log(result['nothingDude'])
+            if (!(result['nothingDude'])){
+                console.log(result);
+                document.getElementById('pkEnemy').innerText = result['enemyPk'];
+                document.getElementById('stage').innerText = result['partyStage'];
+                console.log(result['enemyHpMax']);
+                document.getElementById('enemyHp').innerText = document.getElementById('enemyHpMax').innerText = result['enemyHpMax'];
+                document.getElementById('enemyPhysicalResistance').innerText = result['enemyPhysicalResistance'];
+                document.getElementById('enemyStrength').innerText = result['enemyStrength'];
+                document.getElementById('enemyAgility').innerText = result['enemyAgility'];
+                document.getElementById('enemyIntelligence').innerText = result['enemyIntelligence'];
+                document.getElementById('enemyMagicalResistance').innerText = result['enemyMagicalResistance'];
+                document.getElementById('enemyName').innerText = result['enemyName'];
+                $buttonPlayRound.show();
+            }
         });
     });
 });
