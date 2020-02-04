@@ -3,6 +3,7 @@ function closeModal() {
     let $modalTitle = document.getElementById('itemModalLabel');
     let $levelRequired = document.getElementById('levelRequired');
     let $classRequired = document.getElementById('classRequired');
+    let $stuffClassName = document.getElementById('stuffClassName');
     let $rarity = document.getElementById('rarity');
     let $hpMax = document.getElementById('hpMax');
     let $hp = document.getElementById('hp');
@@ -16,6 +17,7 @@ function closeModal() {
     $hp.textContent = '';
     $levelRequired.textContent = '';
     $classRequired.textContent = '';
+    $stuffClassName.textContent = '';
     $hpMax.textContent = '';
     $physicalResistence.textContent = '';
     $magicalResistence.textContent = '';
