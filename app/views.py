@@ -178,11 +178,7 @@ class PlayRound(generic.View):
                                      enemy=enemy)
         if p_e.hp <= 0:
             return JsonResponse({
-                'isEnded': party.isEnded,
-                'enemy': {
-                    'hp': p_e.hp
-                },
-                'character': ReloadCharacter(currentCharacter=adventurer)
+                'nothing': 'You know nothing John Snow'
             })
         if random.randint(0, 1):
             atkEnemy = enemy.strength
@@ -206,35 +202,45 @@ class PlayRound(generic.View):
             hpTab = fight(atkAdventurer, defAdventurer, adventurer.name, resEnemy, enemy.name)
             adventurer.setHp(-hpTab[0])
             p_e.hp -= hpTab[1]
+            battleReport = {'0': hpTab[2]}
             adventurer.save()
             p_e.save()
             if p_e.hp > 0 and adventurer.hp > 0:
+                battleReport['0']['3'] = " l'ennemie est toujour debout !"
                 hpTab = fight(atkEnemy, defEnemy, enemy.name, resAdventurer, adventurer.name)
                 p_e.hp -= hpTab[0]
                 adventurer.setHp(-hpTab[1])
+                battleReport['1'] = hpTab[2]
                 p_e.save()
                 adventurer.save()
         else:
             hpTab = fight(atkEnemy, defEnemy, enemy.name, resAdventurer, adventurer.name)
             p_e.hp -= hpTab[0]
             adventurer.setHp(-hpTab[1])
+            battleReport = {'0': hpTab[2]}
             p_e.save()
             adventurer.save()
             if p_e.hp > 0 and adventurer.hp > 0:
+                battleReport['0']['end'] = " notre Héros est est toujour debout !"
                 hpTab = fight(atkAdventurer, defAdventurer, adventurer.name, resEnemy, enemy.name)
                 adventurer.setHp(-hpTab[0])
                 p_e.hp -= hpTab[1]
+                battleReport['1'] = hpTab[2]
                 adventurer.save()
                 p_e.save()
         if adventurer.hp <= 0:
+            battleReport['end'] = 'Cet énemie était bien superieur a ce héors malheurement, SOUILLEEEEEED'
             party.isEnded = True
             party.save()
             return JsonResponse({'isEnded': party.isEnded,
                                  'enemy': {
                                      'hp': p_e.hp
                                  },
-                                 'character': ReloadCharacter(currentCharacter=adventurer)})
+                                 'character': ReloadCharacter(currentCharacter=adventurer),
+                                 'battleReport': battleReport
+                                 })
         elif p_e.hp <= 0:
+            battleReport['end'] = "L'énemie s'est fait écraser sur ce dernier coup incompris de la population !"
             GettingXp(character=adventurer)
             return JsonResponse({'dropItem': DropItem(adventurer=adventurer),
                                  'isEnded': party.isEnded,
@@ -242,7 +248,8 @@ class PlayRound(generic.View):
                                  'enemy': {
                                      'hp': p_e.hp
                                  },
-                                 'character': ReloadCharacter(currentCharacter=adventurer)
+                                 'character': ReloadCharacter(currentCharacter=adventurer),
+                                 'battleReport': battleReport
                                  })
         else:
             return JsonResponse({
@@ -250,7 +257,8 @@ class PlayRound(generic.View):
                 'enemy': {
                     'hp': p_e.hp
                 },
-                'character': ReloadCharacter(currentCharacter=adventurer)
+                'character': ReloadCharacter(currentCharacter=adventurer),
+                'battleReport': battleReport
             })
 
 
@@ -261,20 +269,27 @@ def fight(atk, atkDef, atkName, res, defName):
     protection = res + dD20
     hpAtk = 0
     hpDef = 0
-    print('Voila que ' + atkName + ' attaque')
+
+    battleReport = {'0': 'Voila que ' + atkName + ' attaque'}
     if aD20 == 1:
         damage = assault - atkDef
-        print('mais il se rate lamentablement et fait un echec critque !!!!!')
+        battleReport['1'] = 'mais il se rate lamentablement et fait un echec critque !!!!!'
         if damage >= 0:
             hpAtk = damage
+            battleReport['2'] = 'LE HABAKIRIIIIIII de ' + str(hpAtk) + ' damageeeees'
+        else:
+            battleReport['2'] =  "Heuresement que son armure est plus épaisse que ses muscle et ne s'inflige aucun damages !"
     else:
         damage = assault - protection
         if aD20 == 20:
-            print('et... au mon dieu !!! il transperce ' + defName + ' en faisant une réussite critque')
+            battleReport['1'] = 'et... au mon dieu !!! il transperce ' + defName + ' en faisant une réussite critque'
             damage *= 2
         if damage > 0:
             hpDef = damage
-    return hpAtk, hpDef
+            battleReport['2'] = 'le coup part !!!! et lui fait ' + str(hpDef) + ' de damageeeeessss !!!!'
+        else:
+            battleReport['2'] = 'malheuresement il va falloir y mettre un du sien pour le fumé !!'
+    return hpAtk, hpDef, battleReport
 
 
 def DropItem(**kwargs):
