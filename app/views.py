@@ -206,7 +206,7 @@ class PlayRound(generic.View):
             adventurer.save()
             p_e.save()
             if p_e.hp > 0 and adventurer.hp > 0:
-                battleReport['0']['3'] = " l'ennemie est toujour debout !"
+                battleReport['0']['6'] = " l'ennemie si tien toujour devant pret a en d'acoudre !"
                 hpTab = fight(atkEnemy, defEnemy, enemy.name, resAdventurer, adventurer.name)
                 p_e.hp -= hpTab[0]
                 adventurer.setHp(-hpTab[1])
@@ -221,7 +221,7 @@ class PlayRound(generic.View):
             p_e.save()
             adventurer.save()
             if p_e.hp > 0 and adventurer.hp > 0:
-                battleReport['0']['end'] = " notre Héros est est toujour debout !"
+                battleReport['0']['6'] = " notre Héros est toujour debout mais pour encore combien de temps ?!"
                 hpTab = fight(atkAdventurer, defAdventurer, adventurer.name, resEnemy, enemy.name)
                 adventurer.setHp(-hpTab[0])
                 p_e.hp -= hpTab[1]
@@ -270,25 +270,28 @@ def fight(atk, atkDef, atkName, res, defName):
     hpAtk = 0
     hpDef = 0
 
-    battleReport = {'0': 'Voila que ' + atkName + ' attaque'}
+    battleReport = {'0': 'Voila que ' + atkName + ' attaque',
+                    '1': "Que les dés vous dessine un destin favorable !",
+                    '2':  atkName + " lance un D20 d'attaque et fait " + str(aD20),
+                    '3': 'et ' + defName + ' lance un D20 de défense et fait ' + str(dD20)}
     if aD20 == 1:
         damage = assault - atkDef
-        battleReport['1'] = 'mais il se rate lamentablement et fait un echec critque !!!!!'
+        battleReport['4'] = atkName + ' WTF il se rate lamentablement et fait un echec critque !!!!!'
         if damage >= 0:
             hpAtk = damage
-            battleReport['2'] = 'LE HABAKIRIIIIIII de ' + str(hpAtk) + ' damageeeees'
+            battleReport['5'] = 'LE HABAKIRIIIIIII de ' + str(hpAtk) + ' damageeeees'
         else:
-            battleReport['2'] =  "Heuresement que son armure est plus épaisse que ses muscle et ne s'inflige aucun damages !"
+            battleReport['5'] =  "Heuresement que son armure est plus épaisse que ses muscle et ne s'inflige aucun damages !"
     else:
         damage = assault - protection
         if aD20 == 20:
-            battleReport['1'] = 'et... au mon dieu !!! il transperce ' + defName + ' en faisant une réussite critque'
+            battleReport['4'] = 'et... au mon dieu ?! ' + atkName + ' !!! il transperce ' + defName + ' en faisant une réussite critque'
             damage *= 2
         if damage > 0:
             hpDef = damage
-            battleReport['2'] = 'le coup part !!!! et lui fait ' + str(hpDef) + ' de damageeeeessss !!!!'
+            battleReport['5'] = 'le coup part !!!! et lui fait ' + str(hpDef) + ' de damageeeeessss !!!!'
         else:
-            battleReport['2'] = 'malheuresement il va falloir y mettre un du sien pour le fumé !!'
+            battleReport['5'] = 'malheuresement il va falloir y mettre un du sien pour le fumé !!'
     return hpAtk, hpDef, battleReport
 
 
