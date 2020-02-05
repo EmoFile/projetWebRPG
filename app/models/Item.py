@@ -1,3 +1,5 @@
+import random
+
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -65,11 +67,11 @@ class Weapon(Stuff):
                                        on_delete=models.CASCADE,
                                        related_name='weaponCharacterClass')
     diceNumber = models.PositiveIntegerField(default=1,
-                                blank=False,
-                                null=False)
+                                             blank=False,
+                                             null=False)
     damage = models.PositiveIntegerField(default=4,
-                                blank=False,
-                                null=False)
+                                         blank=False,
+                                         null=False)
 
     def __str__(self):
         return f'{self.id}: {self.name} ' \
@@ -79,6 +81,12 @@ class Weapon(Stuff):
                f'|Str: {self.strength}' \
                f'|Ag:{self.agility}' \
                f'|Int: {self.intelligence}]'
+
+    def getDamage(self):
+        damage = 0
+        for i in range(1, self.diceNumber):
+            damage += random.randint(1,self.damage)
+        return damage
 
 
 class Head(Stuff):
