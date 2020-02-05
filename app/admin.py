@@ -29,7 +29,8 @@ class WeaponAdmin(admin.ModelAdmin):
                     'requiredLevel',
                     'className',
                     'rarity',
-                    'oneHanded',
+                    'diceNumber',
+                    'damage',
                     'strength',
                     'agility',
                     'intelligence')

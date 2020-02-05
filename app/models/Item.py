@@ -64,7 +64,10 @@ class Weapon(Stuff):
                                        default=1,
                                        on_delete=models.CASCADE,
                                        related_name='weaponCharacterClass')
-    damage = models.IntegerField(default=4,
+    diceNumber = models.PositiveIntegerField(default=1,
+                                blank=False,
+                                null=False)
+    damage = models.PositiveIntegerField(default=4,
                                 blank=False,
                                 null=False)
 
