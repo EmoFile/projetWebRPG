@@ -64,6 +64,9 @@ class Weapon(Stuff):
                                        default=1,
                                        on_delete=models.CASCADE,
                                        related_name='weaponCharacterClass')
+    damage = models.IntegerField(default=4,
+                                blank=False,
+                                null=False)
 
     def __str__(self):
         return f'{self.id}: {self.name} ' \
