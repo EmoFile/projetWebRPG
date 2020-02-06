@@ -201,9 +201,9 @@ async function Battle(battle, result, party) {
     let $dockElement = $('<p></p>');
     await sleep(500);
     $dockElement.append(document.createTextNode(thisBattle['0'])).append('</br>');
-    $('.battleReport').append($dockElement);
+    $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
     await sleep(500);
-    $dockElement.append(document.createTextNode(thisBattle['1'])).append('</br>');
+    $dockElement.append(document.createTextNode(thisBattle['1'])).append('</br>').animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
     $('.battleReport').append($dockElement);
     delete thisBattle['0'];
     delete thisBattle['1'];
@@ -211,14 +211,13 @@ async function Battle(battle, result, party) {
         for (let i in thisBattle) {
             $dockElement.append(document.createTextNode(thisBattle[i])).append('</br>');
         }
-        $('.battleReport').append($dockElement);
-        $('.battleReport').animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
+        $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
         delete battle[Object.keys(battle)[0]];
         if (Object.keys(battle).length === 0) {
             if (result['end'] !== undefined) {
                 let fin = result['end'];
                 $dockElement.append('<p>').append(document.createTextNode(fin)).append('</p>');
-                $('.battleReport').append($dockElement);
+                $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
             }
             $('#rollDice').hide().off();
             afterRollDice(result, party);
