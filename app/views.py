@@ -3,6 +3,7 @@ import random
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
+from django.db.models import Q
 from django.http import response, JsonResponse, request
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -95,6 +96,29 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
             'MagicalResistance']
         # Création en BDD du personnage
         self.object.save()
+
+        commonWeaponPull = Weapon.objects.filter(rarity="Common", characterClass=self.object.characterClass)
+        pullCount = commonWeaponPull.count()
+        randomCommonWeapon = commonWeaponPull[random.randint(0, pullCount - 1)]
+
+        self.object.inventory.weapon = randomCommonWeapon
+        self.object.inventory.save()
+
+        commonConsumablePull = Consumable.objects.filter(Q(rarity="Common") | Q(rarity="Rare"))
+        pullCount = commonConsumablePull.count()
+        randomPotion = commonConsumablePull[random.randint(0, pullCount - 1)]
+        AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomPotion)
+
+        commonHealingConsumablePull = Consumable.objects.filter(rarity="Common", hp__gt=0)
+        pullCount = commonHealingConsumablePull.count()
+        randomHealingCommonPotion = commonHealingConsumablePull[random.randint(0, pullCount - 1)]
+        AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomHealingCommonPotion)
+
+        rareHealingConsumablePull = Consumable.objects.filter(rarity="Rare", hp__gt=0)
+        pullCount = rareHealingConsumablePull.count()
+        randomHealingRarePotion = rareHealingConsumablePull[random.randint(0, pullCount - 1)]
+        AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomHealingRarePotion)
+
         party = Party(user=self.request.user, character=self.object)
         party.save()
         return super().form_valid(form)
