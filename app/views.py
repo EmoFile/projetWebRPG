@@ -203,25 +203,25 @@ class PlayRound(generic.View):
             defAdventurer = adventurer.getMagicalResistance()
 
         if adventurer.agility > enemy.agility:
-            hpTab = fight(atkAdventurer, defAdventurer, adventurer.name, resEnemy, enemy.name)
+            hpTab = fight(atkAdventurer, defAdventurer, adventurer, resEnemy, enemy.name)
             adventurer.setHp(-hpTab[0])
             p_e.hp -= hpTab[1]
             adventurer.save()
             p_e.save()
             if p_e.hp > 0 and adventurer.hp > 0:
-                hpTab = fight(atkEnemy, defEnemy, enemy.name, resAdventurer, adventurer.name)
+                hpTab = fight(atkEnemy, defEnemy, enemy, resAdventurer, adventurer.name)
                 p_e.hp -= hpTab[0]
                 adventurer.setHp(-hpTab[1])
                 p_e.save()
                 adventurer.save()
         else:
-            hpTab = fight(atkEnemy, defEnemy, enemy.name, resAdventurer, adventurer.name)
+            hpTab = fight(atkEnemy, defEnemy, enemy, resAdventurer, adventurer.name)
             p_e.hp -= hpTab[0]
             adventurer.setHp(-hpTab[1])
             p_e.save()
             adventurer.save()
             if p_e.hp > 0 and adventurer.hp > 0:
-                hpTab = fight(atkAdventurer, defAdventurer, adventurer.name, resEnemy, enemy.name)
+                hpTab = fight(atkAdventurer, defAdventurer, adventurer, resEnemy, enemy.name)
                 adventurer.setHp(-hpTab[0])
                 p_e.hp -= hpTab[1]
                 adventurer.save()
@@ -254,25 +254,44 @@ class PlayRound(generic.View):
             })
 
 
-def fight(atk, atkDef, atkName, res, defName):
+def getDamage(*args, **kwargs):
+    currantAtk = kwargs['atk']
+    if currantAtk.__class__.__name__ == "Character":
+        if currantAtk.inventory.weapon:
+            return currantAtk.inventory.weapon.getDamage()
+        else:
+            damage = 0
+            for i in range(0, 2):
+                damage += random.randint(1, round(currantAtk.strength / 4))
+            return damage
+    else:
+        return currantAtk.getDamage()
+
+
+def fight(atk, atkDef, atkObj, res, defName):
     aD20 = random.randint(0, 20)
     dD20 = random.randint(0, 20)
     assault = atk + aD20
     protection = res + dD20
+    hit = assault - protection
     hpAtk = 0
     hpDef = 0
-    print('Voila que ' + atkName + ' attaque')
+    print('Voila que ' + atkObj.name + ' attaque : 1D20 + atk = ' + aD20.__str__()
+          + ' + ' + atk.__str__() + ' = ' + assault.__str__())
+    print('defense : 1D20 + res = ' + dD20.__str__() + ' + ' + res.__str__() + ' = ' + protection.__str__())
     if aD20 == 1:
-        damage = assault - atkDef
+        damage = getDamage(atk=atkObj)
         print('mais il se rate lamentablement et fait un echec critque !!!!!')
         if damage >= 0:
+            print('S\'infligeant' + damage.__str__() + " de dégats")
             hpAtk = damage
     else:
-        damage = assault - protection
+        damage = getDamage(atk=atkObj)
         if aD20 == 20:
-            print('et... au mon dieu !!! il transperce ' + defName + ' en faisant une réussite critque')
             damage *= 2
-        if damage > 0:
+            print('et... au mon dieu !!! il transperce ' + defName + ' en faisant une réussite critque')
+        if hit > 0:
+            print('Il lui inflige ' + damage.__str__() + " de dégats")
             hpDef = damage
     return hpAtk, hpDef
 
