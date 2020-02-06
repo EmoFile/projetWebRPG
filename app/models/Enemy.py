@@ -19,11 +19,11 @@ class Enemy(models.Model):
     is_boss = models.BooleanField(default=False)
     next = models.ForeignKey('self', default=None, on_delete=models.CASCADE, blank=True, null=True)
     diceNumber = models.PositiveIntegerField(default=1,
-                                             blank=True,
-                                             null=True)
+                                             blank=False,
+                                             null=False)
     damage = models.PositiveIntegerField(default=4,
-                                         blank=True,
-                                         null=True)
+                                         blank=False,
+                                         null=False)
 
     def is_minion(self):
         return hasattr(self, 'minion')

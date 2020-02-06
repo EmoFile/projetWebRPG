@@ -1,0 +1,7 @@
+.battleReport{
+    overflow: scroll;
+    width: 500px;
+    height: 700px;
+    color: white;
+    background-color: #222222;
+}
