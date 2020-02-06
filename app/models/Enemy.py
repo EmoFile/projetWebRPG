@@ -18,6 +18,12 @@ class Enemy(models.Model):
     magical_resistance = models.IntegerField(default=0, **default)
     is_boss = models.BooleanField(default=False)
     next = models.ForeignKey('self', default=None, on_delete=models.CASCADE, blank=True, null=True)
+    diceNumber = models.PositiveIntegerField(default=1,
+                                             blank=True,
+                                             null=True)
+    damage = models.PositiveIntegerField(default=4,
+                                         blank=True,
+                                         null=True)
 
     def is_minion(self):
         return hasattr(self, 'minion')
@@ -65,6 +71,11 @@ class Enemy(models.Model):
                    magical_resistance=magical_resistance,
                    agility=agility, hp=hp, name=name, *args, **kwargs)
 
+    def getDamage(self):
+        damage = 0
+        for i in range(0, self.diceNumber):
+            damage += random.randint(1, self.damage)
+        return damage
 
 class Minion(Enemy):
     def __str__(self):

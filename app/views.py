@@ -19,7 +19,7 @@ from app.models import CharacterClass, Character, Inventory, Party, Minion, Boss
 
 class IndexView(TemplateView):
     template_name = 'index.html'
-    
+
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['characterClasses'] = CharacterClass.objects.all()
@@ -32,7 +32,7 @@ class IndexView(TemplateView):
 class CharacterDetailView(DetailView):
     model = Character
     template_name = 'characterDetail.html'
-    
+
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['title'] = 'Character Detail'
@@ -44,16 +44,16 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
     model = Character
     form_class = CharacterForm
     template_name = 'characterForm.html'
-    
+
     def get_success_url(self):
         party = get_object_or_404(Party, character=self.object)
         return reverse('playGame', kwargs={'pk': party.pk})
-    
+
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['title'] = 'Create Character'
         return result
-    
+
     def get(self, *args, **kwargs):
         currentCharacterClass = get_object_or_404(CharacterClass,
                                                   pk=self.kwargs['pk'])
@@ -71,7 +71,7 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
         self.request.session[
             'MagicalResistance'] = currentCharacterClass.generateMR()
         return super().get(self)
-    
+
     def form_valid(self, form):
         # Création de l'objet sans enregistrement en base
         self.object = form.save(commit=False)
@@ -109,7 +109,7 @@ class SignUpView(CreateView):
 class LogInView(LoginView):
     form_class = AuthenticationForm
     template_name = 'logIn.html'
-    
+
     def get_success_url(self):
         return reverse('home')
 
@@ -121,7 +121,7 @@ class LogoutView(LogoutView):
 class PlayGameView(LoginRequiredMixin, TemplateView):
     login_url = 'logIn'
     template_name = 'playGame.html'
-    
+
     def get(self, request, *args, **kwargs):
         party = get_object_or_404(Party, pk=self.kwargs['pk'])
         print(request.user.pk)
@@ -130,7 +130,7 @@ class PlayGameView(LoginRequiredMixin, TemplateView):
         elif party.isEnded:
             return redirect(reverse('home'))
         return super().get(self)
-    
+
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['title'] = 'Play Game'
@@ -162,7 +162,7 @@ class PlayGameView(LoginRequiredMixin, TemplateView):
 
 class PlayRound(generic.View):
     http_method_names = ['get']
-    
+
     def get(self, request, **kwargs):
         """
 
@@ -176,7 +176,7 @@ class PlayRound(generic.View):
         enemy = get_object_or_404(Enemy, pk=kwargs['pkEnemy'])
         p_e = PartyEnemy.objects.get(party=party,
                                      enemy=enemy)
-        
+
         if random.randint(0, 1):
             atkEnemy = enemy.strength
             resAdventurer = adventurer.getPhysicalResistance()
@@ -185,7 +185,7 @@ class PlayRound(generic.View):
             atkEnemy = enemy.intelligence
             resAdventurer = adventurer.getMagicalResistance()
             defEnemy = enemy.magical_resistance
-        
+
         if adventurer.characterClass.name == 'Warrior':
             atkAdventurer = adventurer.getStrength()
             defAdventurer = adventurer.getPhysicalResistance()
@@ -194,27 +194,27 @@ class PlayRound(generic.View):
             atkAdventurer = adventurer.getIntelligence()
             resEnemy = enemy.magical_resistance
             defAdventurer = adventurer.getMagicalResistance()
-        
+
         if adventurer.agility > enemy.agility:
-            hpTab = fight(atkAdventurer, defAdventurer, adventurer.name, resEnemy, enemy.name)
+            hpTab = fight(atkAdventurer, defAdventurer, adventurer, resEnemy, enemy.name)
             adventurer.setHp(-hpTab[0])
             p_e.hp -= hpTab[1]
             adventurer.save()
             p_e.save()
             if p_e.hp > 0 and adventurer.hp > 0:
-                hpTab = fight(atkEnemy, defEnemy, enemy.name, resAdventurer, adventurer.name)
+                hpTab = fight(atkEnemy, defEnemy, enemy, resAdventurer, adventurer.name)
                 p_e.hp -= hpTab[0]
                 adventurer.setHp(-hpTab[1])
                 p_e.save()
                 adventurer.save()
         else:
-            hpTab = fight(atkEnemy, defEnemy, enemy.name, resAdventurer, adventurer.name)
+            hpTab = fight(atkEnemy, defEnemy, enemy, resAdventurer, adventurer.name)
             p_e.hp -= hpTab[0]
             adventurer.setHp(-hpTab[1])
             p_e.save()
             adventurer.save()
             if p_e.hp > 0 and adventurer.hp > 0:
-                hpTab = fight(atkAdventurer, defAdventurer, adventurer.name, resEnemy, enemy.name)
+                hpTab = fight(atkAdventurer, defAdventurer, adventurer, resEnemy, enemy.name)
                 adventurer.setHp(-hpTab[0])
                 p_e.hp -= hpTab[1]
                 adventurer.save()
@@ -231,7 +231,7 @@ class PlayRound(generic.View):
             GettingXp(character=adventurer)
             return JsonResponse({'dropItem': DropItem(adventurer=adventurer),
                                  'isEnded': party.isEnded,
-            
+
                                  'enemy': {
                                      'hp': p_e.hp
                                  },
@@ -247,25 +247,44 @@ class PlayRound(generic.View):
             })
 
 
-def fight(atk, atkDef, atkName, res, defName):
+def getDamage(*args, **kwargs):
+    currantAtk = kwargs['atk']
+    if currantAtk.__class__.__name__ == "Character":
+        if currantAtk.inventory.weapon:
+            return currantAtk.inventory.weapon.getDamage()
+        else:
+            damage = 0
+            for i in range(0, 2):
+                damage += random.randint(1, round(currantAtk.strength / 4))
+            return damage
+    else:
+        return currantAtk.getDamage()
+
+
+def fight(atk, atkDef, atkObj, res, defName):
     aD20 = random.randint(0, 20)
     dD20 = random.randint(0, 20)
     assault = atk + aD20
     protection = res + dD20
+    hit = assault - protection
     hpAtk = 0
     hpDef = 0
-    print('Voila que ' + atkName + ' attaque')
+    print('Voila que ' + atkObj.name + ' attaque : 1D20 + atk = ' + aD20.__str__()
+          + ' + ' + atk.__str__() + ' = ' + assault.__str__())
+    print('defense : 1D20 + res = ' + dD20.__str__() + ' + ' + res.__str__() + ' = ' + protection.__str__())
     if aD20 == 1:
-        damage = assault - atkDef
+        damage = getDamage(atk=atkObj)
         print('mais il se rate lamentablement et fait un echec critque !!!!!')
         if damage >= 0:
+            print('S\'infligeant' + damage.__str__() + " de dégats")
             hpAtk = damage
     else:
-        damage = assault - protection
+        damage = getDamage(atk=atkObj)
         if aD20 == 20:
-            print('et... au mon dieu !!! il transperce ' + defName + ' en faisant une réussite critque')
             damage *= 2
-        if damage > 0:
+            print('et... au mon dieu !!! il transperce ' + defName + ' en faisant une réussite critque')
+        if hit > 0:
+            print('Il lui inflige ' + damage.__str__() + " de dégats")
             hpDef = damage
     return hpAtk, hpDef
 
@@ -389,7 +408,7 @@ def ChangeStuff(*args, **kwargs):
 
 def AddConsumable(*args, **kwargs):
     kwargs['inventory'].consumables.add(kwargs['consumable'])
-    
+
     i_c = InventoryConsumable.objects.get(inventory=kwargs['inventory'],
                                           consumable=kwargs['consumable'])
     i_c.quantity += 1
@@ -461,7 +480,7 @@ def NextEnemy(**kwargs):
 
 class NextEnemyView(generic.View):
     http_method_names = ['get']
-    
+
     def get(self, request, **kwargs):
         return JsonResponse(NextEnemy(**kwargs), safe=False)
 
@@ -505,7 +524,7 @@ def GenerateEnemy(**kwargs):
 def UseItem(*args, **kwargs):
     currentParty = get_object_or_404(Party, pk=kwargs['partyPk'])
     currentConsumable = get_object_or_404(Consumable, pk=kwargs['consumablePk'])
-    
+
     i_c = InventoryConsumable.objects.get(inventory=currentParty.character.inventory,
                                           consumable=currentConsumable)
     consumableName = i_c.consumable.name
@@ -515,7 +534,7 @@ def UseItem(*args, **kwargs):
     if i_c.quantity == 0:
         i_c.delete()
     consumableNewQuantity = i_c.quantity
-    
+
     currentParty.character.modifyCarac(currentConsumable)
     currentParty.character.save()
     return JsonResponse({'consumableName': consumableName,
@@ -530,7 +549,7 @@ class EnemyList(ListView):
     template_name = 'listEnemy.html'
     model = Minion
     paginate_by = 100  # if pagination is desired
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['minions'] = Minion.objects.all()

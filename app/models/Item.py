@@ -84,7 +84,7 @@ class Weapon(Stuff):
 
     def getDamage(self):
         damage = 0
-        for i in range(1, self.diceNumber):
+        for i in range(0, self.diceNumber):
             damage += random.randint(1,self.damage)
         return damage
 
