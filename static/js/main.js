@@ -2,8 +2,124 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function afterRollDice(result, $pkParty) {
+    document.getElementById('enemyHp').innerText = result['enemy']['hp'];
+    document.getElementById('characterHp').innerText = result['character']['hp'];
+    document.getElementById('characterHpMax').innerText = result['character']['hpMax'];
+    document.getElementById('characterLevel').innerText = result['character']['level'];
+    document.getElementById('characterXp').innerText = result['character']['xp'];
+    document.getElementById('characterXpRequired').innerText = result['character']['xpRequired'];
+    document.getElementById('characterPhysicalResistence').innerText = result['character']['physicalResistance'];
+    document.getElementById('characterMagicalResistence').innerText = result['character']['magicalResistance'];
+    document.getElementById('characterStrength').innerText = result['character']['strength'];
+    document.getElementById('characterAgility').innerText = result['character']['agility'];
+    document.getElementById('characterIntelligence').innerText = result['character']['intelligence'];
+    document.getElementById('characterBasicPhysicalResistence').innerText = '(' + result['character']['basic']['physicalResistance'] + ')';
+    document.getElementById('characterBasicMagicalResistence').innerText = '(' + result['character']['basic']['magicalResistance'] + ')';
+    document.getElementById('characterBasicStrength').innerText = '(' + result['character']['basic']['strength'] + ')';
+    document.getElementById('characterBasicAgility').innerText = '(' + result['character']['basic']['agility'] + ')';
+    document.getElementById('characterBasicIntelligence').innerText = '(' + result['character']['basic']['intelligence'] + ')';
+    if (result['dropItem']) {
+        let $modalTitle = document.getElementById('itemModalLabel');
+        let $stuffClassName = document.getElementById('stuffClassName');
+        let $stuffKindName = document.getElementById('stuffKindName');
+        let $stuffPk = document.getElementById('stuffPk');
+        let $levelRequired = document.getElementById('levelRequired');
+        let $classRequired = document.getElementById('classRequired');
+        let $rarity = document.getElementById('rarity');
+        let $hpMax = document.getElementById('hpMax');
+        let $hp = document.getElementById('hp');
+        let $physicalResistence = document.getElementById('physicalResistence');
+        let $magicalResistence = document.getElementById('magicalResistence');
+        let $strength = document.getElementById('strength');
+        let $intelligence = document.getElementById('intelligence');
+        let $agility = document.getElementById('agility');
+
+        if (result['dropItem']['isItemDropped'] !== false) {
+            $('#changeItem').show();
+            $modalTitle.textContent = result['dropItem']['ItemDropped']['name'];
+            $rarity.textContent = 'Rarity: ' + result['dropItem']['ItemDropped']['rarity'] + '\n';
+            $stuffClassName.textContent = result['dropItem']['stuffClassName'];
+            $stuffKindName.textContent = 'Type: ' + result['dropItem']['stuffClassName'];
+            $stuffPk.textContent = result['dropItem']['pk'];
+
+            if (result['dropItem']['stuffClassName'] === 'Consumable') {
+                $hp.textContent = 'Hp: ' + result['dropItem']['ItemDropped']['hp'] + '\n';
+            } else {
+                $levelRequired.textContent = 'Level required: ' + result['dropItem']['ItemDropped']['requiredLevel'] + '\n';
+                $classRequired.textContent = 'Class: ' + result['dropItem']['ItemDropped']['requiredClass'] + '\n';
+                $hpMax.textContent = 'Hp max: ' + result['dropItem']['ItemDropped']['hpMax'] + '\n';
+                $physicalResistence.textContent = 'Physical resistence: ' + result['dropItem']['ItemDropped']['physicalResistence'] + '\n';
+                $magicalResistence.textContent = 'Magical resistence: ' + result['dropItem']['ItemDropped']['magicalResistence'] + '\n';
+            }
+            $strength.textContent = 'Strength: ' + result['dropItem']['ItemDropped']['strength'] + '\n';
+            $intelligence.textContent = 'Intelligence: ' + result['dropItem']['ItemDropped']['intelligence'] + '\n';
+            $agility.textContent = 'Agility: ' + result['dropItem']['ItemDropped']['agility'] + '\n';
+        } else {
+            $modalTitle.textContent = 'No loot here !';
+            $('#changeItem').hide()
+        }
+        // $('#itemModal').show();
+        $('#itemModal').modal('show');
+    }
+    if (result['isEnded']){
+
+    }
+    else if (result['enemy']['hp'] <= 0) {
+        bindNextStage($pkParty);
+    } else if (!result['isEnded']) {
+        bindPlayRound($pkParty)
+    }
+}
+
+function bindNextStage($pkParty) {
+    $('#nextStage').show().click(function () {
+        let $pkEnemy = document.getElementById('pkEnemy').innerText;
+        $('#nextStage').hide().off();
+        $.ajax({
+            url: '/nextEnemy/' + $pkParty + '/' + $pkEnemy,
+            type: 'get',
+            dataType: 'json',
+        }).done(function (result) {
+            if (!(result['nothingDude'])) {
+                document.getElementById('pkEnemy').innerText = result['enemyPk'];
+                document.getElementById('stage').innerText = result['partyStage'];
+                document.getElementById('enemyHp').innerText = document.getElementById('enemyHpMax').innerText = result['enemyHpMax'];
+                document.getElementById('enemyPhysicalResistance').innerText = result['enemyPhysicalResistance'];
+                document.getElementById('enemyStrength').innerText = result['enemyStrength'];
+                document.getElementById('enemyAgility').innerText = result['enemyAgility'];
+                document.getElementById('enemyIntelligence').innerText = result['enemyIntelligence'];
+                document.getElementById('enemyMagicalResistance').innerText = result['enemyMagicalResistance'];
+                document.getElementById('enemyName').innerText = result['enemyName'];
+                bindPlayRound($pkParty);
+            }
+        });
+    });
+}
+
+function bindPlayRound($pkParty) {
+    $('#playRound').show().click(function () {
+        let $pkEnemy = document.getElementById('pkEnemy').innerText;
+        $('#playRound').off().hide();
+        $.ajax({
+            url: '/playRound/' + $pkParty + '/' + $pkEnemy,
+            type: 'get',
+            dataType: 'json',
+        }).done(function (result) {
+            if (!(result['nothing'])) {
+                addBattleReport(result, $pkParty)
+            } else {
+                console.log(result['nothing'])
+            }
+        });
+    });
+}
+
+function bindRollDice() {
+
+}
+
 function closeModal() {
-    console.log('Vidage de la modale');
     let $modalTitle = document.getElementById('itemModalLabel');
     let $levelRequired = document.getElementById('levelRequired');
     let $classRequired = document.getElementById('classRequired');
@@ -35,18 +151,13 @@ function closeModal() {
 const ITEM = {
     bindItem() {
         $(".useItem").click(function () {
-            console.log("click");
             let $urlUseItem = $(this).attr('urlUseItem');
             let $coupleCharacterConsumable = $(this).attr('coupleCharacterConsumable');
-            console.log($urlUseItem);
-            console.log($coupleCharacterConsumable);
             $.ajax({
                 url: '/' + $urlUseItem,
                 type: 'get',
                 dataType: 'json',
             }).done(function (result) {
-                console.log("done");
-                console.log(result);
                 let $quantity = document.getElementById('quantity/' + $coupleCharacterConsumable);
                 let $hp = document.getElementById('characterHp');
                 let $physicalResistence = document.getElementById('characterPhysicalResistence');
@@ -77,66 +188,63 @@ const ITEM = {
     }
 };
 
-async function Battle(battle) {
-    $('#rollDice').show();
+
+async function Battle(battle, result, party) {
+    console.log("le result")
+    console.log(result)
+    console.log("le battle report au complet")
+    console.log(battle)
+    console.log(Object.keys(battle).length)
+    let thisBattle = battle[Object.keys(battle)[0]];
+    console.log("le report de cette bataille")
+    console.log(thisBattle)
     let $dockElement = $('<p></p>');
     await sleep(500);
-    $dockElement.append(document.createTextNode(battle['0'])).append('</br>');
+    $dockElement.append(document.createTextNode(thisBattle['0'])).append('</br>');
+    $('.battleReport').append($dockElement);
     await sleep(500);
-    $dockElement.append(document.createTextNode(battle['1'])).append('</br>');
-    delete battle['0'];
-    delete battle['1'];
-
-
-    for (let i in battle) {
-
-    }
+    $dockElement.append(document.createTextNode(thisBattle['1'])).append('</br>');
+    $('.battleReport').append($dockElement);
+    delete thisBattle['0'];
+    delete thisBattle['1'];
+    $('#rollDice').show().one("click", function () {
+        for (let i in thisBattle) {
+            $dockElement.append(document.createTextNode(thisBattle[i])).append('</br>');
+        }
+        $('.battleReport').append($dockElement);
+        $('.battleReport').animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
+        delete battle[Object.keys(battle)[0]];
+        if (Object.keys(battle).length === 0) {
+            if (result['end'] !== undefined) {
+                let fin = result['end'];
+                $dockElement.append('<p>').append(document.createTextNode(fin)).append('</p>');
+                $('.battleReport').append($dockElement);
+            }
+            $('#rollDice').hide().off();
+            afterRollDice(result, party);
+        } else {
+            Battle(battle, result, party);
+        }
+        /* peut etre faire une fonction qi teste si il reste des chose a afficher pour le battle report (et donc supprimer au fur et a mesure*/
+    });
 }
 
-async function addBattleReport(report) {
-    $('#playRound').hide();
-    let battle = report['battleReport']
+async function addBattleReport(report,party) {
+    let battle = report['battleReport'];
     let $dockElement = $('<p></p>');
-    console.log(battle);
-    for (let i in battle) {
-        if (i !== 'end') {
-            await Battle(battle[i]).then(r => {
-                console.log(report['character']['name']);
-                console.log(battle[i][report['enemy']['name']]);
-                for (let j in battle[i]) {
-                    console.log(battle[i][j]);
-                    $dockElement.append(document.createTextNode(battle[i][j])).append('</br>');
-                }
-            });
+    await Battle(battle, report,party)
 
-
-        }
-        $('#playRound').show();
-        $('#rollDice').hide();
-    }
-
-
-    if (report['end'] !== undefined) {
-        let fin = report['end']
-        $dockElement.append(document.createTextNode(fin));
-    }
-    $('.battleReport').append($dockElement)
-    $('.battleReport').animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
 }
 
 $(() => {
     ITEM.bindItem();
     let $url = document.location.pathname;
-    console.log($url);
-    console.log($url.lastIndexOf("/"));
-    console.log($url.length);
 
     let $pkParty = '';
 
     for ($i = $url.lastIndexOf("/") + 1; $i < $url.length; $i++) {
         $pkParty += $url[$i];
     }
-    console.log($pkParty);
 
     let $buttonNextStage = $('<button></button>')
         .attr('type', 'button')
@@ -168,13 +276,15 @@ $(() => {
     $spanPlayRound.append($buttonPlayRound);
 
     let $hpEnemy = document.getElementById('enemyHp');
-    console.log($hpEnemy.textContent);
-    console.log("ici")
-    console.log("notre play button : ")
+    $buttonRollDice.click(false);
     if ($hpEnemy.textContent <= 0) {
-        $buttonNextStage.show()
+        $buttonNextStage.show();
+        bindNextStage($pkParty);
+        $buttonPlayRound.click(false)
     } else {
-        $buttonPlayRound.show()
+        $buttonPlayRound.show();
+        bindPlayRound($pkParty);
+        $buttonNextStage.click(false)
     }
 
     $('#changeItem').hide();
@@ -186,7 +296,6 @@ $(() => {
             type: 'get',
             dataType: 'json',
         }).done(function (result) {
-            console.log(result);
             let $hpMax = document.getElementById('characterHpMax');
             let $hp = document.getElementById('characterHp');
             let $physicalResistence = document.getElementById('characterPhysicalResistence');
@@ -197,22 +306,17 @@ $(() => {
             switch (result['newStuffRarity']) {
                 case 'Rare':
                     var $color = 'color: dodgerblue';
-                    console.log('Rare');
                     break;
                 case 'Epic':
                     var $color = 'color: blueviolet';
-                    console.log('Epic');
                     break;
                 case 'Legendary':
                     var $color = 'color: gold';
-                    console.log('Legendary');
                     break;
                 default:
                     var $color = 'color: limegreen';
-                    console.log('Common');
             }
             if (result['stuffClassName'] === 'Head') {
-                console.log('Head');
                 let $headName = document.getElementById('headName');
                 let $headKind = document.getElementById('headKind');
                 let $headHpMax = document.getElementById('headHpMax');
@@ -234,7 +338,6 @@ $(() => {
 
             } else if (result['stuffClassName'] === 'Chest') {
                 // MODIFIE LE CHEST OU L'ATTRIBUER
-                console.log('Chest');
                 let $chestName = document.getElementById('chestName');
                 let $chestKind = document.getElementById('chestKind');
                 let $chestHpMax = document.getElementById('chestHpMax');
@@ -256,7 +359,6 @@ $(() => {
 
             } else if (result['stuffClassName'] === 'Leg') {
                 // MODIFIE LE LEG OU L'ATTRIBUER
-                console.log('Leg');
                 let $legName = document.getElementById('legName');
                 let $legKind = document.getElementById('legKind');
                 let $legHpMax = document.getElementById('legHpMax');
@@ -277,7 +379,6 @@ $(() => {
                 $legMagicalResistance.innerText = result['newStuffMagicalResistance'];
             } else if (result['stuffClassName'] === 'Weapon') {
                 // MODIFIE LE WEAPON OU L'ATTRIBUER
-                console.log('Weapon');
                 let $weaponName = document.getElementById('weaponName');
                 let $weaponKind = document.getElementById('weaponKind');
                 let $weaponHpMax = document.getElementById('weaponHpMax');
@@ -298,9 +399,6 @@ $(() => {
                 $weaponMagicalResistance.innerText = result['newStuffMagicalResistance'];
             } else {
                 // MODIFIE LE CONSUMABLE OU L'ATTRIBUER
-                console.log('Consumable');
-                console.log('useItem/' + $pkParty + '/' + result['stuffPk']);
-                console.log(document.getElementById('quantity/' + $pkParty + '/' + result['stuffPk']));
                 if (document.getElementById('quantity/' + $pkParty + '/' + result['stuffPk']) === null) {
                     let $div = document.getElementById('consumablesPanel');
                     let $table = document.createElement('table');
@@ -336,10 +434,7 @@ $(() => {
                     $quantity.innerText = result['newStuffQuantity']
                 }
             }
-            console.log("avant le result.character");
-            console.log(result);
             if (result['stuffClassName'] !== 'Consumable') {
-                console.log(result['character'])
                 $hpMax.innerText = result['character']['hpMax'];
                 $hp.innerText = result['character']['hp'];
                 $physicalResistence.innerText = result['character']['physicalResistance'];
@@ -356,123 +451,7 @@ $(() => {
     $('#closeModal').click(function () {
         closeModal();
     });
-    $('#playRound').click(function () {
-        let $pkEnemy = document.getElementById('pkEnemy').innerText;
-        $.ajax({
-            url: '/playRound/' + $pkParty + '/' + $pkEnemy,
-            type: 'get',
-            dataType: 'json',
-        }).done(function (result) {
-            if (!(result['nothing'])) {
-                console.log(result);
-                addBattleReport(result).then(r => {
-                    document.getElementById('enemyHp').innerText = result['enemy']['hp'];
-                    document.getElementById('characterHp').innerText = result['character']['hp'];
-                    document.getElementById('characterHpMax').innerText = result['character']['hpMax'];
-                    document.getElementById('characterLevel').innerText = result['character']['level'];
-                    document.getElementById('characterXp').innerText = result['character']['xp'];
-                    document.getElementById('characterXpRequired').innerText = result['character']['xpRequired'];
-                    console.log(document.getElementById('characterXpRequired'));
-                    console.log(document.getElementById('characterXpRequired').innerText);
-                    console.log(result['character']['xpRequired']);
-                    document.getElementById('characterPhysicalResistence').innerText = result['character']['physicalResistance'];
-                    document.getElementById('characterMagicalResistence').innerText = result['character']['magicalResistance'];
-                    document.getElementById('characterStrength').innerText = result['character']['strength'];
-                    document.getElementById('characterAgility').innerText = result['character']['agility'];
-                    document.getElementById('characterIntelligence').innerText = result['character']['intelligence'];
-                    document.getElementById('characterBasicPhysicalResistence').innerText = '(' + result['character']['basic']['physicalResistance'] + ')';
-                    document.getElementById('characterBasicMagicalResistence').innerText = '(' + result['character']['basic']['magicalResistance'] + ')';
-                    document.getElementById('characterBasicStrength').innerText = '(' + result['character']['basic']['strength'] + ')';
-                    document.getElementById('characterBasicAgility').innerText = '(' + result['character']['basic']['agility'] + ')';
-                    document.getElementById('characterBasicIntelligence').innerText = '(' + result['character']['basic']['intelligence'] + ')';
-                    if (result['dropItem']) {
-                        console.log('Y a un drop un drop mec !!!');
-                        console.log(result['dropItem']);
-
-                        let $modalTitle = document.getElementById('itemModalLabel');
-                        let $stuffClassName = document.getElementById('stuffClassName');
-                        let $stuffKindName = document.getElementById('stuffKindName');
-                        let $stuffPk = document.getElementById('stuffPk');
-                        let $levelRequired = document.getElementById('levelRequired');
-                        let $classRequired = document.getElementById('classRequired');
-                        let $rarity = document.getElementById('rarity');
-                        let $hpMax = document.getElementById('hpMax');
-                        let $hp = document.getElementById('hp');
-                        let $physicalResistence = document.getElementById('physicalResistence');
-                        let $magicalResistence = document.getElementById('magicalResistence');
-                        let $strength = document.getElementById('strength');
-                        let $intelligence = document.getElementById('intelligence');
-                        let $agility = document.getElementById('agility');
-
-                        if (result['dropItem']['isItemDropped'] !== false) {
-                            $('#changeItem').show();
-                            $modalTitle.textContent = result['dropItem']['ItemDropped']['name'];
-                            $rarity.textContent = 'Rarity: ' + result['dropItem']['ItemDropped']['rarity'] + '\n';
-                            $stuffClassName.textContent = result['dropItem']['stuffClassName'];
-                            $stuffKindName.textContent = 'Type: ' + result['dropItem']['stuffClassName'];
-                            $stuffPk.textContent = result['dropItem']['pk'];
-
-                            if (result['dropItem']['stuffClassName'] === 'Consumable') {
-                                $hp.textContent = 'Hp: ' + result['dropItem']['ItemDropped']['hp'] + '\n';
-                            } else {
-                                $levelRequired.textContent = 'Level required: ' + result['dropItem']['ItemDropped']['requiredLevel'] + '\n';
-                                $classRequired.textContent = 'Class: ' + result['dropItem']['ItemDropped']['requiredClass'] + '\n';
-                                $hpMax.textContent = 'Hp max: ' + result['dropItem']['ItemDropped']['hpMax'] + '\n';
-                                $physicalResistence.textContent = 'Physical resistence: ' + result['dropItem']['ItemDropped']['physicalResistence'] + '\n';
-                                $magicalResistence.textContent = 'Magical resistence: ' + result['dropItem']['ItemDropped']['magicalResistence'] + '\n';
-                            }
-                            $strength.textContent = 'Strength: ' + result['dropItem']['ItemDropped']['strength'] + '\n';
-                            $intelligence.textContent = 'Intelligence: ' + result['dropItem']['ItemDropped']['intelligence'] + '\n';
-                            $agility.textContent = 'Agility: ' + result['dropItem']['ItemDropped']['agility'] + '\n';
-                        } else {
-                            $modalTitle.textContent = 'No loot here !';
-                            $('#changeItem').hide()
-                        }
-                        // $('#itemModal').show();
-                        $('#itemModal').modal('show');
-                    }
-
-                    console.log(result['isEnded']);
-                    if (result['isEnded'])
-                        $buttonPlayRound.hide();
-                    else if (result['enemy']['hp'] <= 0) {
-                        $buttonPlayRound.hide();
-                        $buttonNextStage.show();
-                    }
-
-                });
 
 
-            } else {
-                console.log(result['nothing'])
-            }
-        });
-    });
-
-    $('#nextStage').click(function () {
-        let $pkEnemy = document.getElementById('pkEnemy').innerText;
-        $buttonNextStage.hide();
-        $.ajax({
-            url: '/nextEnemy/' + $pkParty + '/' + $pkEnemy,
-            type: 'get',
-            dataType: 'json',
-        }).done(function (result) {
-            console.log(result['nothingDude'])
-            if (!(result['nothingDude'])) {
-                console.log(result);
-                document.getElementById('pkEnemy').innerText = result['enemyPk'];
-                document.getElementById('stage').innerText = result['partyStage'];
-                console.log(result['enemyHpMax']);
-                document.getElementById('enemyHp').innerText = document.getElementById('enemyHpMax').innerText = result['enemyHpMax'];
-                document.getElementById('enemyPhysicalResistance').innerText = result['enemyPhysicalResistance'];
-                document.getElementById('enemyStrength').innerText = result['enemyStrength'];
-                document.getElementById('enemyAgility').innerText = result['enemyAgility'];
-                document.getElementById('enemyIntelligence').innerText = result['enemyIntelligence'];
-                document.getElementById('enemyMagicalResistance').innerText = result['enemyMagicalResistance'];
-                document.getElementById('enemyName').innerText = result['enemyName'];
-                $buttonPlayRound.show();
-            }
-        });
-    });
 });
 

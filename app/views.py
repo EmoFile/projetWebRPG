@@ -229,7 +229,7 @@ class PlayRound(generic.View):
                 adventurer.save()
                 p_e.save()
         if adventurer.hp <= 0:
-            battleReport['end'] = 'Cet énemie était bien superieur a ce héors malheurement, SOUILLEEEEEED'
+            end = 'Cet énemie était bien superieur a ce héors malheurement, SOUILLEEEEEED'
             party.isEnded = True
             party.save()
             return JsonResponse({'isEnded': party.isEnded,
@@ -237,10 +237,11 @@ class PlayRound(generic.View):
                                      'hp': p_e.hp
                                  },
                                  'character': ReloadCharacter(currentCharacter=adventurer),
-                                 'battleReport': battleReport
+                                 'battleReport': battleReport,
+                                 'end': end
                                  })
         elif p_e.hp <= 0:
-            battleReport['end'] = "L'énemie s'est fait écraser sur ce dernier coup incompris de la population !"
+            end = "L'énemie s'est fait écraser sur ce dernier coup incompris de la population !"
             GettingXp(character=adventurer)
             return JsonResponse({'dropItem': DropItem(adventurer=adventurer),
                                  'isEnded': party.isEnded,
@@ -249,7 +250,8 @@ class PlayRound(generic.View):
                                      'hp': p_e.hp
                                  },
                                  'character': ReloadCharacter(currentCharacter=adventurer),
-                                 'battleReport': battleReport
+                                 'battleReport': battleReport,
+                                 'end': end
                                  })
         else:
             return JsonResponse({
