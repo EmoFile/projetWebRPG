@@ -356,33 +356,80 @@ def fight(atk, atkDef, atkObj, res, defName):
     return hpAtk, hpDef, battleReport
 
 
+def dispacthPoints(*args, **kwargs):
+    stuffPoint = kwargs['stuffPoint']
+    stuffClassName = kwargs['stuffClassName']
+    itemCharacterClassRequired = kwargs['itemCharacterClassRequired']
+    hpPoints, strengthPoints, agilityPoints, intellignecePoints, physResPoints, MagResPoints, hpMaxPoints, diceNumber, damage = 0
+    ## spéaration en 3 partie dispatchForConsumable, dispatchForWeapon, dispatchForBasicStuff
+    return [hpPoints, strengthPoints, agilityPoints, intellignecePoints, hpMaxPoints, physResPoints, MagResPoints,
+            diceNumber, damage]
+
+
+def calculPoints(*args, **kwargs):
+    if kwargs['stuffClassName'] == 'Consumable':
+        basicStuffPointByRarity = [1, 2, 3, 6]
+    else:
+        basicStuffPointByRarity = [2, 4, 6, 12]
+    for (rarity, index) in [('Common', 0),
+                            ('Rare', 1),
+                            ('Epic', 2),
+                            ('Legendary', 3)]:
+        if kwargs['stuffRarity'] == rarity:
+            return basicStuffPointByRarity[index] * (1 + 0.25 * (kwargs['itemLvlRequired'] - 1))
+
+
 def generateItem(*args, **kwargs):
     stuffClassName = kwargs['stuffClassName']
     stuffRarity = kwargs['stuffRarity']
     adventurer = kwargs['adventurer']
     itemCharacterClassRequired = adventurer.characterClass
     itemLvlRequired = random.randint(1, adventurer.level)
+    stuffPointDispatch = dispacthPoints(
+        stuffPoint=calculPoints(stuffRarity=stuffRarity, itemLvlRequired=itemLvlRequired,
+                                stuffClassName=stuffClassName),
+        stuffClassName=stuffClassName,
+        itemCharacterClassRequired=itemCharacterClassRequired)
     if stuffClassName == 'Consumable':
-        ItemDropped = Consumable(rarity=stuffRarity, strength=999, agility=999, intelligence=999, hp=999)
+        ItemDropped = Consumable(rarity=stuffRarity,
+                                 hp=stuffPointDispatch[0],
+                                 strength=stuffPointDispatch[1],
+                                 agility=stuffPointDispatch[2],
+                                 intelligence=stuffPointDispatch[3])
     elif stuffClassName == 'Weapon':
         ItemDropped = Weapon(rarity=stuffRarity, requiredLevel=itemLvlRequired,
-                             characterClass=itemCharacterClassRequired, hpMax=999, physicalResistance=999,
-                             magicalResistance=999, strength=999, agility=999, intelligence=999, diceNumber=999,
-                             damage=999)
+                             characterClass=itemCharacterClassRequired,
+                             strength=stuffPointDispatch[1],
+                             agility=stuffPointDispatch[2],
+                             intelligence=stuffPointDispatch[3],
+                             diceNumber=stuffPointDispatch[7],
+                             damage=stuffPointDispatch[8])
     elif stuffClassName == 'Head':
         ItemDropped = Head(rarity=stuffRarity, requiredLevel=itemLvlRequired, characterClass=itemCharacterClassRequired,
-                           hpMax=999, physicalResistance=999,
-                           magicalResistance=999, strength=999, agility=999, intelligence=999)
+                           hpMax=stuffPointDispatch[4],
+                           physicalResistance=stuffPointDispatch[5],
+                           magicalResistance=stuffPointDispatch[6],
+                           strength=stuffPointDispatch[1],
+                           agility=stuffPointDispatch[2],
+                           intelligence=stuffPointDispatch[3])
     elif stuffClassName == 'Chest':
         ItemDropped = Chest(rarity=stuffRarity, requiredLevel=itemLvlRequired,
                             characterClass=itemCharacterClassRequired,
-                            hpMax=999, physicalResistance=999,
-                            magicalResistance=999, strength=999, agility=999, intelligence=999)
+                            hpMax=stuffPointDispatch[4],
+                            physicalResistance=stuffPointDispatch[5],
+                            magicalResistance=stuffPointDispatch[6],
+                            strength=stuffPointDispatch[1],
+                            agility=stuffPointDispatch[2],
+                            intelligence=stuffPointDispatch[3])
     else:
         ItemDropped = Leg(rarity=stuffRarity, requiredLevel=itemLvlRequired,
                           characterClass=itemCharacterClassRequired,
-                          hpMax=999, physicalResistance=999,
-                          magicalResistance=999, strength=999, agility=999, intelligence=999)
+                          hpMax=stuffPointDispatch[4],
+                          physicalResistance=stuffPointDispatch[5],
+                          magicalResistance=stuffPointDispatch[6],
+                          strength=stuffPointDispatch[1],
+                          agility=stuffPointDispatch[2],
+                          intelligence=stuffPointDispatch[3])
     ItemDropped.save()
     if stuffClassName == 'Consumable':
         data = {
