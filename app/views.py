@@ -97,26 +97,44 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
         # Création en BDD du personnage
         self.object.save()
 
-        commonWeaponPull = Weapon.objects.filter(rarity="Common", characterClass=self.object.characterClass)
+        commonWeaponPull = Weapon.objects.filter(rarity="Common", requiredLevel=1,
+                                                 characterClass=self.object.characterClass)
         pullCount = commonWeaponPull.count()
+        if pullCount == 0 or random.randint(1, 100) <= 20:
+            generateItem(stuffClassName='Weapon', stuffRarity='Common', adventurer=self.object)
+            commonWeaponPull = Weapon.objects.filter(rarity="Common", requiredLevel=1,
+                                                     characterClass=self.object.characterClass)
+            pullCount = commonWeaponPull.count()
         randomCommonWeapon = commonWeaponPull[random.randint(0, pullCount - 1)]
-
         self.object.inventory.weapon = randomCommonWeapon
         self.object.inventory.save()
 
         commonConsumablePull = Consumable.objects.filter(Q(rarity="Common") | Q(rarity="Rare"))
         pullCount = commonConsumablePull.count()
+        if pullCount == 0 or random.randint(1, 100) <= 20:
+            generateItem(stuffClassName='Consumable', stuffRarity='Common' if random.randint(1, 2) == 1 else 'Rare',
+                         adventurer=self.object)
+            commonConsumablePull = Consumable.objects.filter(Q(rarity="Common") | Q(rarity="Rare"))
+            pullCount = commonConsumablePull.count()
         randomPotion = commonConsumablePull[random.randint(0, pullCount - 1)]
         AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomPotion)
 
         commonHealingConsumablePull = Consumable.objects.filter(rarity="Common", hp__gt=0)
         pullCount = commonHealingConsumablePull.count()
+        if pullCount == 0 or random.randint(1, 100) <= 20:
+            generateItem(stuffClassName='Consumable', stuffRarity='Common', adventurer=self.object)
+            commonHealingConsumablePull = Consumable.objects.filter(rarity="Common", hp__gt=0)
+            pullCount = commonHealingConsumablePull.count()
         randomHealingCommonPotion = commonHealingConsumablePull[random.randint(0, pullCount - 1)]
         AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory,
                       consumable=randomHealingCommonPotion)
 
         rareHealingConsumablePull = Consumable.objects.filter(rarity="Rare", hp__gt=0)
         pullCount = rareHealingConsumablePull.count()
+        if pullCount == 0 or random.randint(1, 100) <= 20:
+            generateItem(stuffClassName='Consumable', stuffRarity='Rare', adventurer=self.object)
+            rareHealingConsumablePull = Consumable.objects.filter(rarity="Rare", hp__gt=0)
+            pullCount = rareHealingConsumablePull.count()
         randomHealingRarePotion = rareHealingConsumablePull[random.randint(0, pullCount - 1)]
         AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomHealingRarePotion)
 
@@ -349,7 +367,8 @@ def generateItem(*args, **kwargs):
     elif stuffClassName == 'Weapon':
         ItemDropped = Weapon(rarity=stuffRarity, requiredLevel=itemLvlRequired,
                              characterClass=itemCharacterClassRequired, hpMax=999, physicalResistance=999,
-                             magicalResistance=999, strength=999, agility=999, intelligence=999, diceNumber=1, damage=4)
+                             magicalResistance=999, strength=999, agility=999, intelligence=999, diceNumber=999,
+                             damage=999)
     elif stuffClassName == 'Head':
         ItemDropped = Head(rarity=stuffRarity, requiredLevel=itemLvlRequired, characterClass=itemCharacterClassRequired,
                            hpMax=999, physicalResistance=999,
@@ -418,7 +437,9 @@ def DropItem(**kwargs):
         stuffClass = random.randint(1, 5)
         if stuffClass == 1:
             stuffClassName = 'Consumable'
-            if Consumable.objects.filter(rarity=stuffRarity) is None or random.randint(1, 3) != 3:
+            stuffPull = Consumable.objects.filter(rarity=stuffRarity)
+            stuffCount = stuffPull.count()
+            if stuffCount == 0 or random.randint(1, 100) <= 20:
                 return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
                                     stuffRarity=stuffRarity)
             stuffPull = Consumable.objects.filter(rarity=stuffRarity)
@@ -426,8 +447,9 @@ def DropItem(**kwargs):
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 2:
             stuffClassName = 'Head'
-            if Head.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass) is None \
-                    or random.randint(1, 3) != 3:
+            stuffPull = Head.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
+            stuffCount = stuffPull.count()
+            if stuffCount == 0 or random.randint(1, 100) <= 20:
                 return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
                                     stuffRarity=stuffRarity)
             stuffPull = Head.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
@@ -435,8 +457,9 @@ def DropItem(**kwargs):
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 3:
             stuffClassName = 'Chest'
-            if Chest.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass) is None \
-                    or random.randint(1, 3) != 3:
+            stuffPull = Chest.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
+            stuffCount = stuffPull.count()
+            if stuffCount == 0 or random.randint(1, 100) <= 20:
                 return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
                                     stuffRarity=stuffRarity)
             stuffPull = Chest.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
@@ -444,8 +467,9 @@ def DropItem(**kwargs):
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 4:
             stuffClassName = 'Leg'
-            if Leg.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass) is None \
-                    or random.randint(1, 3) != 3:
+            stuffPull = Leg.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
+            stuffCount = stuffPull.count()
+            if stuffCount == 0 or random.randint(1, 100) <= 20:
                 return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
                                     stuffRarity=stuffRarity)
             stuffPull = Leg.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
@@ -453,8 +477,10 @@ def DropItem(**kwargs):
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         else:
             stuffClassName = 'Weapon'
-            if Weapon.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass) is None \
-                    or random.randint(1, 3) != 3:
+            stuffPull = Weapon.objects.filter(rarity=stuffRarity,
+                                              characterClass=kwargs['adventurer'].characterClass)
+            stuffCount = stuffPull.count()
+            if stuffCount == 0 or random.randint(1, 100) <= 20:
                 return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
                                     stuffRarity=stuffRarity)
             stuffPull = Weapon.objects.filter(rarity=stuffRarity,
