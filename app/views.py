@@ -112,7 +112,8 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
         commonHealingConsumablePull = Consumable.objects.filter(rarity="Common", hp__gt=0)
         pullCount = commonHealingConsumablePull.count()
         randomHealingCommonPotion = commonHealingConsumablePull[random.randint(0, pullCount - 1)]
-        AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomHealingCommonPotion)
+        AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory,
+                      consumable=randomHealingCommonPotion)
 
         rareHealingConsumablePull = Consumable.objects.filter(rarity="Rare", hp__gt=0)
         pullCount = rareHealingConsumablePull.count()
@@ -312,7 +313,7 @@ def fight(atk, atkDef, atkObj, res, defName):
     hpDef = 0
     battleReport = {'0': 'Voila que ' + atkObj.name + ' attaque',
                     '1': "Que les dés vous dessine un destin favorable !",
-                    '2':  atkObj.name + " 1D20 + atk = " + aD20.__str__() + ' + ' + atk.__str__() + ' = ' + assault.__str__() ,
+                    '2': atkObj.name + " 1D20 + atk = " + aD20.__str__() + ' + ' + atk.__str__() + ' = ' + assault.__str__(),
                     '3': 'et ' + defName + ' fait 1D20 + res = ' + dD20.__str__() + ' + ' + res.__str__() + ' = ' + protection.__str__()}
     if aD20 == 1:
         damage = getDamage(atk=atkObj)
@@ -321,11 +322,13 @@ def fight(atk, atkDef, atkObj, res, defName):
             hpAtk = damage
             battleReport['5'] = 'LE HABAKIRIIIIIII de ' + damage.__str__() + ' damageeeees'
         else:
-            battleReport['5'] =  "Heuresement que son armure est plus épaisse que ses muscle et ne s'inflige aucun damages !"
+            battleReport[
+                '5'] = "Heuresement que son armure est plus épaisse que ses muscle et ne s'inflige aucun damages !"
     else:
         damage = getDamage(atk=atkObj)
         if aD20 == 20:
-            battleReport['4'] = 'et... au mon dieu ?! ' + atkObj.name + ' !!! il transperce ' + defName + ' en faisant une réussite critque'
+            battleReport[
+                '4'] = 'et... au mon dieu ?! ' + atkObj.name + ' !!! il transperce ' + defName + ' en faisant une réussite critque'
             damage *= 2
         if hit > 0:
             hpDef = damage
@@ -333,6 +336,72 @@ def fight(atk, atkDef, atkObj, res, defName):
         else:
             battleReport['5'] = 'malheuresement il va falloir y mettre un du sien pour le fumé !!'
     return hpAtk, hpDef, battleReport
+
+
+def generateItem(*args, **kwargs):
+    stuffClassName = kwargs['stuffClassName']
+    stuffRarity = kwargs['stuffRarity']
+    adventurer = kwargs['adventurer']
+    itemCharacterClassRequired = adventurer.characterClass
+    itemLvlRequired = random.randint(1, adventurer.level)
+    if stuffClassName == 'Consumable':
+        ItemDropped = Consumable(rarity=stuffRarity, strength=999, agility=999, intelligence=999, hp=999)
+    elif stuffClassName == 'Weapon':
+        ItemDropped = Weapon(rarity=stuffRarity, requiredLevel=itemLvlRequired,
+                             characterClass=itemCharacterClassRequired, hpMax=999, physicalResistance=999,
+                             magicalResistance=999, strength=999, agility=999, intelligence=999, diceNumber=1, damage=4)
+    elif stuffClassName == 'Head':
+        ItemDropped = Head(rarity=stuffRarity, requiredLevel=itemLvlRequired, characterClass=itemCharacterClassRequired,
+                           hpMax=999, physicalResistance=999,
+                           magicalResistance=999, strength=999, agility=999, intelligence=999)
+    elif stuffClassName == 'Chest':
+        ItemDropped = Chest(rarity=stuffRarity, requiredLevel=itemLvlRequired,
+                            characterClass=itemCharacterClassRequired,
+                            hpMax=999, physicalResistance=999,
+                            magicalResistance=999, strength=999, agility=999, intelligence=999)
+    else:
+        ItemDropped = Leg(rarity=stuffRarity, requiredLevel=itemLvlRequired,
+                          characterClass=itemCharacterClassRequired,
+                          hpMax=999, physicalResistance=999,
+                          magicalResistance=999, strength=999, agility=999, intelligence=999)
+    ItemDropped.save()
+    if stuffClassName == 'Consumable':
+        data = {
+            'isItemDropped': True,
+            'stuffClassName': stuffClassName,
+            'stuffRarity': stuffRarity,
+            'stuffCount': 'generated object',
+            'pk': ItemDropped.pk,
+            'ItemDropped': {
+                'name': ItemDropped.name,
+                'rarity': ItemDropped.rarity,
+                'hp': ItemDropped.hp,
+                'strength': ItemDropped.strength,
+                'intelligence': ItemDropped.intelligence,
+                'agility': ItemDropped.agility
+            }
+        }
+    else:
+        data = {
+            'isItemDropped': True,
+            'stuffClassName': stuffClassName,
+            'stuffRarity': stuffRarity,
+            'stuffCount': 'generated object',
+            'pk': ItemDropped.pk,
+            'ItemDropped': {
+                'name': ItemDropped.name,
+                'requiredLevel': ItemDropped.requiredLevel,
+                'requiredClass': ItemDropped.characterClass.name,
+                'rarity': ItemDropped.rarity,
+                'hpMax': ItemDropped.hpMax,
+                'physicalResistence': ItemDropped.physicalResistance,
+                'magicalResistence': ItemDropped.magicalResistance,
+                'strength': ItemDropped.strength,
+                'intelligence': ItemDropped.intelligence,
+                'agility': ItemDropped.agility
+            }
+        }
+    return data
 
 
 def DropItem(**kwargs):
@@ -349,27 +418,47 @@ def DropItem(**kwargs):
         stuffClass = random.randint(1, 5)
         if stuffClass == 1:
             stuffClassName = 'Consumable'
+            if Consumable.objects.filter(rarity=stuffRarity) is None or random.randint(1, 3) != 3:
+                return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
+                                    stuffRarity=stuffRarity)
             stuffPull = Consumable.objects.filter(rarity=stuffRarity)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 2:
             stuffClassName = 'Head'
+            if Head.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass) is None \
+                    or random.randint(1, 3) != 3:
+                return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
+                                    stuffRarity=stuffRarity)
             stuffPull = Head.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 3:
             stuffClassName = 'Chest'
+            if Chest.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass) is None \
+                    or random.randint(1, 3) != 3:
+                return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
+                                    stuffRarity=stuffRarity)
             stuffPull = Chest.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 4:
             stuffClassName = 'Leg'
+            if Leg.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass) is None \
+                    or random.randint(1, 3) != 3:
+                return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
+                                    stuffRarity=stuffRarity)
             stuffPull = Leg.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         else:
             stuffClassName = 'Weapon'
-            stuffPull = Weapon.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
+            if Weapon.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass) is None \
+                    or random.randint(1, 3) != 3:
+                return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
+                                    stuffRarity=stuffRarity)
+            stuffPull = Weapon.objects.filter(rarity=stuffRarity,
+                                              characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         if stuffClassName == 'Consumable':
