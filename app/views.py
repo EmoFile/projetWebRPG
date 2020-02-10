@@ -3,6 +3,7 @@ import random
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
+from django.db.models import Q
 from django.http import response, JsonResponse, request
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -95,6 +96,29 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
             'MagicalResistance']
         # Création en BDD du personnage
         self.object.save()
+
+        commonWeaponPull = Weapon.objects.filter(rarity="Common", characterClass=self.object.characterClass)
+        pullCount = commonWeaponPull.count()
+        randomCommonWeapon = commonWeaponPull[random.randint(0, pullCount - 1)]
+
+        self.object.inventory.weapon = randomCommonWeapon
+        self.object.inventory.save()
+
+        commonConsumablePull = Consumable.objects.filter(Q(rarity="Common") | Q(rarity="Rare"))
+        pullCount = commonConsumablePull.count()
+        randomPotion = commonConsumablePull[random.randint(0, pullCount - 1)]
+        AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomPotion)
+
+        commonHealingConsumablePull = Consumable.objects.filter(rarity="Common", hp__gt=0)
+        pullCount = commonHealingConsumablePull.count()
+        randomHealingCommonPotion = commonHealingConsumablePull[random.randint(0, pullCount - 1)]
+        AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomHealingCommonPotion)
+
+        rareHealingConsumablePull = Consumable.objects.filter(rarity="Rare", hp__gt=0)
+        pullCount = rareHealingConsumablePull.count()
+        randomHealingRarePotion = rareHealingConsumablePull[random.randint(0, pullCount - 1)]
+        AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomHealingRarePotion)
+
         party = Party(user=self.request.user, character=self.object)
         party.save()
         return super().form_valid(form)
@@ -200,30 +224,30 @@ class PlayRound(generic.View):
             defAdventurer = adventurer.getMagicalResistance()
 
         if adventurer.agility > enemy.agility:
-            hpTab = fight(atkAdventurer, defAdventurer, adventurer.name, resEnemy, enemy.name)
+            hpTab = fight(atkAdventurer, defAdventurer, adventurer, resEnemy, enemy.name)
             adventurer.setHp(-hpTab[0])
             p_e.hp -= hpTab[1]
             battleReport = {'0': hpTab[2]}
             adventurer.save()
             p_e.save()
             if p_e.hp > 0 and adventurer.hp > 0:
+                hpTab = fight(atkEnemy, defEnemy, enemy, resAdventurer, adventurer.name)
                 battleReport['0']['6'] = " l'ennemie si tien toujour devant pret a en d'acoudre !"
-                hpTab = fight(atkEnemy, defEnemy, enemy.name, resAdventurer, adventurer.name)
                 p_e.hp -= hpTab[0]
                 adventurer.setHp(-hpTab[1])
                 battleReport['1'] = hpTab[2]
                 p_e.save()
                 adventurer.save()
         else:
-            hpTab = fight(atkEnemy, defEnemy, enemy.name, resAdventurer, adventurer.name)
+            hpTab = fight(atkEnemy, defEnemy, enemy, resAdventurer, adventurer.name)
             p_e.hp -= hpTab[0]
             adventurer.setHp(-hpTab[1])
             battleReport = {'0': hpTab[2]}
             p_e.save()
             adventurer.save()
             if p_e.hp > 0 and adventurer.hp > 0:
+                hpTab = fight(atkAdventurer, defAdventurer, adventurer, resEnemy, enemy.name)
                 battleReport['0']['6'] = " notre Héros est toujour debout mais pour encore combien de temps ?!"
-                hpTab = fight(atkAdventurer, defAdventurer, adventurer.name, resEnemy, enemy.name)
                 adventurer.setHp(-hpTab[0])
                 p_e.hp -= hpTab[1]
                 battleReport['1'] = hpTab[2]
@@ -265,7 +289,21 @@ class PlayRound(generic.View):
             })
 
 
-def fight(atk, atkDef, atkName, res, defName):
+def getDamage(*args, **kwargs):
+    currantAtk = kwargs['atk']
+    if currantAtk.__class__.__name__ == "Character":
+        if currantAtk.inventory.weapon:
+            return currantAtk.inventory.weapon.getDamage()
+        else:
+            damage = 0
+            for i in range(0, 2):
+                damage += random.randint(1, round(currantAtk.strength / 4))
+            return damage
+    else:
+        return currantAtk.getDamage()
+
+
+def fight(atk, atkDef, atkObj, res, defName):
     # announce = {
     #     atkName + " is getting ready to attack.",
     #     atkName + " is getting closer!",
@@ -288,29 +326,29 @@ def fight(atk, atkDef, atkName, res, defName):
     # }
     assault = atk + aD20
     protection = res + dD20
+    hit = assault - protection
     hpAtk = 0
     hpDef = 0
-
-    battleReport = {'0': 'Voila que ' + atkName + ' attaque',
+    battleReport = {'0': 'Voila que ' + atkObj.name + ' attaque',
                     '1': "Que les dés vous dessine un destin favorable !",
-                    '2':  atkName + " lance un D20 d'attaque et fait " + str(aD20),
-                    '3': 'et ' + defName + ' lance un D20 de défense et fait ' + str(dD20)}
+                    '2':  atkObj.name + " 1D20 + atk = " + aD20.__str__() + ' + ' + atk.__str__() + ' = ' + assault.__str__() ,
+                    '3': 'et ' + defName + ' fait 1D20 + res = ' + dD20.__str__() + ' + ' + res.__str__() + ' = ' + protection.__str__()}
     if aD20 == 1:
-        damage = assault - atkDef
-        battleReport['4'] = atkName + ' WTF il se rate lamentablement et fait un echec critque !!!!!'
+        damage = getDamage(atk=atkObj)
+        battleReport['4'] = atkObj.name + ' WTF il se rate lamentablement et fait un echec critque !!!!!'
         if damage >= 0:
             hpAtk = damage
-            battleReport['5'] = 'LE HABAKIRIIIIIII de ' + str(hpAtk) + ' damageeeees'
+            battleReport['5'] = 'LE HABAKIRIIIIIII de ' + damage.__str__() + ' damageeeees'
         else:
             battleReport['5'] =  "Heuresement que son armure est plus épaisse que ses muscle et ne s'inflige aucun damages !"
     else:
-        damage = assault - protection
+        damage = getDamage(atk=atkObj)
         if aD20 == 20:
-            battleReport['4'] = 'et... au mon dieu ?! ' + atkName + ' !!! il transperce ' + defName + ' en faisant une réussite critque'
+            battleReport['4'] = 'et... au mon dieu ?! ' + atkObj.name + ' !!! il transperce ' + defName + ' en faisant une réussite critque'
             damage *= 2
-        if damage > 0:
+        if hit > 0:
             hpDef = damage
-            battleReport['5'] = 'le coup part !!!! et lui fait ' + str(hpDef) + ' de damageeeeessss !!!!'
+            battleReport['5'] = 'le coup part !!!! et lui fait ' + damage.__str__() + ' de damageeeeessss !!!!'
         else:
             battleReport['5'] = 'malheuresement il va falloir y mettre un du sien pour le fumé !!'
     return hpAtk, hpDef, battleReport
