@@ -358,15 +358,128 @@ def fight(atk, atkDef, atkObj, res, defName):
 
 
 def dispactForStuff(*args, **kwargs):
-    strengthPoints = 0
-    agilityPoints = 0
-    intelligencePoints = 0
-    hpMaxPoints = 0
-    physResPoints = 0
-    MagResPoints = 0
+    itemCharacterClassRequired = kwargs['itemCharacterClassRequired'].name
+    stuffClassName = kwargs['stuffClassName']
+    while True:
+        isUpStrength = False
+        isUpAgility = False
+        isUpIntelligence = False
+        isUpHpMax = False
+        isUpPR = False
+        isUpMR = False
+        while not (isUpStrength or isUpAgility or isUpIntelligence or isUpHpMax or isUpPR or isUpMR):
+            if itemCharacterClassRequired == 'Warrior':
+                if random.randint(1, 3) <= 2:
+                    isUpStrength = True
+                else:
+                    isUpStrength = False
+            else:
+                if random.randint(1, 5) <= 4:
+                    isUpStrength = False
+                else:
+                    isUpStrength = True
+            if random.randint(0, 1) == 1:
+                isUpAgility = True
+            else:
+                isUpAgility = False
+            if itemCharacterClassRequired != 'Warrior':
+                if random.randint(1, 3) <= 2:
+                    isUpIntelligence = True
+                else:
+                    isUpIntelligence = False
+            else:
+                if random.randint(1, 5) <= 4:
+                    isUpIntelligence = False
+                else:
+                    isUpIntelligence = True
+            if random.randint(1, 3) <= 2:
+                isUpHpMax = True
+            else:
+                isUpHpMax = False
+            if random.randint(1, 3) <= 2:
+                isUpPR = True
+            else:
+                isUpPR = False
+            if random.randint(1, 3) <= 2:
+                isUpMR = True
+            else:
+                isUpMR = False
 
-    return [0, strengthPoints, agilityPoints, intelligencePoints, hpMaxPoints, physResPoints, MagResPoints,
-            0, 0]
+        stuffPoint = kwargs['stuffPoint']
+        print(f'Création d\'un {stuffClassName} avec {stuffPoint} points')
+        strengthPoints = 0
+        agilityPoints = 0
+        intelligencePoints = 0
+        hpMaxPoints = 0
+        physResPoints = 0
+        MagResPoints = 0
+        while stuffPoint != 0 and (
+                strengthPoints + agilityPoints + intelligencePoints + hpMaxPoints + physResPoints + MagResPoints) != \
+                kwargs['stuffPoint']:
+            if isUpStrength == True:
+                strengthPoints += random.randint(0, stuffPoint)
+                stuffPoint -= strengthPoints
+            else:
+                strengthPoints += -random.randint(0, stuffPoint)
+                stuffPoint -= strengthPoints
+            if isUpAgility == True:
+                agilityPoints += random.randint(0, stuffPoint)
+                stuffPoint -= agilityPoints
+            else:
+                agilityPoints += -random.randint(0, stuffPoint)
+                stuffPoint -= agilityPoints
+            if isUpIntelligence == True:
+                intelligencePoints += random.randint(0, stuffPoint)
+                stuffPoint -= intelligencePoints
+            else:
+                intelligencePoints += -random.randint(0, stuffPoint)
+                stuffPoint -= intelligencePoints
+            if isUpHpMax == True:
+                hpMaxPoints += random.randint(0, stuffPoint)
+                stuffPoint -= hpMaxPoints
+            else:
+                hpMaxPoints += -random.randint(0, stuffPoint)
+                stuffPoint -= hpMaxPoints
+            if isUpPR == True:
+                physResPoints += random.randint(0, stuffPoint)
+                stuffPoint -= physResPoints
+            else:
+                physResPoints += -random.randint(0, stuffPoint)
+                stuffPoint -= physResPoints
+            if isUpMR == True:
+                MagResPoints += random.randint(0, stuffPoint)
+                stuffPoint -= MagResPoints
+            else:
+                MagResPoints += -random.randint(0, stuffPoint)
+                stuffPoint -= MagResPoints
+            print(f' Il reste {stuffPoint} points : '
+                  f'{strengthPoints} FOR, '
+                  f'{agilityPoints} AGI, '
+                  f'{intelligencePoints} INT, '
+                  f'{hpMaxPoints*5} HpMax, '
+                  f'{physResPoints} PR, '
+                  f'{MagResPoints} MR '
+                  f'somme {strengthPoints + agilityPoints + intelligencePoints + hpMaxPoints + physResPoints + MagResPoints}')
+        for classStr, cls in {'Head': Head,
+                              'Chest': Chest,
+                              'Leg': Leg}.items():
+            if classStr == stuffClassName:
+                print(cls.objects.filter(strength=strengthPoints,
+                                         agility=agilityPoints,
+                                         intelligence=intelligencePoints,
+                                         hpMax=hpMaxPoints*5,
+                                         physicalResistance=physResPoints,
+                                         magicalResistance=MagResPoints).count())
+                break
+        if cls.objects.filter(strength=strengthPoints,
+                              agility=agilityPoints,
+                              intelligence=intelligencePoints,
+                              hpMax=hpMaxPoints*5,
+                              physicalResistance=physResPoints,
+                              magicalResistance=MagResPoints).count() == 0:
+            break
+
+    return [0, strengthPoints, agilityPoints, intelligencePoints, hpMaxPoints*5, physResPoints, MagResPoints, 0, 0]
 
 
 def dispatchForWeapon(*args, **kwargs):
@@ -385,8 +498,8 @@ def dispatchForConsumable(*args, **kwargs):
         isUpHP = False
         isUpStrength = False
         isUpAgility = False
-        isUpIntellignece = False
-        while not (isUpHP or isUpStrength or isUpAgility or isUpIntellignece):
+        isUpIntelligence = False
+        while not (isUpHP or isUpStrength or isUpAgility or isUpIntelligence):
             if random.randint(0, 1) == 1:
                 isUpHP = True
             else:
@@ -410,38 +523,40 @@ def dispatchForConsumable(*args, **kwargs):
         strengthPoints = 0
         agilityPoints = 0
         intelligencePoints = 0
-        while stuffPoint != 0 and (hpPoints + strengthPoints + agilityPoints + intelligencePoints) != kwargs['stuffPoint']:
+        while stuffPoint != 0 and (hpPoints + strengthPoints + agilityPoints + intelligencePoints) != kwargs[
+            'stuffPoint']:
             if isUpHP == True:
-                hpPoints = random.randint(0, stuffPoint)
+                hpPoints += random.randint(0, stuffPoint)
                 stuffPoint -= hpPoints
             else:
-                hpPoints = -random.randint(0, stuffPoint)
+                hpPoints += -random.randint(0, stuffPoint)
                 stuffPoint -= hpPoints
             if isUpStrength == True:
-                strengthPoints = random.randint(0, stuffPoint)
+                strengthPoints += random.randint(0, stuffPoint)
                 stuffPoint -= strengthPoints
             else:
-                strengthPoints = -random.randint(0, stuffPoint)
+                strengthPoints += -random.randint(0, stuffPoint)
                 stuffPoint -= strengthPoints
             if isUpAgility == True:
-                agilityPoints = random.randint(0, stuffPoint)
+                agilityPoints += random.randint(0, stuffPoint)
                 stuffPoint -= agilityPoints
             else:
-                agilityPoints = -random.randint(0, stuffPoint)
+                agilityPoints += -random.randint(0, stuffPoint)
                 stuffPoint -= agilityPoints
-            if isUpIntellignece == True:
-                intelligencePoints = random.randint(0, stuffPoint)
+            if isUpIntelligence == True:
+                intelligencePoints += random.randint(0, stuffPoint)
                 stuffPoint -= intelligencePoints
             else:
-                intelligencePoints = -random.randint(0, stuffPoint)
+                intelligencePoints += -random.randint(0, stuffPoint)
                 stuffPoint -= intelligencePoints
             print(
                 f' Il reste {stuffPoint} points : {hpPoints} HP, {strengthPoints} FOR, {agilityPoints} AGI, {intelligencePoints} INT somme {hpPoints + strengthPoints + agilityPoints + intelligencePoints}')
-        print(Consumable.objects.filter(hp=hpPoints*5,strength=strengthPoints,agility=agilityPoints,intelligence=intelligencePoints).count())
-        if Consumable.objects.filter(hp=hpPoints*5,strength=strengthPoints,agility=agilityPoints,intelligence=intelligencePoints).count() == 0:
+        print(Consumable.objects.filter(hp=hpPoints * 5, strength=strengthPoints, agility=agilityPoints,
+                                        intelligence=intelligencePoints).count())
+        if Consumable.objects.filter(hp=hpPoints * 5, strength=strengthPoints, agility=agilityPoints,
+                                     intelligence=intelligencePoints).count() == 0:
             break
-    return [hpPoints * 5, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0,
-            0, 0]
+    return [hpPoints * 5, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0, 0, 0]
 
 
 def dispacthPoints(*args, **kwargs):
@@ -452,16 +567,19 @@ def dispacthPoints(*args, **kwargs):
     if stuffClassName == 'Consumable':
         dispacthPoints = dispatchForConsumable(stuffPoint=stuffPoint)
     elif stuffClassName == 'Weapon':
-        dispacthPoints = dispatchForWeapon(stuffPoint=stuffPoint, itemCharacterClassRequired=itemCharacterClassRequired)
+        dispacthPoints = dispatchForWeapon(stuffPoint=stuffPoint,
+                                           itemCharacterClassRequired=itemCharacterClassRequired)
     else:
-        dispacthPoints = dispactForStuff(stuffPoint=stuffPoint, itemCharacterClassRequired=itemCharacterClassRequired)
+        dispacthPoints = dispactForStuff(stuffPoint=stuffPoint,
+                                         itemCharacterClassRequired=itemCharacterClassRequired,
+                                         stuffClassName=stuffClassName)
     hpPoints = dispacthPoints[0]
     strengthPoints = dispacthPoints[1]
     agilityPoints = dispacthPoints[2]
     intelligencePoints = dispacthPoints[3]
-    physResPoints = dispacthPoints[4]
-    MagResPoints = dispacthPoints[5]
-    hpMaxPoints = dispacthPoints[6]
+    hpMaxPoints = dispacthPoints[4]
+    physResPoints = dispacthPoints[5]
+    MagResPoints = dispacthPoints[6]
     diceNumber = dispacthPoints[7]
     damage = dispacthPoints[8]
     return [hpPoints, strengthPoints, agilityPoints, intelligencePoints, hpMaxPoints, physResPoints, MagResPoints,
@@ -590,15 +708,17 @@ def DropItem(**kwargs):
             stuffClassName = 'Consumable'
             stuffPull = Consumable.objects.filter(rarity=stuffRarity)
             stuffCount = stuffPull.count()
-            if stuffCount == 0 or random.randint(1, 100) <= 99:
+            if stuffCount == 0 or random.randint(1, 100) <= 20:
                 return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
                                     stuffRarity=stuffRarity)
             stuffCount = stuffPull.count()
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 3:
             stuffClassName = 'Head'
-            stuffPull = Head.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass,
-                                            requiredLevel__lte=ItemLevelRequired)
+            stuffPull = Head.objects.filter(
+                Q(requiredLevel__gte=1 if (ItemLevelRequired - 5) < 1 else ItemLevelRequired - 5) & Q(
+                    requiredLevel__lte=ItemLevelRequired)).filter(
+                rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             if stuffCount == 0 or random.randint(1, 100) <= 20:
                 return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
@@ -607,8 +727,10 @@ def DropItem(**kwargs):
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 4:
             stuffClassName = 'Chest'
-            stuffPull = Chest.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass,
-                                             requiredLevel__lte=ItemLevelRequired)
+            stuffPull = Chest.objects.filter(
+                Q(requiredLevel__gte=1 if (ItemLevelRequired - 5) < 1 else ItemLevelRequired - 5) & Q(
+                    requiredLevel__lte=ItemLevelRequired)).filter(
+                rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             if stuffCount == 0 or random.randint(1, 100) <= 20:
                 return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
@@ -617,8 +739,10 @@ def DropItem(**kwargs):
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         elif stuffClass == 5:
             stuffClassName = 'Leg'
-            stuffPull = Leg.objects.filter(rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass,
-                                           requiredLevel__lte=ItemLevelRequired)
+            stuffPull = Leg.objects.filter(
+                Q(requiredLevel__gte=1 if (ItemLevelRequired - 5) < 1 else ItemLevelRequired - 5) & Q(
+                    requiredLevel__lte=ItemLevelRequired)).filter(
+                rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
             if stuffCount == 0 or random.randint(1, 100) <= 20:
                 return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
@@ -627,11 +751,12 @@ def DropItem(**kwargs):
             ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
         else:
             stuffClassName = 'Weapon'
-            stuffPull = Weapon.objects.filter(rarity=stuffRarity,
-                                              characterClass=kwargs['adventurer'].characterClass,
-                                              requiredLevel__lte=ItemLevelRequired)
+            stuffPull = Weapon.objects.filter(
+                Q(requiredLevel__gte=1 if (ItemLevelRequired - 5) < 1 else ItemLevelRequired - 5) & Q(
+                    requiredLevel__lte=ItemLevelRequired)).filter(
+                rarity=stuffRarity, characterClass=kwargs['adventurer'].characterClass)
             stuffCount = stuffPull.count()
-            if stuffCount == 0 or random.randint(1, 100) <= 20:
+            if stuffCount == 0 or random.randint(1, 100) <= 99:
                 return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
                                     stuffRarity=stuffRarity)
             stuffCount = stuffPull.count()
