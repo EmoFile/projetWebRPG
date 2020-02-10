@@ -266,26 +266,26 @@ class PlayRound(generic.View):
 
 
 def fight(atk, atkDef, atkName, res, defName):
-    announce = {
-        atkName + " is getting ready to attack.",
-        atkName + " is getting closer!",
-        atkName + " gives a black look to his enemy...",
-    }
-    dice_annouce = {
-        "It's time to roll the dice.",
-        "May the dice guide you to a favourable destiny.",
-        "Fortune favors you, my friend!"
-    }
+    # announce = {
+    #     atkName + " is getting ready to attack.",
+    #     atkName + " is getting closer!",
+    #     atkName + " gives a black look to his enemy...",
+    # }
+    # dice_annouce = {
+    #     "It's time to roll the dice.",
+    #     "May the dice guide you to a favourable destiny.",
+    #     "Fortune favors you, my friend!"
+    # }
     aD20 = random.randint(0, 20)
     dD20 = random.randint(0, 20)
-    attack_dice = {
-        atkName + " throws a D20 for attack and goes " + aD20,
-        "The dice we choose! And it will be " + aD20 + " on the D20 attack from " + atkName
-    }
-    defence_dice = {
-        defName + "doesn't let up and throws a D20 in his defense and goes... " + dD20,
-        defName + "Nas says a prayer before throwing his d20 and does " + dD20
-    }
+    # attack_dice = {
+    #     atkName + " throws a D20 for attack and goes " + aD20,
+    #     "The dice we choose! And it will be " + aD20 + " on the D20 attack from " + atkName
+    # }
+    # defence_dice = {
+    #     defName + "doesn't let up and throws a D20 in his defense and goes... " + dD20,
+    #     defName + "Nas says a prayer before throwing his d20 and does " + dD20
+    # }
     assault = atk + aD20
     protection = res + dD20
     hpAtk = 0
@@ -527,7 +527,7 @@ def GenerateEnemy(**kwargs):
     adventurer = kwargs['adventurer']
     minions = []
     for i in range(9):
-        minion = Minion.create(adventurer, i)
+        minion = Minion.create(adventurer, i, kwargs['stage']+i)
         minion.save()
         minions.append(minion)
     if kwargs.get('last'):
