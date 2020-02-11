@@ -500,11 +500,74 @@ def dispactForStuff(*args, **kwargs):
 
 
 def dispatchForWeapon(*args, **kwargs):
-    strengthPoints = 0
-    agilityPoints = 0
-    intelligencePoints = 0
-    diceNumber = 0
-    damage = 0
+    while True:
+        isUpStrength = False
+        isUpAgility = False
+        isUpIntelligence = False
+        while not (isUpStrength or isUpAgility or isUpIntelligence):
+            if random.randint(0, 1) == 1:
+                isUpStrength = True
+            else:
+                isUpStrength = False
+            if random.randint(0, 1) == 1:
+                isUpAgility = True
+            else:
+                isUpAgility = False
+            if random.randint(0, 1) == 1:
+                isUpIntelligence = True
+            else:
+                isUpIntelligence = False
+
+        stuffPoint = kwargs['stuffPoint']
+        strengthPoints = 0
+        agilityPoints = 0
+        intelligencePoints = 0
+        diceNumber = 0
+        damage = 0
+        print(f'Création d\'une weapon avec {stuffPoint} points')
+        while stuffPoint != 0:
+            stuffPoint = kwargs['stuffPoint']
+            hpPoints = 0
+            strengthPoints = 0
+            agilityPoints = 0
+            intelligencePoints = 0
+            diceNumber = 0
+            damage = 0
+            if isUpStrength == True:
+                strengthValue = random.randint(0, stuffPoint)
+                strengthPoints += strengthValue
+                stuffPoint -= strengthValue
+            else:
+                strengthValue = random.randint(0, stuffPoint)
+                strengthPoints -= strengthValue
+                stuffPoint += strengthValue
+            if isUpAgility == True:
+                agilityValue = random.randint(0, stuffPoint)
+                agilityPoints += agilityValue
+                stuffPoint -= agilityValue
+            else:
+                agilityValue = random.randint(0, stuffPoint)
+                agilityPoints -= agilityValue
+                stuffPoint += agilityValue
+            if isUpIntelligence == True:
+                intelligenceValue = random.randint(0, stuffPoint)
+                intelligencePoints += intelligenceValue
+                stuffPoint -= intelligenceValue
+            else:
+                intelligenceValue = random.randint(0, stuffPoint)
+                intelligencePoints -= intelligenceValue
+                stuffPoint += intelligenceValue
+            print(f' Il reste {stuffPoint} points: {strengthPoints} FOR,'
+                  f' {agilityPoints} AGI,'
+                  f' {intelligencePoints} '
+                  f'INT somme {strengthPoints + agilityPoints + intelligencePoints}')
+            print(f' \t - damage: {diceNumber}D{damage}')
+        if Weapon.objects.filter(strength=strengthPoints,
+                                 agility=agilityPoints,
+                                 intelligence=intelligencePoints,
+                                 diceNumber=diceNumber,
+                                 damage=damage).count() == 0:
+            break
 
     return [0, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0,
             diceNumber, damage]
