@@ -34,7 +34,6 @@ function afterRollDice(result, $pkParty) {
         let $strength = document.getElementById('strength');
         let $intelligence = document.getElementById('intelligence');
         let $agility = document.getElementById('agility');
-
         if (result['dropItem']['isItemDropped'] !== false) {
             $('#changeItem').show();
             $modalTitle.textContent = result['dropItem']['ItemDropped']['name'];
@@ -66,9 +65,11 @@ function afterRollDice(result, $pkParty) {
 
     }
     else if (result['enemy']['hp'] <= 0) {
+        ITEM.bindItem()
         bindNextStage($pkParty);
     } else if (!result['isEnded']) {
         bindPlayRound($pkParty)
+        ITEM.bindItem()
     }
 }
 
@@ -101,6 +102,7 @@ function bindPlayRound($pkParty) {
     $('#playRound').attr('class', 'btn btn-warning').click(function () {
         let $pkEnemy = document.getElementById('pkEnemy').innerText;
         $('#playRound').off().attr('class', 'btn btn-secondary');
+        $('.useItem').off().attr('class', 'useItem btn btn-secondary');
         $.ajax({
             url: '/playRound/' + $pkParty + '/' + $pkEnemy,
             type: 'get',
@@ -150,7 +152,7 @@ function closeModal() {
 
 const ITEM = {
     bindItem() {
-        $(".useItem").click(function () {
+        $(".useItem").attr('class', 'useItem btn btn-success').click(function () {
             let $urlUseItem = $(this).attr('urlUseItem');
             let $coupleCharacterConsumable = $(this).attr('coupleCharacterConsumable');
             $.ajax({
@@ -202,7 +204,8 @@ async function Battle(battle, result, party) {
     $dockElement.append(document.createTextNode(thisBattle['0'])).append('</br>');
     $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
     await sleep(500);
-    $dockElement.append(document.createTextNode(thisBattle['1'])).append('</br>').animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
+    $dockElement.append(document.createTextNode(thisBattle['1'])).append('</br>')
+    $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
     $('.battleReport').append($dockElement);
     delete thisBattle['0'];
     delete thisBattle['1'];

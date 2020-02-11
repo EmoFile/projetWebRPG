@@ -401,8 +401,8 @@ def fight(atk, atkDef, atkObj, res, defName):
         if hit > 0:
             hpDef = damage
             success_damage = {
-                atkObj.name + "attacks and does" + damage.__str__() + " damages to his opponent!",
-                atkObj.name + "is not at his peak but still does " + damage.__str__() + " damages."
+                atkObj.name + " attacks and does " + damage.__str__() + " damages to his opponent!",
+                atkObj.name + " is not at his peak but still does " + damage.__str__() + " damages."
             }
             success_critcal_damage = {
                 "Oh, my God! It wasn't all for nothing, that murderous atmosphere! " + atkObj.name + " inflicts " + damage.__str__() + " damages to his opponent !",
