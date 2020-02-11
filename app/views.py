@@ -122,10 +122,15 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
 
         commonHealingConsumablePull = Consumable.objects.filter(rarity="Common", hp__gt=0)
         pullCount = commonHealingConsumablePull.count()
+
         if pullCount == 0 or random.randint(1, 100) <= 20:
             generateItem(stuffClassName='Consumable', stuffRarity='Common', adventurer=self.object)
             commonHealingConsumablePull = Consumable.objects.filter(rarity="Common", hp__gt=0)
             pullCount = commonHealingConsumablePull.count()
+            while pullCount == 0:
+                generateItem(stuffClassName='Consumable', stuffRarity='Common', adventurer=self.object)
+                commonHealingConsumablePull = Consumable.objects.filter(rarity="Common", hp__gt=0)
+                pullCount = commonHealingConsumablePull.count()
         randomHealingCommonPotion = commonHealingConsumablePull[random.randint(0, pullCount - 1)]
         AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory,
                       consumable=randomHealingCommonPotion)
@@ -136,6 +141,10 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
             generateItem(stuffClassName='Consumable', stuffRarity='Rare', adventurer=self.object)
             rareHealingConsumablePull = Consumable.objects.filter(rarity="Rare", hp__gt=0)
             pullCount = rareHealingConsumablePull.count()
+            while pullCount == 0:
+                generateItem(stuffClassName='Consumable', stuffRarity='Rare', adventurer=self.object)
+                rareHealingConsumablePull = Consumable.objects.filter(rarity="Rare", hp__gt=0)
+                pullCount = rareHealingConsumablePull.count()
         randomHealingRarePotion = rareHealingConsumablePull[random.randint(0, pullCount - 1)]
         AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomHealingRarePotion)
 
@@ -559,8 +568,8 @@ def dispatchForWeapon(*args, **kwargs):
     strengthPoints = 0
     agilityPoints = 0
     intelligencePoints = 0
-    diceNumber = 0
-    damage = 0
+    diceNumber = 1
+    damage = 4
 
     return [0, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0,
             diceNumber, damage]
