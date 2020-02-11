@@ -112,7 +112,8 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
         commonHealingConsumablePull = Consumable.objects.filter(rarity="Common", hp__gt=0)
         pullCount = commonHealingConsumablePull.count()
         randomHealingCommonPotion = commonHealingConsumablePull[random.randint(0, pullCount - 1)]
-        AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomHealingCommonPotion)
+        AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory,
+                      consumable=randomHealingCommonPotion)
 
         rareHealingConsumablePull = Consumable.objects.filter(rarity="Rare", hp__gt=0)
         pullCount = rareHealingConsumablePull.count()
@@ -232,7 +233,6 @@ class PlayRound(generic.View):
             p_e.save()
             if p_e.hp > 0 and adventurer.hp > 0:
                 hpTab = fight(atkEnemy, defEnemy, enemy, resAdventurer, adventurer.name)
-                battleReport['0']['6'] = " l'ennemie si tien toujour devant pret a en d'acoudre !"
                 p_e.hp -= hpTab[0]
                 adventurer.setHp(-hpTab[1])
                 battleReport['1'] = hpTab[2]
@@ -247,14 +247,16 @@ class PlayRound(generic.View):
             adventurer.save()
             if p_e.hp > 0 and adventurer.hp > 0:
                 hpTab = fight(atkAdventurer, defAdventurer, adventurer, resEnemy, enemy.name)
-                battleReport['0']['6'] = " notre Héros est toujour debout mais pour encore combien de temps ?!"
                 adventurer.setHp(-hpTab[0])
                 p_e.hp -= hpTab[1]
                 battleReport['1'] = hpTab[2]
                 adventurer.save()
                 p_e.save()
         if adventurer.hp <= 0:
-            end = 'Cet énemie était bien superieur a ce héors malheurement, SOUILLEEEEEED'
+            end = {
+                "This enemy was far superior to this hero, unfortunately..., SOUILLED",
+                "It could have gone well... but it didn't."
+            }
             party.isEnded = True
             party.save()
             return JsonResponse({'isEnded': party.isEnded,
@@ -263,10 +265,13 @@ class PlayRound(generic.View):
                                  },
                                  'character': ReloadCharacter(currentCharacter=adventurer),
                                  'battleReport': battleReport,
-                                 'end': end
+                                 'end': random.choice(list(end))
                                  })
         elif p_e.hp <= 0:
-            end = "L'énemie s'est fait écraser sur ce dernier coup incompris de la population !"
+            end = {
+                "The Enemy has been crushed on this latest misunderstood coup by the population!",
+                "You're doing well so far, Hero... but what will you do when your enemies measure up to you?"
+            }
             GettingXp(character=adventurer)
             return JsonResponse({'dropItem': DropItem(adventurer=adventurer),
                                  'isEnded': party.isEnded,
@@ -276,7 +281,7 @@ class PlayRound(generic.View):
                                  },
                                  'character': ReloadCharacter(currentCharacter=adventurer),
                                  'battleReport': battleReport,
-                                 'end': end
+                                 'end': random.choice(list(end))
                                  })
         else:
             return JsonResponse({
@@ -304,53 +309,88 @@ def getDamage(*args, **kwargs):
 
 
 def fight(atk, atkDef, atkObj, res, defName):
-    # announce = {
-    #     atkName + " is getting ready to attack.",
-    #     atkName + " is getting closer!",
-    #     atkName + " gives a black look to his enemy...",
-    # }
-    # dice_annouce = {
-    #     "It's time to roll the dice.",
-    #     "May the dice guide you to a favourable destiny.",
-    #     "Fortune favors you, my friend!"
-    # }
+    announce = {
+        atkObj.name + " is getting ready to attack.",
+        atkObj.name + " is getting closer!",
+        atkObj.name + " gives a black look to his enemy...",
+    }
+    dice_announce = {
+        "It's time to roll the dice.",
+        "May the dice guide you to a favourable destiny.",
+        "Fortune favors you, my friend!"
+    }
     aD20 = random.randint(0, 20)
     dD20 = random.randint(0, 20)
-    # attack_dice = {
-    #     atkName + " throws a D20 for attack and goes " + aD20,
-    #     "The dice we choose! And it will be " + aD20 + " on the D20 attack from " + atkName
-    # }
-    # defence_dice = {
-    #     defName + "doesn't let up and throws a D20 in his defense and goes... " + dD20,
-    #     defName + "Nas says a prayer before throwing his d20 and does " + dD20
-    # }
+    attack_dice = {
+        atkObj.name + " throws a D20 for attack and goes " + aD20.__str__(),
+        "The dice we choose! And it will be " + aD20.__str__() + " on the D20 attack from " + atkObj.name
+    }
+    defence_dice = {
+        defName + "doesn't let up and throws a D20 in his defense and goes... " + dD20.__str__(),
+        defName + " says a prayer before throwing his d20 and does " + dD20.__str__()
+    }
     assault = atk + aD20
     protection = res + dD20
     hit = assault - protection
     hpAtk = 0
     hpDef = 0
-    battleReport = {'0': 'Voila que ' + atkObj.name + ' attaque',
-                    '1': "Que les dés vous dessine un destin favorable !",
-                    '2':  atkObj.name + " 1D20 + atk = " + aD20.__str__() + ' + ' + atk.__str__() + ' = ' + assault.__str__() ,
-                    '3': 'et ' + defName + ' fait 1D20 + res = ' + dD20.__str__() + ' + ' + res.__str__() + ' = ' + protection.__str__()}
+    battleReport = {'0': random.choice(list(announce)),
+                    '1': random.choice(list(dice_announce)),
+                    '2': random.choice(list(attack_dice)),
+                    '3': random.choice(list(defence_dice))
+                    }
     if aD20 == 1:
         damage = getDamage(atk=atkObj)
-        battleReport['4'] = atkObj.name + ' WTF il se rate lamentablement et fait un echec critque !!!!!'
+        critical_failure = {
+            "OMG why" + atkObj.name + " is so dumb dude ??? He wants to kill himself ???",
+            "Well, let him keep this up and he'll never be remembered.",
+            "How?! He must really suck at dice?!"
+        }
+        battleReport['4'] = random.choice(list(critical_failure))
         if damage >= 0:
             hpAtk = damage
-            battleReport['5'] = 'LE HABAKIRIIIIIII de ' + damage.__str__() + ' damageeeees'
+            critical_failure_damages = {
+                "THE HABAKIRIIIIIIII, " + atkObj.name + " takes " + damage.__str__() + " of damages",
+                "He stumbled and put his finger in his eye unfortunately he did " + damage.__str__() + " damages"
+            }
+            battleReport['5'] = random.choice(list(critical_failure_damages))
         else:
-            battleReport['5'] =  "Heuresement que son armure est plus épaisse que ses muscle et ne s'inflige aucun damages !"
+            critical_failure_nothing = {
+                atkObj.name + " even manages to miss his suicide... The population is disappointed",
+                "fortunately his clothes are thicker than his muscles..."
+            }
+            battleReport['5'] = random.choice(list(critical_failure_nothing))
     else:
         damage = getDamage(atk=atkObj)
         if aD20 == 20:
-            battleReport['4'] = 'et... au mon dieu ?! ' + atkObj.name + ' !!! il transperce ' + defName + ' en faisant une réussite critque'
+            success_critcal = {
+                atkObj.name + " does his most murderous and darkSasuke look.",
+                "All his muscles are contracting ! Are those veins in his forehead ? Or a tumor ?",
+                atkObj.name + " brandished his weapon! The dice were with him now his mind and strength are one!"
+            }
+            battleReport['4'] = random.choice(list(success_critcal))
             damage *= 2
         if hit > 0:
             hpDef = damage
-            battleReport['5'] = 'le coup part !!!! et lui fait ' + damage.__str__() + ' de damageeeeessss !!!!'
+            success_damage = {
+                atkObj.name + "attacks and does" + damage.__str__() + " damages to his opponent!",
+                atkObj.name + "is not at his peak but still does " + damage.__str__() + " damages."
+            }
+            success_critcal_damage = {
+                "Oh, my God! It wasn't all for nothing, that murderous atmosphere! " + atkObj.name + " inflicts " + damage.__str__() + " damages to his opponent !",
+                "so much power !!!! he does " + damage.__str__() + " damages"
+            }
+            if aD20 == 20:
+                battleReport['5'] = random.choice(list(success_critcal_damage))
+            else:
+                battleReport['5'] = random.choice(list(success_damage))
         else:
-            battleReport['5'] = 'malheuresement il va falloir y mettre un du sien pour le fumé !!'
+            failure_damage = {
+                "all for this...",
+                "I didn't expect anything, but I'm still disappointed.",
+                "A lot of muscle for a big thing, this " + atkObj.name
+            }
+            battleReport['5'] = random.choice(list(failure_damage))
     return hpAtk, hpDef, battleReport
 
 
@@ -565,7 +605,7 @@ def GenerateEnemy(**kwargs):
     adventurer = kwargs['adventurer']
     minions = []
     for i in range(9):
-        minion = Minion.create(adventurer, i, kwargs['stage']+i)
+        minion = Minion.create(adventurer, i, kwargs['stage'] + i)
         minion.save()
         minions.append(minion)
     if kwargs.get('last'):

@@ -73,9 +73,9 @@ function afterRollDice(result, $pkParty) {
 }
 
 function bindNextStage($pkParty) {
-    $('#nextStage').show().click(function () {
+    $('#nextStage').attr('class', 'btn btn-success').click(function () {
         let $pkEnemy = document.getElementById('pkEnemy').innerText;
-        $('#nextStage').hide().off();
+        $('#nextStage').attr('class', 'btn btn-secondary').off();
         $.ajax({
             url: '/nextEnemy/' + $pkParty + '/' + $pkEnemy,
             type: 'get',
@@ -98,9 +98,9 @@ function bindNextStage($pkParty) {
 }
 
 function bindPlayRound($pkParty) {
-    $('#playRound').show().click(function () {
+    $('#playRound').attr('class', 'btn btn-warning').click(function () {
         let $pkEnemy = document.getElementById('pkEnemy').innerText;
-        $('#playRound').off().hide();
+        $('#playRound').off().attr('class', 'btn btn-secondary');
         $.ajax({
             url: '/playRound/' + $pkParty + '/' + $pkEnemy,
             type: 'get',
@@ -188,7 +188,6 @@ const ITEM = {
     }
 };
 
-
 async function Battle(battle, result, party) {
     console.log("le result")
     console.log(result)
@@ -207,11 +206,13 @@ async function Battle(battle, result, party) {
     $('.battleReport').append($dockElement);
     delete thisBattle['0'];
     delete thisBattle['1'];
-    $('#rollDice').show().one("click", function () {
+    $('#rollDice').show().attr('class', 'btn btn-primary').one("click", async function() {
+        $('#rollDice').off().attr('class', 'btn btn-secondary');
         for (let i in thisBattle) {
             $dockElement.append(document.createTextNode(thisBattle[i])).append('</br>');
+            $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
+            await sleep(200)
         }
-        $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
         delete battle[Object.keys(battle)[0]];
         if (Object.keys(battle).length === 0) {
             if (result['end'] !== undefined) {
@@ -219,9 +220,9 @@ async function Battle(battle, result, party) {
                 $dockElement.append('<p>').append(document.createTextNode(fin)).append('</p>');
                 $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
             }
-            $('#rollDice').hide().off();
             afterRollDice(result, party);
         } else {
+            await sleep(200)
             Battle(battle, result, party);
         }
         /* peut etre faire une fonction qi teste si il reste des chose a afficher pour le battle report (et donc supprimer au fur et a mesure*/
@@ -248,23 +249,23 @@ $(() => {
     let $buttonNextStage = $('<button></button>')
         .attr('type', 'button')
         .attr('id', 'nextStage')
-        .attr('class', 'btn btn-danger')
+        .attr('class', 'btn btn-secondary')
         .html("Next Stage")
-        .hide();
+        .off();
 
     let $buttonPlayRound = $('<button></button>')
         .attr('type', 'button')
         .attr('id', 'playRound')
         .attr('class', 'btn btn-secondary')
         .html("Play round")
-        .hide();
+        .off();
 
     let $buttonRollDice = $('<button></button>')
         .attr('type', 'button')
         .attr('id', 'rollDice')
-        .attr('class', 'btn btn-primary')
+        .attr('class', 'btn btn-secondary')
         .html('Roll The Dice')
-        .hide();
+        .off();
 
     let $spanRollDice = $('#buttonRollDice');
     let $spanNextStage = $('#buttonNextStage');
