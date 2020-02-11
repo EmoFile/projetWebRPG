@@ -65,10 +65,10 @@ function afterRollDice(result, $pkParty) {
 
     }
     else if (result['enemy']['hp'] <= 0) {
-        ITEM.bindItem()
+        ITEM.bindItem();
         bindNextStage($pkParty);
     } else if (!result['isEnded']) {
-        bindPlayRound($pkParty)
+        bindPlayRound($pkParty);
         ITEM.bindItem()
     }
 }
