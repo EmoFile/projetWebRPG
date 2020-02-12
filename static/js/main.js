@@ -2,20 +2,26 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function isEnded(party){
-    console.log(party);
-    $('#endRankPersonal').append(party['personalRank']);
-    $('#endRank').append(party['rank']);
-    $('#endUserName').append(party['username']);
-    $('#endCharacterName').append(party['characterName']);
-    $('#endStage').append(party['stage']);
-    $('#endHpMax').append(party['hpMax']);
-    $('#endStrength').append(party['strength']);
-    $('#endIntelligence').append(party['intelligence']);
-    $('#endAgility').append(party['agility']);
-    $('#endPhysicalResistance').append(party['physicalResistance']);
-    $('#endMagicalResistance').append(party['magicalResistance']);
-    $('#isEndedModal').modal('handleUpdate').modal('show')
+function isEnded($pkParty){
+    $.ajax({
+            url: '/end/' + $pkParty,
+            type: 'get',
+            dataType: 'json'
+        }).done(function (result){
+            $('.useItem').off().attr('class', 'useItem btn btn-secondary');
+            $('#endRankPersonal').append(result['personalRank']);
+            $('#endRank').append(result['rank']);
+            $('#endUserName').append(result['username']);
+            $('#endCharacterName').append(result['characterName']);
+            $('#endStage').append(result['stage']);
+            $('#endHpMax').append(result['hpMax']);
+            $('#endStrength').append(result['strength']);
+            $('#endIntelligence').append(result['intelligence']);
+            $('#endAgility').append(result['agility']);
+            $('#endPhysicalResistance').append(result['physicalResistance']);
+            $('#endMagicalResistance').append(result['magicalResistance']);
+            $('#isEndedModal').modal('handleUpdate').modal('show')
+        })
 }
 
 function afterRollDice(result, $pkParty) {
@@ -78,20 +84,14 @@ function afterRollDice(result, $pkParty) {
         $('#itemModal').modal('show');
     }
     if (result['isEnded']){
-        $.ajax({
-            url: '/end/' + $pkParty,
-            type: 'get',
-            dataType: 'json'
-        }).done(function (result){
-            isEnded(result)
-        })
+        isEnded($pkParty)
     }
     else if (result['enemy']['hp'] <= 0) {
-        ITEM.bindItem();
+        ITEM.bindItem($pkParty);
         bindNextStage($pkParty);
     } else if (!result['isEnded']) {
         bindPlayRound($pkParty);
-        ITEM.bindItem()
+        ITEM.bindItem($pkParty)
     }
 }
 
@@ -173,7 +173,7 @@ function closeModal() {
 }
 
 const ITEM = {
-    bindItem() {
+    bindItem($pkParty) {
         $(".useItem").attr('class', 'useItem btn btn-success').click(function () {
             let $urlUseItem = $(this).attr('urlUseItem');
             let $coupleCharacterConsumable = $(this).attr('coupleCharacterConsumable');
@@ -182,6 +182,10 @@ const ITEM = {
                 type: 'get',
                 dataType: 'json',
             }).done(function (result) {
+                if(result['isEnded']){
+                    console.log(result)
+                    isEnded($pkParty)
+                }
                 let $quantity = document.getElementById('quantity/' + $coupleCharacterConsumable);
                 let $hp = document.getElementById('characterHp');
                 let $physicalResistence = document.getElementById('characterPhysicalResistence');
@@ -255,14 +259,14 @@ async function addBattleReport(report,party) {
 }
 
 $(() => {
-    ITEM.bindItem();
     let $url = document.location.pathname;
-
     let $pkParty = '';
 
     for ($i = $url.lastIndexOf("/") + 1; $i < $url.length; $i++) {
+
         $pkParty += $url[$i];
     }
+    ITEM.bindItem($pkParty);
 
     let $buttonNextStage = $('<button></button>')
         .attr('type', 'button')
@@ -445,7 +449,7 @@ $(() => {
                     $tr.append($tdusebutton);
                     $table.append($tr);
                     $div.append($table);
-                    ITEM.bindItem();
+                    ITEM.bindItem($pkParty);
 
                 } else {
                     let $quantity = document.getElementById('quantity/' + $pkParty + '/' + result['stuffPk']);

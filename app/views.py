@@ -231,7 +231,7 @@ class PlayRound(generic.View):
         enemy = get_object_or_404(Enemy, pk=kwargs['pkEnemy'])
         p_e = PartyEnemy.objects.get(party=party,
                                      enemy=enemy)
-        if p_e.hp <= 0:
+        if p_e.hp <= 0 or adventurer.hp <= 0 :
             return JsonResponse({
                 'nothing': 'You know nothing John Snow'
             })
@@ -978,7 +978,9 @@ class NextEnemyView(generic.View):
     def get(self, request, **kwargs):
         if kwargs.get('pkEnemy'):
             p_e = get_object_or_404(PartyEnemy, party=kwargs['pkParty'], enemy=kwargs['pkEnemy'])
-            if p_e.hp > 0:
+            adventurer = get_object_or_404(Party, pk=kwargs['pkParty']).character
+            print(adventurer)
+            if p_e.hp > 0 or adventurer.hp <= 0:
                 return JsonResponse({'nothingDude': 'You know Nothing John Snow'})
         return JsonResponse(NextEnemy(**kwargs), safe=False)
 
@@ -1035,11 +1037,14 @@ def UseItem(*args, **kwargs):
 
     currentParty.character.modifyCarac(currentConsumable)
     currentParty.character.save()
+    if currentParty.character.hp <= 0:
+        currentParty.isEnded = True
     return JsonResponse({'consumableName': consumableName,
                          'consumableOldQuantity': consumableOldQuantity,
                          'consumableNewQuantity': consumableNewQuantity,
                          'character': ReloadCharacter(
-                             currentCharacter=currentParty.character)
+                             currentCharacter=currentParty.character),
+                         'isEnded': currentParty.isEnded
                          })
 
 
