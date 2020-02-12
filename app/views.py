@@ -18,6 +18,29 @@ from app.forms import CharacterForm
 from app.models import CharacterClass, Character, Inventory, Party, Minion, BossAlain, Consumable, Head, Chest, Leg, \
     Weapon, InventoryConsumable, Enemy, PartyEnemy
 
+###
+##
+#   GLOBAL VAR
+##
+###
+
+global_head_name = ['Helmet', 'Tiara', 'Diadem', 'Hood', 'Toque', 'Crown', 'Cap', 'Turban', 'Hat', 'Bandana']
+global_chest_name = ['breastplate', 'armour', 'cuirass', 'armor', 'plastron', 'jacket', 'shroud', 'cloth', 'cladding']
+global_leg_name = ['legwarmer', 'leggings', 'leg guard', 'stocking', 'shin guard', 'leg protector', 'gaiter',
+                   'leg arming', 'footing armor', 'footing guard', 'footing protector', 'feet armor', 'feet guard',
+                   'feet protector', 'shoes', 'boots', 'footwear', 'coat', 'loincloth']
+global_potion_name = ['potion', 'pill', 'unguent', 'philter', 'elixir', 'blend', 'oil', 'balm', 'cream', 'pomade',
+                      'plaster', 'spray']
+global_matiere_name = ['mail', 'plate', 'leather', 'tissue', 'cloth', 'metal', 'chain', 'skin', 'pelt', 'iron', 'gold',
+                       'steel', 'silver', 'Bronze', 'copper']
+
+
+###
+##
+#   GLOBAL VAR END
+##
+###
+
 
 class IndexView(TemplateView):
     template_name = 'index.html'
@@ -425,6 +448,7 @@ def fight(atk, atkDef, atkObj, res, defName):
 def dispactForStuff(*args, **kwargs):
     itemCharacterClassRequired = kwargs['itemCharacterClassRequired'].name
     stuffClassName = kwargs['stuffClassName']
+    name = stuffClassName + ' n°' + str(random.randint(1, 999999999))
     while True:
         isUpStrength = False
         isUpAgility = False
@@ -561,7 +585,8 @@ def dispactForStuff(*args, **kwargs):
                               magicalResistance=MagResPoints).count() == 0:
             break
 
-    return [0, strengthPoints, agilityPoints, intelligencePoints, hpMaxPoints * 5, physResPoints, MagResPoints, 0, 0]
+    return [0, strengthPoints, agilityPoints, intelligencePoints, hpMaxPoints * 5, physResPoints, MagResPoints, 0, 0,
+            name]
 
 
 def chooseWeaponType(*args, **kwargs):
@@ -602,6 +627,7 @@ def chooseGripType(*args, **kwargs):
 
 
 def dispatchForWeapon(*args, **kwargs):
+    name = 'Weapon n°' + str(random.randint(1, 999999999))
     itemCharacterClassRequired = kwargs['itemCharacterClassRequired'].name
     weaponType = chooseWeaponType()
     gripType = chooseGripType(weaponType=weaponType)
@@ -695,7 +721,7 @@ def dispatchForWeapon(*args, **kwargs):
                         damage4_prop = (damage4_type + damage4_rarity) / 200
                         damage6_prop = damage4_prop + (damage6_type + damage6_rarity) / 200
                         damage8_prop = damage6_prop + (damage8_type + damage8_rarity) / 200
-                        damage10_prop =  damage8_prop + (damage10_type + damage10_rarity) / 200
+                        damage10_prop = damage8_prop + (damage10_type + damage10_rarity) / 200
                         damage12_prop = damage10_prop + (damage12_type + damage12_rarity) / 200
                         damage20_prop = damage12_prop + (damage20_type + damage20_rarity) / 200
                         if damageRand / 200 <= damage4_prop:
@@ -766,10 +792,11 @@ def dispatchForWeapon(*args, **kwargs):
                                  intelligence=intelligencePoints,
                                  diceNumber=diceNumber,
                                  damage=damage).count() == 0:
-            return [0, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0, diceNumber, damage]
+            return [0, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0, diceNumber, damage, name]
 
 
 def dispatchForConsumable(*args, **kwargs):
+    name = 'Potion n°' + str(random.randint(1, 999999999))
     while True:
         isUpHP = False
         isUpStrength = False
@@ -842,7 +869,7 @@ def dispatchForConsumable(*args, **kwargs):
         if Consumable.objects.filter(hp=hpPoints * 5, strength=strengthPoints, agility=agilityPoints,
                                      intelligence=intelligencePoints).count() == 0:
             break
-    return [hpPoints * 5, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0, 0, 0]
+    return [hpPoints * 5, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0, 0, 0, name]
 
 
 def dispacthPoints(*args, **kwargs):
@@ -870,8 +897,9 @@ def dispacthPoints(*args, **kwargs):
     MagResPoints = dispacthPoints[6]
     diceNumber = dispacthPoints[7]
     damage = dispacthPoints[8]
+    name = dispacthPoints[9]
     return [hpPoints, strengthPoints, agilityPoints, intelligencePoints, hpMaxPoints, physResPoints, MagResPoints,
-            diceNumber, damage]
+            diceNumber, damage, name]
 
 
 def calculPoints(*args, **kwargs):
@@ -900,14 +928,16 @@ def generateItem(*args, **kwargs):
         itemCharacterClassRequired=itemCharacterClassRequired,
         stuffRarity=stuffRarity)
     if stuffClassName == 'Consumable':
-        ItemDropped = Consumable(name='Poiton n°' + str(random.randint(0, 999999999)),
+        ItemDropped = Consumable(name=stuffPointDispatch[9],
                                  rarity=stuffRarity,
                                  hp=stuffPointDispatch[0],
                                  strength=stuffPointDispatch[1],
                                  agility=stuffPointDispatch[2],
                                  intelligence=stuffPointDispatch[3])
     elif stuffClassName == 'Weapon':
-        ItemDropped = Weapon(rarity=stuffRarity, requiredLevel=itemLvlRequired,
+        ItemDropped = Weapon(name=stuffPointDispatch[9],
+                             rarity=stuffRarity,
+                             requiredLevel=itemLvlRequired,
                              characterClass=itemCharacterClassRequired,
                              strength=stuffPointDispatch[1],
                              agility=stuffPointDispatch[2],
@@ -915,7 +945,10 @@ def generateItem(*args, **kwargs):
                              diceNumber=stuffPointDispatch[7],
                              damage=stuffPointDispatch[8])
     elif stuffClassName == 'Head':
-        ItemDropped = Head(rarity=stuffRarity, requiredLevel=itemLvlRequired, characterClass=itemCharacterClassRequired,
+        ItemDropped = Head(name=stuffPointDispatch[9],
+                           rarity=stuffRarity,
+                           requiredLevel=itemLvlRequired,
+                           characterClass=itemCharacterClassRequired,
                            hpMax=stuffPointDispatch[4],
                            physicalResistance=stuffPointDispatch[5],
                            magicalResistance=stuffPointDispatch[6],
@@ -923,7 +956,9 @@ def generateItem(*args, **kwargs):
                            agility=stuffPointDispatch[2],
                            intelligence=stuffPointDispatch[3])
     elif stuffClassName == 'Chest':
-        ItemDropped = Chest(rarity=stuffRarity, requiredLevel=itemLvlRequired,
+        ItemDropped = Chest(name=stuffPointDispatch[9],
+                            rarity=stuffRarity,
+                            requiredLevel=itemLvlRequired,
                             characterClass=itemCharacterClassRequired,
                             hpMax=stuffPointDispatch[4],
                             physicalResistance=stuffPointDispatch[5],
@@ -932,7 +967,9 @@ def generateItem(*args, **kwargs):
                             agility=stuffPointDispatch[2],
                             intelligence=stuffPointDispatch[3])
     else:
-        ItemDropped = Leg(rarity=stuffRarity, requiredLevel=itemLvlRequired,
+        ItemDropped = Leg(name=stuffPointDispatch[9],
+                          rarity=stuffRarity,
+                          requiredLevel=itemLvlRequired,
                           characterClass=itemCharacterClassRequired,
                           hpMax=stuffPointDispatch[4],
                           physicalResistance=stuffPointDispatch[5],
@@ -993,7 +1030,6 @@ def DropItem(**kwargs):
         else:
             stuffRarity = 'Legendary'
         stuffClass = random.randint(1, 6)
-        stuffClass = 6
         if stuffClass <= 2:
             stuffClassName = 'Consumable'
             stuffPull = Consumable.objects.filter(rarity=stuffRarity)
@@ -1013,7 +1049,7 @@ def DropItem(**kwargs):
                             requiredLevel__lte=ItemLevelRequired)).filter(rarity=stuffRarity, characterClass=kwargs[
                         'adventurer'].characterClass)
                     stuffCount = stuffPull.count()
-                    if stuffCount == 0 or random.randint(1, 100) <= 99:
+                    if stuffCount == 0 or random.randint(1, 100) <= 20:
                         return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
                                             stuffRarity=stuffRarity)
                     ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
