@@ -20,7 +20,7 @@ from app import views
 
 from app.views import IndexView, GenerateCharacterView, CharacterDetailView, \
     SignUpView, LogInView, PlayGameView, \
-    DropItem, EnemyList, ChangeItem, UseItem, PlayRound, NextEnemyView, LogoutView
+    DropItem, EnemyList, ChangeItem, UseItem, PlayRound, NextEnemyView, LogoutView, end
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,6 +40,7 @@ urlpatterns += [
 
 urlpatterns += [
     path('playRound/<int:pkParty>/<int:pkEnemy>', PlayRound.as_view(), name='playRound'),
+    path('end/<int:pkParty>', end, name='end')
 ]  # Round URL
 
 urlpatterns += [

@@ -2,6 +2,22 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function isEnded(party){
+    console.log(party);
+    $('#endRankPersonal').append(party['personalRank']);
+    $('#endRank').append(party['rank']);
+    $('#endUserName').append(party['username']);
+    $('#endCharacterName').append(party['characterName']);
+    $('#endStage').append(party['stage']);
+    $('#endHpMax').append(party['hpMax']);
+    $('#endStrength').append(party['strength']);
+    $('#endIntelligence').append(party['intelligence']);
+    $('#endAgility').append(party['agility']);
+    $('#endPhysicalResistance').append(party['physicalResistance']);
+    $('#endMagicalResistance').append(party['magicalResistance']);
+    $('#isEndedModal').modal('handleUpdate').modal('show')
+}
+
 function afterRollDice(result, $pkParty) {
     document.getElementById('enemyHp').innerText = result['enemy']['hp'];
     document.getElementById('characterHp').innerText = result['character']['hp'];
@@ -62,7 +78,13 @@ function afterRollDice(result, $pkParty) {
         $('#itemModal').modal('show');
     }
     if (result['isEnded']){
-
+        $.ajax({
+            url: '/end/' + $pkParty,
+            type: 'get',
+            dataType: 'json'
+        }).done(function (result){
+            isEnded(result)
+        })
     }
     else if (result['enemy']['hp'] <= 0) {
         ITEM.bindItem();
@@ -191,14 +213,7 @@ const ITEM = {
 };
 
 async function Battle(battle, result, party) {
-    console.log("le result")
-    console.log(result)
-    console.log("le battle report au complet")
-    console.log(battle)
-    console.log(Object.keys(battle).length)
     let thisBattle = battle[Object.keys(battle)[0]];
-    console.log("le report de cette bataille")
-    console.log(thisBattle)
     let $dockElement = $('<p></p>');
     await sleep(500);
     $dockElement.append(document.createTextNode(thisBattle['0'])).append('</br>');

@@ -559,7 +559,6 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="itemModalLabel">Modal
                         title</h5>
-                    </button>
                 </div>
                 <div class="modal-body" id="itemModalBody">
                     <p id="levelRequired"></p>
@@ -579,6 +578,60 @@
                 <div class="modal-footer">
                     <button type="button" id="closeModal" class="btn btn-secondary" data-dismiss="modal">Pass</button>
                     <button type="button" id="changeItem" class="btn btn-primary">Keep</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="isEndedModal" tabindex="-1" role="dialog"
+         aria-labelledby="endModalLabel"
+         aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="endModalLabel">GAME OVER</h5>
+                </div>
+                <div class="modal-body text-center" id="endModalBody">
+                    <p>Global rank: <span id="endRank"></span></p>
+                    <p>Personal rank: <span id="endRankPersonal"></span></p>
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Character</th>
+                            <th scope="col">Stage</th>
+                            <th scope="col">Class</th>
+                            <th scope="col">HP Max</th>
+                            <th scope="col">Strength</th>
+                            <th scope="col">Intelligence</th>
+                            <th scope="col">Agility</th>
+                            <th scope="col">Physical resistance</th>
+                            <th scope="col">Magical resistance</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td id="endCharacterName"></td>
+                            <td id="endStage"></td>
+                            <td id="endCharacterClass"></td>
+                            <td id="endHpMax"></td>
+                            <td id="endStrength"></td>
+                            <td id="endIntelligence"></td>
+                            <td id="endAgility"></td>
+                            <td id="endPhysicalResistance"></td>
+                            <td id="endMagicalResistance"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Pass</button>
+                    <a class="btn btn-primary" href="{% url 'home' %}" role="button">
+                        Home page
+                    </a>
+                    <a class="btn btn-success" href="{% url 'generateCharacterByPk' party.character.characterClass.pk %}" role="button">
+                        Retry
+                    </a>
+
                 </div>
             </div>
         </div>
