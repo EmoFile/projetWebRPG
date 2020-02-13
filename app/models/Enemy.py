@@ -1,6 +1,7 @@
 import random
 from django.db import models
 
+
 class Enemy(models.Model):
     default = {
         'blank': False,
@@ -41,8 +42,25 @@ class Enemy(models.Model):
         :return: Enemy
         """
         ratio = (0.5*stage+49)/99
+        min_ratio_damage = (0.1*adventurer.damage+36.65)/49
+        max_ratio_damage = 1.10
+        if min_ratio_damage > 0.90:
+            min_ratio_damage = 0.90
         if ratio > 1.25:
             ratio = 1.25
+        damage = random.uniform(
+            min_ratio_damage*adventurer.damage,
+            max_ratio_damage*adventurer.damage
+        )
+        damage = 4 if damage < 4 else damage
+        diceNumber = random.uniform(
+            adventurer.diceNumber - 1,
+            adventurer.diceNumber + 1
+        )
+        if diceNumber > 4:
+            diceNumber = 4
+        elif diceNumber < 1:
+            diceNumber = 1
         hpMax = round(ratio*(random.uniform(
             adventurer.hpMax + (adventurer.hpMax * min_percent) / 100,
             adventurer.hpMax + (adventurer.hpMax * max_percent) / 100)))
@@ -72,13 +90,14 @@ class Enemy(models.Model):
         return cls(hpMax=hpMax, strength=strength, intelligence=intelligence,
                    physical_resistance=physical_resistance,
                    magical_resistance=magical_resistance,
-                   agility=agility, hp=hp, name=name, *args, **kwargs)
+                   agility=agility, hp=hp, name=name, damage=damage, diceNumber=diceNumber, *args, **kwargs)
 
     def getDamage(self):
         damage = 0
         for i in range(0, self.diceNumber):
             damage += random.randint(1, self.damage)
         return damage
+
 
 class Minion(Enemy):
     def __str__(self):

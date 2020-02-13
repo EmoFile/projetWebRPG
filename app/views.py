@@ -4,7 +4,8 @@ import random
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.db.models import Q
+from django.db.models import Q, Window
+from django.db.models.functions import RowNumber
 from django.http import response, JsonResponse, request
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -26,7 +27,7 @@ class IndexView(TemplateView):
         result = super().get_context_data(**kwargs)
         result['characterClasses'] = CharacterClass.objects.all()
         # le - dans le order_by pour demander un ordre décroissant
-        result['partys'] = Party.objects.all().order_by('-stage')
+        result['partys'] = Party.objects.all().order_by('-stage').annotate(rank=Window(expression=RowNumber()))
         result['title'] = 'B.T.A - II'
         return result
 
@@ -230,7 +231,7 @@ class PlayRound(generic.View):
         enemy = get_object_or_404(Enemy, pk=kwargs['pkEnemy'])
         p_e = PartyEnemy.objects.get(party=party,
                                      enemy=enemy)
-        if p_e.hp <= 0:
+        if p_e.hp <= 0 or adventurer.hp <= 0 :
             return JsonResponse({
                 'nothing': 'You know nothing John Snow'
             })
@@ -401,8 +402,8 @@ def fight(atk, atkDef, atkObj, res, defName):
         if hit > 0:
             hpDef = damage
             success_damage = {
-                atkObj.name + "attacks and does" + damage.__str__() + " damages to his opponent!",
-                atkObj.name + "is not at his peak but still does " + damage.__str__() + " damages."
+                atkObj.name + " attacks and does " + damage.__str__() + " damages to his opponent!",
+                atkObj.name + " is not at his peak but still does " + damage.__str__() + " damages."
             }
             success_critcal_damage = {
                 "Oh, my God! It wasn't all for nothing, that murderous atmosphere! " + atkObj.name + " inflicts " + damage.__str__() + " damages to his opponent !",
@@ -1175,7 +1176,9 @@ class NextEnemyView(generic.View):
     def get(self, request, **kwargs):
         if kwargs.get('pkEnemy'):
             p_e = get_object_or_404(PartyEnemy, party=kwargs['pkParty'], enemy=kwargs['pkEnemy'])
-            if p_e.hp > 0:
+            adventurer = get_object_or_404(Party, pk=kwargs['pkParty']).character
+            print(adventurer)
+            if p_e.hp > 0 or adventurer.hp <= 0:
                 return JsonResponse({'nothingDude': 'You know Nothing John Snow'})
         return JsonResponse(NextEnemy(**kwargs), safe=False)
 
@@ -1232,11 +1235,14 @@ def UseItem(*args, **kwargs):
 
     currentParty.character.modifyCarac(currentConsumable)
     currentParty.character.save()
+    if currentParty.character.hp <= 0:
+        currentParty.isEnded = True
     return JsonResponse({'consumableName': consumableName,
                          'consumableOldQuantity': consumableOldQuantity,
                          'consumableNewQuantity': consumableNewQuantity,
                          'character': ReloadCharacter(
-                             currentCharacter=currentParty.character)
+                             currentCharacter=currentParty.character),
+                         'isEnded': currentParty.isEnded
                          })
 
 
@@ -1274,3 +1280,37 @@ def GettingXp(*args, **kwargs):
 
 def LevelUp(*args, **kwargs):
     pass
+
+
+def end(*args, **kwargs):
+    if kwargs.get('pkParty'):
+        current_party = get_object_or_404(Party, pk=kwargs['pkParty'])
+        if current_party.isEnded:
+            personal_parties = Party.objects.filter(user=current_party.user).annotate(rank=Window(expression=RowNumber()))
+            parties = Party.objects.all().order_by('-stage').annotate(rank=Window(expression=RowNumber()))
+            for p_party in personal_parties:
+                if p_party.pk == kwargs['pkParty']:
+                    personal_rank = p_party.rank
+            for party in parties:
+                if party.pk == kwargs['pkParty']:
+                    return JsonResponse({
+                        'personalRank': personal_rank,
+                        'rank': party.rank,
+                        'username': party.user.username,
+                        'characterName': party.character.name,
+                        'stage': party.stage,
+                        'className': party.character.characterClass.name,
+                        'hpMax': party.character.getHpMax(),
+                        'strength': party.character.getStrength(),
+                        'intelligence': party.character.getIntelligence(),
+                        'agility': party.character.getAgility(),
+                        'physicalResistance': party.character.getPhysicalResistance(),
+                        'magicalResistance': party.character.getMagicalResistance()
+                    })
+        return JsonResponse({
+            'nothing': 'You know nothing John Snow'
+        })
+    else:
+        return JsonResponse({
+            'nothing': 'You know nothing John Snow'
+        })
