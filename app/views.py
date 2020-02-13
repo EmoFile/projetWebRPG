@@ -564,15 +564,209 @@ def dispactForStuff(*args, **kwargs):
     return [0, strengthPoints, agilityPoints, intelligencePoints, hpMaxPoints * 5, physResPoints, MagResPoints, 0, 0]
 
 
-def dispatchForWeapon(*args, **kwargs):
-    strengthPoints = 0
-    agilityPoints = 0
-    intelligencePoints = 0
-    diceNumber = 1
-    damage = 4
+def chooseWeaponType(*args, **kwargs):
+    rand = random.randint(1, 6)
+    for (type, typeRand) in [('Dagger', 1),
+                             ('Sword', 2),
+                             ('Axe', 3),
+                             ('Spear', 4),
+                             ('Bow', 5),
+                             ('Mace', 6)]:
+        if rand == typeRand:
+            return type
 
-    return [0, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0,
-            diceNumber, damage]
+
+def chooseGripType(*args, **kwargs):
+    weaponType = kwargs['weaponType']
+    for (type, gripType) in [('Dagger', random.randint(1, 2)),
+                             ('Sword', random.randint(1, 3)),
+                             ('Axe', random.randint(1, 3)),
+                             ('Spear', 'TwoHanded'),
+                             ('Bow', 'TwoHanded'),
+                             ('Mace', random.randint(1, 3))]:
+        if type == weaponType:
+            if type == 'Spear' or type == 'Bow':
+                return gripType
+            elif type == 'Dagger':
+                if gripType == 1:
+                    return 'OneHanded'
+                else:
+                    return 'TwoWeapon'
+            else:
+                if gripType == 1:
+                    return 'OneHanded'
+                elif gripType == 2:
+                    return 'TwoHanded'
+                else:
+                    return 'TwoWeapon'
+
+
+def dispatchForWeapon(*args, **kwargs):
+    itemCharacterClassRequired = kwargs['itemCharacterClassRequired'].name
+    weaponType = chooseWeaponType()
+    gripType = chooseGripType(weaponType=weaponType)
+    stuffRarity = kwargs['stuffRarity']
+
+    while True:
+        isUpStrength = False
+        isUpAgility = False
+        isUpIntelligence = False
+        while not (isUpStrength or isUpAgility or isUpIntelligence):
+            if itemCharacterClassRequired == 'Warrior':
+                if random.randint(1, 3) <= 2:
+                    isUpStrength = True
+                else:
+                    isUpStrength = False
+            else:
+                if random.randint(1, 5) <= 4:
+                    isUpStrength = False
+                else:
+                    isUpStrength = True
+            if random.randint(0, 1) == 1:
+                isUpAgility = True
+            else:
+                isUpAgility = False
+            if itemCharacterClassRequired != 'Warrior':
+                if random.randint(1, 3) <= 2:
+                    isUpIntelligence = True
+                else:
+                    isUpIntelligence = False
+            else:
+                if random.randint(1, 5) <= 4:
+                    isUpIntelligence = False
+                else:
+                    isUpIntelligence = True
+
+        stuffPoint = kwargs['stuffPoint']
+        strengthPoints = 0
+        agilityPoints = 0
+        intelligencePoints = 0
+        diceNumber = 1
+        damage = 4
+        print(f'Création d\'une {weaponType}({gripType}) {stuffRarity} avec {stuffPoint} points')
+
+        diceNumberRand = random.randint(1, 200)
+        print(diceNumberRand)
+        for (gripTypeFor, d1_grip, d2_grip, d3_grip) in [('OneHanded', 90, 10, 0),
+                                                         ('TwoHanded', 20, 78, 2),
+                                                         ('TwoWeapon', 60, 35, 5)]:
+            if gripType == gripTypeFor:
+                for (rarity, d1_rarity, d2_rarity, d3_rarity) in [('Common', 80, 19, 1),
+                                                                  ('Rare', 70, 28, 2),
+                                                                  ('Epic', 50, 39, 10),
+                                                                  ('Legendary', 0, 60, 30)]:
+                    if stuffRarity == rarity:
+                        d1_prop = (d1_grip + d1_rarity) / 200
+                        d2_prop = d1_prop + (d2_grip + d2_rarity) / 200
+                        d3_prop = d2_prop + (d3_grip + d3_rarity) / 200
+                        if diceNumberRand / 200 <= d1_prop:
+                            # print(f'{diceNumberRand / 200} <= {d1_prop}')
+                            # print(f'{diceNumberRand} <= {(d1_prop*200)}')
+                            diceNumber = 1
+                        elif diceNumberRand / 200 <= d2_prop:
+                            # print(f'{diceNumberRand / 200} <= {d2_prop}')
+                            # print(f'{diceNumberRand} <= {d2_prop*200}')
+                            diceNumber = 2
+                        elif diceNumberRand / 200 <= d3_prop:
+                            # print(f'{diceNumberRand / 200} <= {d3_prop}')
+                            # print(f'{diceNumberRand} <= {d3_prop*200}')
+                            diceNumber = 3
+                        else:
+                            # print(f'{diceNumberRand / 200} > {d3_prop}')
+                            # print(f'{diceNumberRand} > {d3_prop * 200}')
+                            diceNumber = 4
+
+        damageRand = random.randint(1, 200)
+        # print(damageRand)
+        for (weaponTypeFor, damage4_type, damage6_type, damage8_type,
+             damage10_type, damage12_type, damage20_type, damage100_type) in [('Dagger', 60, 25, 10, 5, 0, 0, 0),
+                                                                              ('Sword', 0, 20, 50, 20, 9, 1, 0),
+                                                                              ('Axe', 5, 25, 35, 25, 9, 1, 0),
+                                                                              ('Spear', 0, 0, 20, 60, 18, 2, 0),
+                                                                              ('Bow', 15, 30, 35, 10, 8, 2, 0),
+                                                                              ('Mace', 20, 35, 25, 10, 7, 3, 0)]:
+            if weaponType == weaponTypeFor:
+                for (rarity, damage4_rarity, damage6_rarity, damage8_rarity, damage10_rarity, damage12_rarity,
+                     damage20_rarity, damage100_rarity,) in [('Common', 19, 70, 10, 1, 0, 0, 0),
+                                                             ('Rare', 0, 35, 54, 10, 1, 0, 0),
+                                                             ('Epic', 0, 0, 50, 35, 10, 5, 0),
+                                                             ('Legendary', 0, 0, 0, 50, 30, 19, 1)]:
+                    if stuffRarity == rarity:
+                        damage4_prop = (damage4_type + damage4_rarity) / 200
+                        damage6_prop = damage4_prop + (damage6_type + damage6_rarity) / 200
+                        damage8_prop = damage6_prop + (damage8_type + damage8_rarity) / 200
+                        damage10_prop =  damage8_prop + (damage10_type + damage10_rarity) / 200
+                        damage12_prop = damage10_prop + (damage12_type + damage12_rarity) / 200
+                        damage20_prop = damage12_prop + (damage20_type + damage20_rarity) / 200
+                        if damageRand / 200 <= damage4_prop:
+                            # print(f'{damageRand / 200} <= {damage4_prop}')
+                            # print(f'{damageRand} <= {damage4_prop*200}')
+                            damage = 4
+                        elif damageRand / 200 <= damage6_prop:
+                            # print(f'{damageRand / 200} <= {damage6_prop}')
+                            # print(f'{damageRand} <= {damage6_prop*200}')
+                            damage = 6
+                        elif damageRand / 200 <= damage8_prop:
+                            # print(f'{damageRand / 200} <= {damage8_prop}')
+                            # print(f'{damageRand} <= {damage8_prop*200}')
+                            damage = 8
+                        elif damageRand / 200 <= damage10_prop:
+                            # print(f'{damageRand / 200} <= {damage10_prop}')
+                            # print(f'{damageRand} <= {damage10_prop*200}')
+                            damage = 10
+                        elif damageRand / 200 <= damage12_prop:
+                            # print(f'{damageRand / 200} <= {damage12_prop}')
+                            # print(f'{damageRand} <= {damage12_prop*200}')
+                            damage = 12
+                        elif damageRand / 200 <= damage20_prop:
+                            # print(f'{damageRand / 200} <= {damage20_prop}')
+                            # print(f'{damageRand} <= {damage20_prop*200}')
+                            damage = 20
+                        else:
+                            # print(f'{damageRand / 200} > {damage20_prop}')
+                            # print(f'{damageRand} > {damage20_prop*200}')
+                            damage = 100
+        while stuffPoint != 0:
+            stuffPoint = kwargs['stuffPoint']
+            strengthPoints = 0
+            agilityPoints = 0
+            intelligencePoints = 0
+            if isUpStrength == True:
+                strengthValue = random.randint(0, stuffPoint)
+                strengthPoints += strengthValue
+                stuffPoint -= strengthValue
+            else:
+                strengthValue = random.randint(0, stuffPoint)
+                strengthPoints -= strengthValue
+                stuffPoint += strengthValue
+            if isUpAgility == True:
+                agilityValue = random.randint(0, stuffPoint)
+                agilityPoints += agilityValue
+                stuffPoint -= agilityValue
+            else:
+                agilityValue = random.randint(0, stuffPoint)
+                agilityPoints -= agilityValue
+                stuffPoint += agilityValue
+            if isUpIntelligence == True:
+                intelligenceValue = random.randint(0, stuffPoint)
+                intelligencePoints += intelligenceValue
+                stuffPoint -= intelligenceValue
+            else:
+                intelligenceValue = random.randint(0, stuffPoint)
+                intelligencePoints -= intelligenceValue
+                stuffPoint += intelligenceValue
+
+            print(f' Il reste {stuffPoint} points: {strengthPoints} FOR,'
+                  f' {agilityPoints} AGI,'
+                  f' {intelligencePoints} '
+                  f'INT somme {strengthPoints + agilityPoints + intelligencePoints}')
+            print(f' \t - damage: {diceNumber}D{damage}')
+        if Weapon.objects.filter(strength=strengthPoints,
+                                 agility=agilityPoints,
+                                 intelligence=intelligencePoints,
+                                 diceNumber=diceNumber,
+                                 damage=damage).count() == 0:
+            return [0, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0, diceNumber, damage]
 
 
 def dispatchForConsumable(*args, **kwargs):
@@ -617,7 +811,7 @@ def dispatchForConsumable(*args, **kwargs):
                 stuffPoint -= hpValue
             else:
                 hpValue = random.randint(0, stuffPoint)
-                hpPoints -=hpValue
+                hpPoints -= hpValue
                 stuffPoint += hpValue
             if isUpStrength == True:
                 strengthValue = random.randint(0, stuffPoint)
@@ -644,7 +838,7 @@ def dispatchForConsumable(*args, **kwargs):
                 intelligencePoints -= intelligenceValue
                 stuffPoint += intelligenceValue
             print(
-                f' Il reste {stuffPoint} points : {hpPoints}({hpPoints*5}) HP, {strengthPoints} FOR, {agilityPoints} AGI, {intelligencePoints} INT somme {hpPoints + strengthPoints + agilityPoints + intelligencePoints}')
+                f' Il reste {stuffPoint} points : {hpPoints}({hpPoints * 5}) HP, {strengthPoints} FOR, {agilityPoints} AGI, {intelligencePoints} INT somme {hpPoints + strengthPoints + agilityPoints + intelligencePoints}')
         if Consumable.objects.filter(hp=hpPoints * 5, strength=strengthPoints, agility=agilityPoints,
                                      intelligence=intelligencePoints).count() == 0:
             break
@@ -655,12 +849,14 @@ def dispacthPoints(*args, **kwargs):
     stuffPoint = kwargs['stuffPoint']
     stuffClassName = kwargs['stuffClassName']
     itemCharacterClassRequired = kwargs['itemCharacterClassRequired']
+    stuffRarity = kwargs['stuffRarity']
     ## spéaration en 3 partie dispatchForConsumable, dispatchForWeapon, dispatchForBasicStuff
     if stuffClassName == 'Consumable':
         dispacthPoints = dispatchForConsumable(stuffPoint=stuffPoint)
     elif stuffClassName == 'Weapon':
         dispacthPoints = dispatchForWeapon(stuffPoint=stuffPoint,
-                                           itemCharacterClassRequired=itemCharacterClassRequired)
+                                           itemCharacterClassRequired=itemCharacterClassRequired,
+                                           stuffRarity=stuffRarity)
     else:
         dispacthPoints = dispactForStuff(stuffPoint=stuffPoint,
                                          itemCharacterClassRequired=itemCharacterClassRequired,
@@ -701,7 +897,8 @@ def generateItem(*args, **kwargs):
         stuffPoint=calculPoints(stuffRarity=stuffRarity, itemLvlRequired=itemLvlRequired,
                                 stuffClassName=stuffClassName),
         stuffClassName=stuffClassName,
-        itemCharacterClassRequired=itemCharacterClassRequired)
+        itemCharacterClassRequired=itemCharacterClassRequired,
+        stuffRarity=stuffRarity)
     if stuffClassName == 'Consumable':
         ItemDropped = Consumable(name='Poiton n°' + str(random.randint(0, 999999999)),
                                  rarity=stuffRarity,
@@ -796,6 +993,7 @@ def DropItem(**kwargs):
         else:
             stuffRarity = 'Legendary'
         stuffClass = random.randint(1, 6)
+        stuffClass = 6
         if stuffClass <= 2:
             stuffClassName = 'Consumable'
             stuffPull = Consumable.objects.filter(rarity=stuffRarity)
@@ -815,7 +1013,7 @@ def DropItem(**kwargs):
                             requiredLevel__lte=ItemLevelRequired)).filter(rarity=stuffRarity, characterClass=kwargs[
                         'adventurer'].characterClass)
                     stuffCount = stuffPull.count()
-                    if stuffCount == 0 or random.randint(1, 100) <= 20:
+                    if stuffCount == 0 or random.randint(1, 100) <= 99:
                         return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
                                             stuffRarity=stuffRarity)
                     ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
