@@ -33,8 +33,12 @@ global_leg_name = ['legwarmer', 'leggings', 'leg guard', 'stocking', 'shin guard
                    'feet protector', 'shoes', 'boots', 'footwear', 'coat', 'loincloth']
 global_potion_name = ['potion', 'pill', 'unguent', 'philter', 'elixir', 'blend', 'oil', 'balm', 'cream', 'pomade',
                       'plaster', 'spray']
-global_material_name = ['mail', 'plate', 'leather', 'tissue', 'cloth', 'metal', 'chain', 'skin', 'pelt', 'iron', 'gold',
-                        'steel', 'silver', 'bronze', 'copper']
+global_poor_material_name = ['leather', 'tissue', 'cloth', 'skin',
+                             'pelt']
+global_medium_material_name = ['mail', 'chain', 'iron',
+                               'copper', 'silver']
+global_good_material_name = ['plate', 'rodium', 'gold', 'steel',
+                             'bronze']
 global_city_name = ['Erebor', 'Esgaroth', 'Alqualondë', 'Formenos', 'Tirion', 'Valimar', 'Valmar', 'Combe', 'Fondcombe',
                     'Annúminas', 'Archet', 'Archètes', 'Archètes', 'Bree', 'Brie', 'Elostirion', 'Fendeval', 'Fornost',
                     'Imladris', 'Raccard', 'Rivendell', 'Tharbad', 'Vinyalondë', 'Angrenost', 'Anor', 'Edhellond',
@@ -82,6 +86,11 @@ global_synonyms_dico = {'Item':
                              'Medium': global_adjective_medium,
                              'High': global_adjective_high
                              },
+                        'Material':
+                            {'Poor': global_poor_material_name,
+                             'Medium': global_medium_material_name,
+                             'Good': global_good_material_name,
+                             },
                         }
 
 print(global_synonyms_dico)
@@ -90,6 +99,19 @@ print(global_synonyms_dico['Carac']['Heal'])
 print(random.choice(global_synonyms_dico['Carac']['Heal']))
 
 
+# if stuffRarity == 'Common':
+#     stuff_material = random.choice(global_synonyms_dico['Material']['Poor'])
+# else:
+#     for (rarity, proba_list_1, list_material_1, list_material_2) in [
+#         ('Rare', 70, global_synonyms_dico['Material']['Poor'], global_synonyms_dico['Material']['Medium']),
+#         ('Epic', 80, global_synonyms_dico['Material']['Medium'], global_synonyms_dico['Material']['Good']),
+#         ('Legendary', 40, global_synonyms_dico['Material']['Medium'], global_synonyms_dico['Material']['Good'])]:
+#         if stuffRarity == rarity:
+#             if random.randint(1, 100) <= proba_list_1:
+#                 stuff_material = random.choice(list_material_1)
+#             else:
+#                 stuff_material = random.choice(list_material_2)
+
 ###
 ##
 #   GLOBAL VAR END
@@ -97,40 +119,45 @@ print(random.choice(global_synonyms_dico['Carac']['Heal']))
 ###
 def generateWeaponName(*args, **kwargs):
     stuffRarity = kwargs['stuffRarity']
-    strength = kwargs['strength']
-    agility = kwargs['agility']
-    intelligence = kwargs['intelligence']
+    itemCharacterClassRequired = kwargs['itemCharacterClassRequired']
     gripType = kwargs['gripType']
     weaponType = kwargs['weaponType']
     weapon_name = ''
+    grip_type_name = ''
 
     while True:
         city_name = random.choice(global_synonyms_dico['City'])
         race_name = random.choice(global_synonyms_dico['Race'])
         character_name = random.choice(global_synonyms_dico['Name'])
 
+        for (gripTypeFor, grip_type_name_for) in [('OneHanded', 'one handed'),
+                                                  ('TwoHanded', 'two handed'),
+                                                  ('TwoWeapon', 'double'), ]:
+            if gripType == gripTypeFor:
+                grip_type_name = grip_type_name_for
+
         weapon_name_form = random.randint(1, 10)
         if stuffRarity == 'Common':
             if weapon_name_form <= 2:
-                weapon_name = '1'
+                weapon_name = f'{weaponType} of the {itemCharacterClassRequired} trainee'
             elif weapon_name_form <= 6:
-                weapon_name = '2'
+                weapon_name = f'Trainee\'s {weaponType}'
             else:
-                weapon_name = '3'
+                weapon_name = f'Trainning {weaponType}'
         elif stuffRarity == 'Rare':
             if weapon_name_form <= 5:
-                weapon_name = '1'
+                weapon_name = f'{race_name} {weaponType}'
             else:
-                weapon_name = '2'
+                weapon_name = f'{race_name} {grip_type_name} {weaponType}'
         else:
-            if weapon_name_form <= 3:
-                weapon_name = '1'
-            elif weapon_name_form <= 6:
-                weapon_name = '2' + ' of ' + character_name
-            elif weapon_name_form <= 8:
-                weapon_name = '3' + ' of ' + city_name
+            if weapon_name_form <= 2:
+                weapon_name = f'{race_name} {grip_type_name} {weaponType}'
+            elif weapon_name_form <= 4:
+                weapon_name = f'{character_name} {grip_type_name} {weaponType}'
+            elif weapon_name_form <= 7:
+                weapon_name = f'{grip_type_name} {weaponType} of {character_name} '
             else:
-                weapon_name = '4' + race_name
+                weapon_name = f'{grip_type_name} {weaponType} of {city_name}'
         if Weapon.objects.filter(name=weapon_name).count() == 0:
             return weapon_name
 
@@ -150,15 +177,19 @@ def generatePotionName(*args, **kwargs):
         city_name = random.choice(global_synonyms_dico['City'])
         race_name = random.choice(global_synonyms_dico['Race'])
 
-        for (rarity, proba_list_1, list_adjective_1, list_adjective_2) in [
-            ('Rare', 70, global_synonyms_dico['Adjective']['Low'], global_synonyms_dico['Adjective']['Medium']),
-            ('Epic', 80, global_synonyms_dico['Adjective']['Medium'], global_synonyms_dico['Adjective']['High']),
-            ('Legendary', 40, global_synonyms_dico['Adjective']['Medium'], global_synonyms_dico['Adjective']['High'])]:
-            if stuffRarity == rarity:
-                if random.randint(1, 100) <= proba_list_1:
-                    potion_adjective = random.choice(list_adjective_1)
-                else:
-                    potion_adjective = random.choice(list_adjective_2)
+        if stuffRarity == 'Common':
+            potion_adjective = random.choice(global_synonyms_dico['Adjective']['Low'])
+        else:
+            for (rarity, proba_list_1, list_adjective_1, list_adjective_2) in [
+                ('Rare', 70, global_synonyms_dico['Adjective']['Low'], global_synonyms_dico['Adjective']['Medium']),
+                ('Epic', 80, global_synonyms_dico['Adjective']['Medium'], global_synonyms_dico['Adjective']['High']),
+                ('Legendary', 40, global_synonyms_dico['Adjective']['Medium'],
+                 global_synonyms_dico['Adjective']['High'])]:
+                if stuffRarity == rarity:
+                    if random.randint(1, 100) <= proba_list_1:
+                        potion_adjective = random.choice(list_adjective_1)
+                    else:
+                        potion_adjective = random.choice(list_adjective_2)
 
         if strength + agility + intelligence == 0:
             carac_synonym = random.choice(global_synonyms_dico['Carac']['Heal'])
@@ -782,11 +813,14 @@ def chooseGripType(*args, **kwargs):
 
 
 def dispatchForWeapon(*args, **kwargs):
-    name = 'Weapon n°' + str(random.randint(1, 999999999))
     itemCharacterClassRequired = kwargs['itemCharacterClassRequired'].name
     weaponType = chooseWeaponType()
     gripType = chooseGripType(weaponType=weaponType)
     stuffRarity = kwargs['stuffRarity']
+    name = generateWeaponName(stuffRarity=stuffRarity,
+                              weaponType=weaponType,
+                              gripType=gripType,
+                              itemCharacterClassRequired=itemCharacterClassRequired)
 
     while True:
         isUpStrength = False
@@ -1192,7 +1226,7 @@ def DropItem(**kwargs):
         else:
             stuffRarity = 'Legendary'
         stuffClass = random.randint(1, 6)
-        stuffClass = 1
+        stuffClass = random.randint(3, 5)
         if stuffClass <= 2:
             stuffClassName = 'Consumable'
             stuffPull = Consumable.objects.filter(rarity=stuffRarity)
