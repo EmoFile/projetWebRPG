@@ -1239,6 +1239,28 @@ def generateItem(*args, **kwargs):
                 'agility': ItemDropped.agility
             }
         }
+    elif stuffClassName == 'Weapon':
+        data = {
+            'isItemDropped': True,
+            'stuffClassName': stuffClassName,
+            'stuffRarity': stuffRarity,
+            'stuffCount': 'generated object',
+            'pk': ItemDropped.pk,
+            'ItemDropped': {
+                'name': ItemDropped.name,
+                'requiredLevel': ItemDropped.requiredLevel,
+                'requiredClass': ItemDropped.characterClass.name,
+                'rarity': ItemDropped.rarity,
+                'hpMax': ItemDropped.hpMax,
+                'physicalResistence': ItemDropped.physicalResistance,
+                'magicalResistence': ItemDropped.magicalResistance,
+                'strength': ItemDropped.strength,
+                'intelligence': ItemDropped.intelligence,
+                'agility': ItemDropped.agility,
+                'diceNumber': ItemDropped.diceNumber,
+                'damage': ItemDropped.damage,
+            }
+        }
     else:
         data = {
             'isItemDropped': True,
