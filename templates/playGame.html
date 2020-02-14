@@ -445,7 +445,15 @@
                         {% for consumable in party.character.inventory.inventoryconsumable_set.all %}
                             <table class="table table-borderless" id="{{ consumable.consumable.name }}">
                                 <tr class="small">
-                                    <th scope="row">{{ consumable.consumable.name }}</th>
+                                    {% if consumable.consumable.rarity == 'Rare' %}
+                                        <th scope="row" style="color: dodgerblue">{{ consumable.consumable.name }}</th>
+                                    {% elif consumable.consumable.rarity == 'Epic' %}
+                                        <th scope="row" style="color: blueviolet">{{ consumable.consumable.name }}</th>
+                                    {% elif pconsumable.consumable.rarity == 'Legendary' %}
+                                        <th scope="row" style="color: gold">{{ consumable.consumable.name }}</th>
+                                    {% else %}
+                                        <th scope="row" style="color: limegreen">{{ consumable.consumable.name }}</th>
+                                    {% endif %}
                                     <td>
                                             <span
                                                     id="quantity/{{ party.pk }}/{{ consumable.consumable.pk }}">{{ consumable.quantity }}</span>
@@ -457,6 +465,24 @@
                                                 class="useItem btn btn-success">
                                             Use
                                         </button>
+                                    </td>
+                                    <td>
+                                        <table>
+                                            <tr>
+                                                <th>
+                                                    <span id="hp/{{ party.pk }}/{{ consumable.consumable.pk }}" class="col-3 text-success">{{ consumable.consumable.hp }}</span>
+                                                </th>
+                                                <th>
+                                                    <span id="strength/{{ party.pk }}/{{ consumable.consumable.pk }}" class="col-3 text-danger">{{ consumable.consumable.strength }}</span>
+                                                </th>
+                                                <th>
+                                                    <span id="intelligence/{{ party.pk }}/{{ consumable.consumable.pk }}" class="col-3 text-info">{{ consumable.consumable.intelligence }}</span>
+                                                </th>
+                                                <th>
+                                                    <span id="agility/{{ party.pk }}/{{ consumable.consumable.pk }}" class="col-3 text-warning">{{ consumable.consumable.agility }}</span>
+                                                </th>
+                                            </tr>
+                                        </table>
                                     </td>
                                 </tr>
                             </table>
