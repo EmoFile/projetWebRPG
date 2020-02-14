@@ -105,6 +105,7 @@ print(random.choice(global_synonyms_dico['Carac']['Heal']).capitalize())
 #   GLOBAL VAR END
 ##
 ###
+
 class IndexView(TemplateView):
     template_name = 'index.html'
 
@@ -184,17 +185,19 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
         # Création en BDD du personnage
         self.object.save()
 
-        commonWeaponPull = Weapon.objects.filter(rarity="Common", requiredLevel=1,
-                                                 characterClass=self.object.characterClass)
+        commonWeaponPull = Weapon.objects.filter(rarity="Common",
+                                                 requiredLevel=1,
+                                                 characterClass=self.object.characterClass,
+                                                 hpMax__gte=0)
         pullCount = commonWeaponPull.count()
         if pullCount == 0 or random.randint(1, 100) <= 20:
             generateItem(stuffClassName='Weapon', stuffRarity='Common', adventurer=self.object)
-            commonWeaponPull = Weapon.objects.filter(rarity="Common", requiredLevel=1,
-                                                     characterClass=self.object.characterClass)
+            commonWeaponPull = Weapon.objects.filter(rarity="Common",
+                                                     requiredLevel=1,
+                                                     characterClass=self.object.characterClass,
+                                                     hpMax__gte=0)
             pullCount = commonWeaponPull.count()
-        randomCommonWeapon = commonWeaponPull[random.randint(0, pullCount - 1)]
-        self.object.inventory.weapon = randomCommonWeapon
-        self.object.inventory.save()
+        ChangeStuff(stuffClassName='Weapon', inventory=self.object.inventory, stuffPk=commonWeaponPull[random.randint(0, pullCount - 1)].pk)
 
         commonConsumablePull = Consumable.objects.filter(Q(rarity="Common") | Q(rarity="Rare"))
         pullCount = commonConsumablePull.count()
@@ -316,7 +319,7 @@ class PlayRound(generic.View):
         enemy = get_object_or_404(Enemy, pk=kwargs['pkEnemy'])
         p_e = PartyEnemy.objects.get(party=party,
                                      enemy=enemy)
-        if p_e.hp <= 0 or adventurer.hp <= 0 :
+        if p_e.hp <= 0 or adventurer.hp <= 0:
             return JsonResponse({
                 'nothing': 'You know nothing John Snow'
             })
@@ -674,7 +677,7 @@ def generatePotionName(*args, **kwargs):
                 potion_name = potion_adjective + ' ' + race_name + ' ' + carac_synonym + ' ' + potion_name_synonym
         if Consumable.objects.filter(name=potion_name).count() == 0:
             return potion_name.capitalize()
-        
+
 
 def dispactForStuff(*args, **kwargs):
     itemCharacterClassRequired = kwargs['itemCharacterClassRequired'].name
@@ -1286,7 +1289,7 @@ def generateItem(*args, **kwargs):
 
 def DropItem(**kwargs):
     ItemLevelRequired = kwargs['adventurer'].level
-    if random.randint(1, 2) <= 1:
+    if random.randint(1, 2) <= 2:
         stuffRarity = random.randint(1, 100)
         if 1 <= stuffRarity <= 50:
             stuffRarity = 'Common'
@@ -1297,6 +1300,7 @@ def DropItem(**kwargs):
         else:
             stuffRarity = 'Legendary'
         stuffClass = random.randint(1, 6)
+        stuffClass = 4
         if stuffClass <= 2:
             stuffClassName = 'Consumable'
             stuffPull = Consumable.objects.filter(rarity=stuffRarity)
@@ -1382,6 +1386,25 @@ def DropItem(**kwargs):
     return data
 
 
+def AddConsumable(*args, **kwargs):
+    kwargs['inventory'].consumables.add(kwargs['consumable'])
+
+    i_c = InventoryConsumable.objects.get(inventory=kwargs['inventory'],
+                                          consumable=kwargs['consumable'])
+    i_c.quantity += 1
+    i_c.save()
+    return JsonResponse({
+        'stuffClassName': kwargs['stuffClassName'],
+        'stuffPk': kwargs['consumable'].pk,
+        'newStuff': kwargs['consumable'].name,
+        'newStuffHpMax': kwargs['consumable'].hp,
+        'newStuffStrength': kwargs['consumable'].strength,
+        'newStuffIntelligence': kwargs['consumable'].intelligence,
+        'newStuffAgility': kwargs['consumable'].agility,
+        'newStuffQuantity': i_c.quantity
+    })
+
+
 def ChangeStuff(*args, **kwargs):
     oldStuff = ''
     newStuff = ''
@@ -1420,25 +1443,6 @@ def ChangeStuff(*args, **kwargs):
         'newStuffDiceNumber': newStuff.diceNumber if kwargs['stuffClassName'] == 'Weapon' else 0,
         'newStuffDamage': newStuff.damage if kwargs['stuffClassName'] == 'Weapon' else 0,
         'character': ReloadCharacter(currentCharacter=kwargs['inventory'].character)
-    })
-
-
-def AddConsumable(*args, **kwargs):
-    kwargs['inventory'].consumables.add(kwargs['consumable'])
-
-    i_c = InventoryConsumable.objects.get(inventory=kwargs['inventory'],
-                                          consumable=kwargs['consumable'])
-    i_c.quantity += 1
-    i_c.save()
-    return JsonResponse({
-        'stuffClassName': kwargs['stuffClassName'],
-        'stuffPk': kwargs['consumable'].pk,
-        'newStuff': kwargs['consumable'].name,
-        'newStuffHpMax': kwargs['consumable'].hp,
-        'newStuffStrength': kwargs['consumable'].strength,
-        'newStuffIntelligence': kwargs['consumable'].intelligence,
-        'newStuffAgility': kwargs['consumable'].agility,
-        'newStuffQuantity': i_c.quantity
     })
 
 
