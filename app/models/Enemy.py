@@ -42,20 +42,20 @@ class Enemy(models.Model):
         :return: Enemy
         """
         ratio = (0.5*stage+49)/99
-        min_ratio_damage = (0.1*adventurer.damage+36.65)/49
+        min_ratio_damage = (0.1*adventurer.inventory.weapon.damage+36.65)/49
         max_ratio_damage = 1.10
         if min_ratio_damage > 0.90:
             min_ratio_damage = 0.90
         if ratio > 1.25:
             ratio = 1.25
         damage = random.uniform(
-            min_ratio_damage*adventurer.damage,
-            max_ratio_damage*adventurer.damage
+            min_ratio_damage*adventurer.inventory.weapon.damage,
+            max_ratio_damage*adventurer.inventory.weapon.damage
         )
         damage = 4 if damage < 4 else damage
         diceNumber = random.uniform(
-            adventurer.diceNumber - 1,
-            adventurer.diceNumber + 1
+            adventurer.inventory.weapon.diceNumber - 1,
+            adventurer.inventory.weapon.diceNumber + 1
         )
         if diceNumber > 4:
             diceNumber = 4
