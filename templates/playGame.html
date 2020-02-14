@@ -81,7 +81,7 @@
                 <div>
                     {% if party.character.inventory.head != Null %}
                         <table class="table table-borderless">
-                            <tr>
+                            <tr class="small">
                                 <th scope="row" id="headKind"><span>Helmet</span>
                                 </th>
                                 {% if party.character.inventory.head.rarity == 'Rare' %}
@@ -133,7 +133,7 @@
                         </table>
                     {% else %}
                         <table class="table table-borderless">
-                            <tr>
+                            <tr class="small">
                                 <th scope="row"><span id="headKind">Head</span>
                                 </th>
                                 <td scope="row"><span id="headName">No helmet</span></td>
@@ -169,7 +169,7 @@
                 <div>
                     {% if party.character.inventory.chest != Null %}
                         <table class="table table-borderless">
-                            <tr>
+                            <tr class="small">
                                 <th scope="row" id="chestKind"><span>Chest</span>
                                 </th>
                                 {% if party.character.inventory.chest.rarity == 'Rare' %}
@@ -221,7 +221,7 @@
                         </table>
                     {% else %}
                         <table class="table table-borderless">
-                            <tr>
+                            <tr class="small">
                                 <th scope="row"><span id="chestKind">Chest</span>
                                 </th>
 
@@ -259,7 +259,7 @@
                 <div>
                     {% if party.character.inventory.leg != Null %}
                         <table class="table table-borderless">
-                            <tr>
+                            <tr class="small">
                                 <th scope="row" id="legKind"><span>Leg</span>
                                 </th>
                                 {% if party.character.inventory.leg.rarity == 'Rare' %}
@@ -311,7 +311,7 @@
                         </table>
                     {% else %}
                         <table class="table table-borderless">
-                            <tr>
+                            <tr class="small">
                                 <th scope="row" id="legKind"><span>Leg</span>
                                 </th>
                                 <td scope="row"><span id="legName">No leg</span></td>
@@ -346,7 +346,7 @@
                 <div>
                     {% if party.character.inventory.weapon != Null %}
                         <table class="table table-borderless">
-                            <tr>
+                            <tr class="small">
                                 <th scope="row" id="weaponKind"><span>Weapon</span>
                                 </th>
                                 {% if party.character.inventory.weapon.rarity == 'Rare' %}
@@ -370,6 +370,12 @@
                                               style="color: limegreen">{{ party.character.inventory.weapon.name }}</span>
                                     </td>
                                 {% endif %}
+                                <td>
+                                    <span class="text-black small">
+                                        <span id="weaponDiceNumber">{{ party.character.inventory.weapon.diceNumber }}</span>D<span
+                                            id="weaponDamage">{{ party.character.inventory.weapon.damage }}</span>
+                                    </span>
+                                </td>
                                 <td>
                                     <span id="weaponHpMax"
                                           class="text-success">{{ party.character.inventory.weapon.hpMax }}</span>
@@ -398,7 +404,7 @@
                         </table>
                     {% else %}
                         <table class="table table-borderless">
-                            <tr>
+                            <tr class="small">
                                 <th scope="row" id="weaponKind"><span>Weapon</span>
                                 </th>
                                 <td scope="row"><span id="weaponName">No weapon</span>
@@ -438,19 +444,45 @@
                     {% if party.character.inventory.inventoryconsumable_set.all != 0 %}
                         {% for consumable in party.character.inventory.inventoryconsumable_set.all %}
                             <table class="table table-borderless" id="{{ consumable.consumable.name }}">
-                                <tr>
-                                    <th scope="row">{{ consumable.consumable.name }}</th>
+                                <tr class="small">
+                                    {% if consumable.consumable.rarity == 'Rare' %}
+                                        <th scope="row" style="color: dodgerblue">{{ consumable.consumable.name }}</th>
+                                    {% elif consumable.consumable.rarity == 'Epic' %}
+                                        <th scope="row" style="color: blueviolet">{{ consumable.consumable.name }}</th>
+                                    {% elif pconsumable.consumable.rarity == 'Legendary' %}
+                                        <th scope="row" style="color: gold">{{ consumable.consumable.name }}</th>
+                                    {% else %}
+                                        <th scope="row" style="color: limegreen">{{ consumable.consumable.name }}</th>
+                                    {% endif %}
                                     <td>
                                             <span
-                                                    id="quantity/{{ party.character.pk }}/{{ consumable.consumable.pk }}">{{ consumable.quantity }}</span>
+                                                    id="quantity/{{ party.pk }}/{{ consumable.consumable.pk }}">{{ consumable.quantity }}</span>
                                     </td>
                                     <td>
                                         <button type="button"
                                                 urlUseItem="quantity/{{ party.pk }}/{{ consumable.consumable.pk }}"
-                                                coupleCharacterConsumable="{{ party.character.pk }}/{{ consumable.consumable.pk }}"
+                                                coupleCharacterConsumable="{{ party.pk }}/{{ consumable.consumable.pk }}"
                                                 class="useItem btn btn-success">
                                             Use
                                         </button>
+                                    </td>
+                                    <td>
+                                        <table>
+                                            <tr>
+                                                <th>
+                                                    <span id="hp/{{ party.pk }}/{{ consumable.consumable.pk }}" class="col-3 text-success">{{ consumable.consumable.hp }}</span>
+                                                </th>
+                                                <th>
+                                                    <span id="strength/{{ party.pk }}/{{ consumable.consumable.pk }}" class="col-3 text-danger">{{ consumable.consumable.strength }}</span>
+                                                </th>
+                                                <th>
+                                                    <span id="intelligence/{{ party.pk }}/{{ consumable.consumable.pk }}" class="col-3 text-info">{{ consumable.consumable.intelligence }}</span>
+                                                </th>
+                                                <th>
+                                                    <span id="agility/{{ party.pk }}/{{ consumable.consumable.pk }}" class="col-3 text-warning">{{ consumable.consumable.agility }}</span>
+                                                </th>
+                                            </tr>
+                                        </table>
                                     </td>
                                 </tr>
                             </table>
@@ -468,7 +500,10 @@
             </div>
             <div>
                 <span id="buttonPlayRound"></span>
+                <span id="buttonRollDice"></span>
                 <span id="buttonNextStage"></span>
+            </div>
+            <div class="battleReport">
             </div>
         </div>
         <div class="col-4">
@@ -556,13 +591,13 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="itemModalLabel">Modal
                         title</h5>
-                    </button>
                 </div>
                 <div class="modal-body" id="itemModalBody">
                     <p id="levelRequired"></p>
                     <p id="classRequired"></p>
                     <p id="stuffKindName"></p>
                     <p id="rarity"></p>
+                    <p id="damage"></p>
                     <p id="hpMax"></p>
                     <p id="hp"></p>
                     <p id="physicalResistence"></p>
@@ -576,6 +611,60 @@
                 <div class="modal-footer">
                     <button type="button" id="closeModal" class="btn btn-secondary" data-dismiss="modal">Pass</button>
                     <button type="button" id="changeItem" class="btn btn-primary">Keep</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="isEndedModal" tabindex="-1" role="dialog"
+         aria-labelledby="endModalLabel"
+         aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="endModalLabel">GAME OVER</h5>
+                </div>
+                <div class="modal-body text-center" id="endModalBody">
+                    <p>Global rank: <span id="endRank"></span></p>
+                    <p>Personal rank: <span id="endRankPersonal"></span></p>
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Character</th>
+                            <th scope="col">Stage</th>
+                            <th scope="col">Class</th>
+                            <th scope="col">HP Max</th>
+                            <th scope="col">Strength</th>
+                            <th scope="col">Intelligence</th>
+                            <th scope="col">Agility</th>
+                            <th scope="col">Physical resistance</th>
+                            <th scope="col">Magical resistance</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td id="endCharacterName"></td>
+                            <td id="endStage"></td>
+                            <td id="endCharacterClass"></td>
+                            <td id="endHpMax"></td>
+                            <td id="endStrength"></td>
+                            <td id="endIntelligence"></td>
+                            <td id="endAgility"></td>
+                            <td id="endPhysicalResistance"></td>
+                            <td id="endMagicalResistance"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Pass</button>
+                    <a class="btn btn-primary" href="{% url 'home' %}" role="button">
+                        Home page
+                    </a>
+                    <a class="btn btn-success" href="{% url 'generateCharacterByPk' party.character.characterClass.pk %}" role="button">
+                        Retry
+                    </a>
+
                 </div>
             </div>
         </div>
