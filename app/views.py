@@ -1300,7 +1300,7 @@ def DropItem(**kwargs):
         else:
             stuffRarity = 'Legendary'
         stuffClass = random.randint(1, 6)
-        stuffClass = 4
+        stuffClass = 2
         if stuffClass <= 2:
             stuffClassName = 'Consumable'
             stuffPull = Consumable.objects.filter(rarity=stuffRarity)
@@ -1397,7 +1397,7 @@ def AddConsumable(*args, **kwargs):
         'stuffClassName': kwargs['stuffClassName'],
         'stuffPk': kwargs['consumable'].pk,
         'newStuff': kwargs['consumable'].name,
-        'newStuffHpMax': kwargs['consumable'].hp,
+        'newStuffHp': kwargs['consumable'].hp,
         'newStuffStrength': kwargs['consumable'].strength,
         'newStuffIntelligence': kwargs['consumable'].intelligence,
         'newStuffAgility': kwargs['consumable'].agility,
