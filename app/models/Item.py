@@ -21,7 +21,7 @@ class Item(models.Model):
         (EPIC, 'Epic'),
         (LEGENDARY, 'Legendary'),
     ]
-    name = models.CharField(max_length=40,
+    name = models.CharField(max_length=250,
                             default='New Item',
                             blank=False,
                             null=False)

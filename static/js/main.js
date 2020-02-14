@@ -42,6 +42,7 @@ function afterRollDice(result, $pkParty) {
     document.getElementById('characterBasicAgility').innerText = '(' + result['character']['basic']['agility'] + ')';
     document.getElementById('characterBasicIntelligence').innerText = '(' + result['character']['basic']['intelligence'] + ')';
     if (result['dropItem']) {
+        console.log(result['dropItem']);
         let $modalTitle = document.getElementById('itemModalLabel');
         let $stuffClassName = document.getElementById('stuffClassName');
         let $stuffKindName = document.getElementById('stuffKindName');
@@ -56,6 +57,8 @@ function afterRollDice(result, $pkParty) {
         let $strength = document.getElementById('strength');
         let $intelligence = document.getElementById('intelligence');
         let $agility = document.getElementById('agility');
+        let $damage = document.getElementById('damage');
+
         if (result['dropItem']['isItemDropped'] !== false) {
             $('#changeItem').show();
             $modalTitle.textContent = result['dropItem']['ItemDropped']['name'];
@@ -67,6 +70,9 @@ function afterRollDice(result, $pkParty) {
             if (result['dropItem']['stuffClassName'] === 'Consumable') {
                 $hp.textContent = 'Hp: ' + result['dropItem']['ItemDropped']['hp'] + '\n';
             } else {
+                if (result['dropItem']['stuffClassName'] === 'Weapon') {
+                    $damage.textContent ='Damage: ' + result['dropItem']['ItemDropped']['diceNumber'] + 'D' + result['dropItem']['ItemDropped']['damage'];
+                }
                 $levelRequired.textContent = 'Level required: ' + result['dropItem']['ItemDropped']['requiredLevel'] + '\n';
                 $classRequired.textContent = 'Class: ' + result['dropItem']['ItemDropped']['requiredClass'] + '\n';
                 $hpMax.textContent = 'Hp max: ' + result['dropItem']['ItemDropped']['hpMax'] + '\n';
@@ -157,6 +163,8 @@ function closeModal() {
     let $strength = document.getElementById('strength');
     let $intelligence = document.getElementById('intelligence');
     let $agility = document.getElementById('agility');
+    let $damage = document.getElementById('damage');
+
     $modalTitle.textContent = '';
     $rarity.textContent = '';
     $hp.textContent = '';
@@ -170,6 +178,7 @@ function closeModal() {
     $strength.textContent = '';
     $intelligence.textContent = '';
     $agility.textContent = '';
+    $damage.textContent = '';
 }
 
 const ITEM = {
@@ -228,7 +237,7 @@ async function Battle(battle, result, party) {
     $('.battleReport').append($dockElement);
     delete thisBattle['0'];
     delete thisBattle['1'];
-    $('#rollDice').show().attr('class', 'btn btn-primary').one("click", async function() {
+    $('#rollDice').show().attr('class', 'btn btn-primary').one("click", async function () {
         $('#rollDice').off().attr('class', 'btn btn-secondary');
         for (let i in thisBattle) {
             $dockElement.append(document.createTextNode(thisBattle[i])).append('</br>');
@@ -251,10 +260,10 @@ async function Battle(battle, result, party) {
     });
 }
 
-async function addBattleReport(report,party) {
+async function addBattleReport(report, party) {
     let battle = report['battleReport'];
     let $dockElement = $('<p></p>');
-    await Battle(battle, report,party)
+    await Battle(battle, report, party)
 
 }
 
@@ -409,6 +418,8 @@ $(() => {
                 let $weaponAgility = document.getElementById('weaponAgility');
                 let $weaponPhysicalResistance = document.getElementById('weaponPhysicalResistance');
                 let $weaponMagicalResistance = document.getElementById('weaponMagicalResistance');
+                let $weaponDiceNumber = document.getElementById('weaponDiceNumber');
+                let $weaponDamage = document.getElementById('weaponDamage');
 
                 $weaponName.innerText = result['newStuff'];
                 $weaponKind.innerText = 'Weapon';
@@ -419,6 +430,8 @@ $(() => {
                 $weaponAgility.innerText = result['newStuffAgility'];
                 $weaponPhysicalResistance.innerText = result['newStuffPhysicalResistance'];
                 $weaponMagicalResistance.innerText = result['newStuffMagicalResistance'];
+                $weaponDiceNumber.innerText = result['newStuffDiceNumber'];
+                $weaponDamage.innerText = result['newStuffDamage'];
             } else {
                 // MODIFIE LE CONSUMABLE OU L'ATTRIBUER
                 if (document.getElementById('quantity/' + $pkParty + '/' + result['stuffPk']) === null) {
@@ -433,6 +446,7 @@ $(() => {
                     $table.setAttribute('class', 'table table-borderless');
                     $table.setAttribute('id', result['newStuff']);
                     $th.setAttribute('scope', 'row');
+                    $tr.setAttribute('class', 'small');
                     $th.innerText = result['newStuff'];
                     $pqunatity.setAttribute('id', 'quantity/' + $pkParty + '/' + result['stuffPk']);
                     $pqunatity.innerText = result['newStuffQuantity'];

@@ -19,7 +19,92 @@ from app.forms import CharacterForm
 from app.models import CharacterClass, Character, Inventory, Party, Minion, BossAlain, Consumable, Head, Chest, Leg, \
     Weapon, InventoryConsumable, Enemy, PartyEnemy
 
+###
+##
+#   GLOBAL VAR
+##
+###
 
+global_head_name = ['helmet', 'tiara', 'diadem', 'hood', 'toque', 'crown', 'cap', 'turban', 'hat',
+                    'bandana']
+global_chest_name = ['breastplate', 'armour', 'cuirass', 'armor', 'plastron', 'jacket', 'shroud', 'cloth',
+                     'cladding']
+global_leg_name = ['legwarmer', 'leggings', 'leg guard', 'stocking', 'shin guard', 'leg protector', 'gaiter',
+                   'leg arming', 'footing armor', 'footing guard', 'footing protector', 'feet armor', 'feet guard',
+                   'feet protector', 'shoes', 'boots', 'footwear', 'coat', 'loincloth']
+global_potion_name = ['potion', 'pill', 'unguent', 'philter', 'elixir', 'blend', 'oil', 'balm', 'cream', 'pomade',
+                      'plaster', 'spray']
+global_poor_material_name = ['leather', 'tissue', 'cloth', 'skin',
+                             'pelt']
+global_medium_material_name = ['mail', 'chain', 'iron',
+                               'copper', 'silver']
+global_good_material_name = ['plate', 'rodium', 'gold', 'steel',
+                             'bronze']
+global_city_name = ['Erebor', 'Esgaroth', 'Alqualondë', 'Formenos', 'Tirion', 'Valimar', 'Valmar', 'Combe', 'Fondcombe',
+                    'Annúminas', 'Archet', 'Archètes', 'Archètes', 'Bree', 'Brie', 'Elostirion', 'Fendeval', 'Fornost',
+                    'Imladris', 'Raccard', 'Rivendell', 'Tharbad', 'Vinyalondë', 'Angrenost', 'Anor', 'Edhellond',
+                    'Isengard', 'Linhir', 'Minas Anor', 'Minas Ithil', 'Minas Tirith', 'Mundburg', 'Orthanc',
+                    'Osgiliath', 'Pelargir'
+                    ]
+global_fantastic_character_name = ['Legolas', 'Aragorn', 'Gandalf', 'Sauron',
+                                   'Frodon', 'Nazgûl', 'Gimli', 'Arwen', 'Elrond']
+global_race = ['Dwarf', 'Orc', 'Human', 'Elf', 'Halfing', 'Dragonborn', 'Gnome', 'Half-Elf', 'Half-Orc',
+               'Tiefling']
+global_healing_synonyms = ['heal', 'healing', 'cure', 'curing', 'recovery', 'recuperation', 'recover', 'recovering',
+                           'salvage', 'salving']
+global_strength_synonyms = ['force', 'strength', 'power', 'might', 'muscle', 'potency', 'courage', 'energy',
+                            'fortitude', 'stability', 'tenacity', 'vigor', 'vitality', 'potency', 'pow', 'robustness']
+global_intelligence_synonyms = ['intelligence', 'acumen', 'sense', 'skill', 'acuity', 'intellect',
+                                'judgment', 'perception', 'aptitude', 'brainpower', 'mind', 'spirit',
+                                'capacity', 'mentality', 'perspicacity', 'quotient', 'reason', 'smart',
+                                'sagacity']
+global_agility_synonyms = ['agility', 'cleverness', 'dexterity', 'quickness', 'sharpness', 'swiftness', 'acuteness',
+                           'adroitness', 'alcrity', 'alertness', 'celerity', 'speed']
+global_adjective_low = ['old', 'low', 'little', 'slim', 'thin', 'soft',
+                        'weak', 'poor', 'small', 'feeble', 'lowly', 'mere', 'light']
+global_adjective_medium = ['good', 'full', 'basic', 'long',
+                           'modest', 'humble', 'nice', 'fresh', 'great', 'simple']
+global_adjective_high = ['holy', 'high', 'tall', 'big',
+                         'large', 'huge']
+
+global_synonyms_dico = {'Item':
+                            {'Potion': global_potion_name,
+                             'Head': global_head_name,
+                             'Chest': global_chest_name,
+                             'Leg': global_leg_name
+                             },
+                        'Carac':
+                            {'Heal': global_healing_synonyms,
+                             'Strength': global_strength_synonyms,
+                             'Intelligence': global_intelligence_synonyms,
+                             'Agility': global_agility_synonyms
+                             },
+                        'City': global_city_name,
+                        'Name': global_fantastic_character_name,
+                        'Race': global_race,
+                        'Adjective':
+                            {'Low': global_adjective_low,
+                             'Medium': global_adjective_medium,
+                             'High': global_adjective_high
+                             },
+                        'Material':
+                            {'Poor': global_poor_material_name,
+                             'Medium': global_medium_material_name,
+                             'Good': global_good_material_name,
+                             },
+                        }
+
+print(global_synonyms_dico)
+print(global_synonyms_dico['Carac'])
+print(global_synonyms_dico['Carac']['Heal'])
+print(random.choice(global_synonyms_dico['Carac']['Heal']).capitalize())
+
+
+###
+##
+#   GLOBAL VAR END
+##
+###
 class IndexView(TemplateView):
     template_name = 'index.html'
 
@@ -423,9 +508,182 @@ def fight(atk, atkDef, atkObj, res, defName):
     return hpAtk, hpDef, battleReport
 
 
+def generateStuffName(*args, **kwargs):
+    itemCharacterClassRequired = kwargs['itemCharacterClassRequired']
+    stuffClassName = kwargs['stuffClassName']
+    stuffRarity = kwargs['stuffRarity']
+    stuff_name = ''
+    stuff_class_synonym = ''
+    stuff_material = ''
+
+    while True:
+        city_name = random.choice(global_synonyms_dico['City'])
+        race_name = random.choice(global_synonyms_dico['Race'])
+        character_name = random.choice(global_synonyms_dico['Name'])
+
+        for (stuff_class_name, cls, synonym_list) in [('Head', Head, global_synonyms_dico['Item']['Head']),
+                                                      ('Chest', Chest, global_synonyms_dico['Item']['Chest']),
+                                                      ('Leg', Leg, global_synonyms_dico['Item']['Leg'])]:
+            if stuffClassName == stuff_class_name:
+                stuff_class_synonym = random.choice(synonym_list)
+                break
+
+        if stuffRarity == 'Common':
+            stuff_material = random.choice(global_synonyms_dico['Material']['Poor'])
+        else:
+            for (rarity, proba_list_1, list_material_1, list_material_2) in [
+                ('Rare', 70, global_synonyms_dico['Material']['Poor'], global_synonyms_dico['Material']['Medium']),
+                ('Epic', 80, global_synonyms_dico['Material']['Medium'], global_synonyms_dico['Material']['Good']),
+                ('Legendary', 40, global_synonyms_dico['Material']['Medium'], global_synonyms_dico['Material']['Good'])]:
+                if stuffRarity == rarity:
+                    if random.randint(1, 100) <= proba_list_1:
+                        stuff_material = random.choice(list_material_1)
+                    else:
+                        stuff_material = random.choice(list_material_2)
+
+        stuff_name_form = random.randint(1, 10)
+        if stuffRarity == 'Common':
+            if stuff_name_form <= 2:
+                stuff_name = f'{stuff_class_synonym} of the {itemCharacterClassRequired} trainee'
+            elif stuff_name_form <= 6:
+                stuff_name = f'Trainee\'s {stuff_class_synonym}'
+            else:
+                stuff_name = f'Trainning {stuff_class_synonym}'
+        elif stuffRarity == 'Rare':
+            if stuff_name_form <= 5:
+                stuff_name = f'{race_name} {stuff_class_synonym}'
+            else:
+                stuff_name = f'{stuff_class_synonym} of {city_name}'
+        else:
+            if stuff_name_form <= 5:
+                if random.randint(1, 2) <= 1:
+                    stuff_name = f'{race_name} {stuff_class_synonym} of {stuff_material}'
+                else:
+                    stuff_name = f'{race_name} {stuff_material} {stuff_class_synonym}'
+            else:
+                stuff_name = f'{character_name}\'s {stuff_class_synonym}'
+        if cls.objects.filter(name=stuff_name).count() == 0:
+            return stuff_name.capitalize()
+
+
+def generateWeaponName(*args, **kwargs):
+    stuffRarity = kwargs['stuffRarity']
+    itemCharacterClassRequired = kwargs['itemCharacterClassRequired']
+    gripType = kwargs['gripType']
+    weaponType = kwargs['weaponType']
+    weapon_name = ''
+    grip_type_name = ''
+
+    while True:
+        city_name = random.choice(global_synonyms_dico['City'])
+        race_name = random.choice(global_synonyms_dico['Race'])
+        character_name = random.choice(global_synonyms_dico['Name'])
+
+        for (gripTypeFor, grip_type_name_for) in [('OneHanded', 'one handed'),
+                                                  ('TwoHanded', 'two handed'),
+                                                  ('TwoWeapon', 'double'), ]:
+            if gripType == gripTypeFor:
+                grip_type_name = grip_type_name_for
+
+        weapon_name_form = random.randint(1, 10)
+        if stuffRarity == 'Common':
+            if weapon_name_form <= 2:
+                weapon_name = f'{weaponType} of the {itemCharacterClassRequired} trainee'
+            elif weapon_name_form <= 6:
+                weapon_name = f'Trainee\'s {weaponType}'
+            else:
+                weapon_name = f'Trainning {weaponType}'
+        elif stuffRarity == 'Rare':
+            if weapon_name_form <= 5:
+                weapon_name = f'{race_name} {weaponType}'
+            else:
+                weapon_name = f'{race_name} {grip_type_name} {weaponType}'
+        else:
+            if weapon_name_form <= 2:
+                weapon_name = f'{race_name} {grip_type_name} {weaponType}'
+            elif weapon_name_form <= 4:
+                weapon_name = f'{character_name} {grip_type_name} {weaponType}'
+            elif weapon_name_form <= 7:
+                weapon_name = f'{grip_type_name} {weaponType} of {character_name} '
+            else:
+                weapon_name = f'{grip_type_name} {weaponType} of {city_name}'
+        if Weapon.objects.filter(name=weapon_name).count() == 0:
+            return weapon_name.capitalize()
+
+
+def generatePotionName(*args, **kwargs):
+    stuffRarity = kwargs['stuffRarity']
+    hp = kwargs['hp']
+    strength = kwargs['strength']
+    agility = kwargs['agility']
+    intelligence = kwargs['intelligence']
+    potion_name = ''
+    potion_adjective = ''
+    carac_synonym = ''
+
+    while True:
+        potion_name_synonym = random.choice(global_synonyms_dico['Item']['Potion'])
+        city_name = random.choice(global_synonyms_dico['City'])
+        race_name = random.choice(global_synonyms_dico['Race'])
+
+        if stuffRarity == 'Common':
+            potion_adjective = random.choice(global_synonyms_dico['Adjective']['Low'])
+        else:
+            for (rarity, proba_list_1, list_adjective_1, list_adjective_2) in [
+                ('Rare', 70, global_synonyms_dico['Adjective']['Low'], global_synonyms_dico['Adjective']['Medium']),
+                ('Epic', 80, global_synonyms_dico['Adjective']['Medium'], global_synonyms_dico['Adjective']['High']),
+                ('Legendary', 40, global_synonyms_dico['Adjective']['Medium'],
+                 global_synonyms_dico['Adjective']['High'])]:
+                if stuffRarity == rarity:
+                    if random.randint(1, 100) <= proba_list_1:
+                        potion_adjective = random.choice(list_adjective_1)
+                    else:
+                        potion_adjective = random.choice(list_adjective_2)
+
+        if strength + agility + intelligence == 0:
+            carac_synonym = random.choice(global_synonyms_dico['Carac']['Heal'])
+        else:
+            for (caracPoint1, caracPoint2, caracPoint3, table_carac_name) in [
+                (strength, agility, intelligence, global_synonyms_dico['Carac']['Strength']),
+                (agility, strength, intelligence, global_synonyms_dico['Carac']['Agility']),
+                (intelligence, strength, agility, global_synonyms_dico['Carac']['Intelligence'])]:
+                if caracPoint1 >= caracPoint2 and caracPoint1 >= caracPoint3:
+                    carac_synonym = random.choice(table_carac_name)
+
+        potion_name_form = random.randint(1, 10)
+        if stuffRarity == 'Common':
+            if potion_name_form <= 2:
+                potion_name = potion_adjective + ' ' + carac_synonym + ' ' + potion_name_synonym
+            elif potion_name_form <= 6:
+                potion_name = carac_synonym + ' ' + potion_name_synonym
+            else:
+                potion_name = potion_name_synonym + ' of ' + carac_synonym
+        elif stuffRarity == 'Rare':
+            if potion_name_form <= 5:
+                potion_name = potion_adjective + ' ' + carac_synonym + ' ' + potion_name_synonym
+            else:
+                potion_name = potion_adjective + ' ' + potion_name_synonym + ' of ' + carac_synonym
+        else:
+            if potion_name_form <= 3:
+                potion_name = potion_adjective + ' ' + carac_synonym + ' ' + potion_name_synonym
+            elif potion_name_form <= 6:
+                potion_name = potion_adjective + ' ' + potion_name_synonym + ' of ' + carac_synonym
+            elif potion_name_form <= 8:
+                potion_name = potion_adjective + ' ' + carac_synonym + ' ' + potion_name_synonym + ' of ' + city_name
+            else:
+                potion_name = potion_adjective + ' ' + race_name + ' ' + carac_synonym + ' ' + potion_name_synonym
+        if Consumable.objects.filter(name=potion_name).count() == 0:
+            return potion_name.capitalize()
+        
+
 def dispactForStuff(*args, **kwargs):
     itemCharacterClassRequired = kwargs['itemCharacterClassRequired'].name
     stuffClassName = kwargs['stuffClassName']
+    stuffRarity = kwargs['stuffRarity']
+    name = generateStuffName(itemCharacterClassRequired=itemCharacterClassRequired,
+                             stuffClassName=stuffClassName,
+                             stuffRarity=stuffRarity
+                             )
     while True:
         isUpStrength = False
         isUpAgility = False
@@ -562,7 +820,8 @@ def dispactForStuff(*args, **kwargs):
                               magicalResistance=MagResPoints).count() == 0:
             break
 
-    return [0, strengthPoints, agilityPoints, intelligencePoints, hpMaxPoints * 5, physResPoints, MagResPoints, 0, 0]
+    return [0, strengthPoints, agilityPoints, intelligencePoints, hpMaxPoints * 5, physResPoints, MagResPoints, 0, 0,
+            name]
 
 
 def chooseWeaponType(*args, **kwargs):
@@ -607,6 +866,10 @@ def dispatchForWeapon(*args, **kwargs):
     weaponType = chooseWeaponType()
     gripType = chooseGripType(weaponType=weaponType)
     stuffRarity = kwargs['stuffRarity']
+    name = generateWeaponName(stuffRarity=stuffRarity,
+                              weaponType=weaponType,
+                              gripType=gripType,
+                              itemCharacterClassRequired=itemCharacterClassRequired)
 
     while True:
         isUpStrength = False
@@ -696,7 +959,7 @@ def dispatchForWeapon(*args, **kwargs):
                         damage4_prop = (damage4_type + damage4_rarity) / 200
                         damage6_prop = damage4_prop + (damage6_type + damage6_rarity) / 200
                         damage8_prop = damage6_prop + (damage8_type + damage8_rarity) / 200
-                        damage10_prop =  damage8_prop + (damage10_type + damage10_rarity) / 200
+                        damage10_prop = damage8_prop + (damage10_type + damage10_rarity) / 200
                         damage12_prop = damage10_prop + (damage12_type + damage12_rarity) / 200
                         damage20_prop = damage12_prop + (damage20_type + damage20_rarity) / 200
                         if damageRand / 200 <= damage4_prop:
@@ -767,10 +1030,11 @@ def dispatchForWeapon(*args, **kwargs):
                                  intelligence=intelligencePoints,
                                  diceNumber=diceNumber,
                                  damage=damage).count() == 0:
-            return [0, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0, diceNumber, damage]
+            return [0, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0, diceNumber, damage, name]
 
 
 def dispatchForConsumable(*args, **kwargs):
+    stuffRarity = kwargs['stuffRarity']
     while True:
         isUpHP = False
         isUpStrength = False
@@ -842,8 +1106,13 @@ def dispatchForConsumable(*args, **kwargs):
                 f' Il reste {stuffPoint} points : {hpPoints}({hpPoints * 5}) HP, {strengthPoints} FOR, {agilityPoints} AGI, {intelligencePoints} INT somme {hpPoints + strengthPoints + agilityPoints + intelligencePoints}')
         if Consumable.objects.filter(hp=hpPoints * 5, strength=strengthPoints, agility=agilityPoints,
                                      intelligence=intelligencePoints).count() == 0:
+            name = generatePotionName(stuffRarity=stuffRarity,
+                                      hp=hpPoints * 5,
+                                      strength=strengthPoints,
+                                      agility=agilityPoints,
+                                      intelligence=intelligencePoints)
             break
-    return [hpPoints * 5, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0, 0, 0]
+    return [hpPoints * 5, strengthPoints, agilityPoints, intelligencePoints, 0, 0, 0, 0, 0, name]
 
 
 def dispacthPoints(*args, **kwargs):
@@ -853,7 +1122,8 @@ def dispacthPoints(*args, **kwargs):
     stuffRarity = kwargs['stuffRarity']
     ## spéaration en 3 partie dispatchForConsumable, dispatchForWeapon, dispatchForBasicStuff
     if stuffClassName == 'Consumable':
-        dispacthPoints = dispatchForConsumable(stuffPoint=stuffPoint)
+        dispacthPoints = dispatchForConsumable(stuffPoint=stuffPoint,
+                                               stuffRarity=stuffRarity)
     elif stuffClassName == 'Weapon':
         dispacthPoints = dispatchForWeapon(stuffPoint=stuffPoint,
                                            itemCharacterClassRequired=itemCharacterClassRequired,
@@ -861,7 +1131,8 @@ def dispacthPoints(*args, **kwargs):
     else:
         dispacthPoints = dispactForStuff(stuffPoint=stuffPoint,
                                          itemCharacterClassRequired=itemCharacterClassRequired,
-                                         stuffClassName=stuffClassName)
+                                         stuffClassName=stuffClassName,
+                                         stuffRarity=stuffRarity)
     hpPoints = dispacthPoints[0]
     strengthPoints = dispacthPoints[1]
     agilityPoints = dispacthPoints[2]
@@ -871,8 +1142,9 @@ def dispacthPoints(*args, **kwargs):
     MagResPoints = dispacthPoints[6]
     diceNumber = dispacthPoints[7]
     damage = dispacthPoints[8]
+    name = dispacthPoints[9]
     return [hpPoints, strengthPoints, agilityPoints, intelligencePoints, hpMaxPoints, physResPoints, MagResPoints,
-            diceNumber, damage]
+            diceNumber, damage, name]
 
 
 def calculPoints(*args, **kwargs):
@@ -901,14 +1173,16 @@ def generateItem(*args, **kwargs):
         itemCharacterClassRequired=itemCharacterClassRequired,
         stuffRarity=stuffRarity)
     if stuffClassName == 'Consumable':
-        ItemDropped = Consumable(name='Poiton n°' + str(random.randint(0, 999999999)),
+        ItemDropped = Consumable(name=stuffPointDispatch[9],
                                  rarity=stuffRarity,
                                  hp=stuffPointDispatch[0],
                                  strength=stuffPointDispatch[1],
                                  agility=stuffPointDispatch[2],
                                  intelligence=stuffPointDispatch[3])
     elif stuffClassName == 'Weapon':
-        ItemDropped = Weapon(rarity=stuffRarity, requiredLevel=itemLvlRequired,
+        ItemDropped = Weapon(name=stuffPointDispatch[9],
+                             rarity=stuffRarity,
+                             requiredLevel=itemLvlRequired,
                              characterClass=itemCharacterClassRequired,
                              strength=stuffPointDispatch[1],
                              agility=stuffPointDispatch[2],
@@ -916,7 +1190,10 @@ def generateItem(*args, **kwargs):
                              diceNumber=stuffPointDispatch[7],
                              damage=stuffPointDispatch[8])
     elif stuffClassName == 'Head':
-        ItemDropped = Head(rarity=stuffRarity, requiredLevel=itemLvlRequired, characterClass=itemCharacterClassRequired,
+        ItemDropped = Head(name=stuffPointDispatch[9],
+                           rarity=stuffRarity,
+                           requiredLevel=itemLvlRequired,
+                           characterClass=itemCharacterClassRequired,
                            hpMax=stuffPointDispatch[4],
                            physicalResistance=stuffPointDispatch[5],
                            magicalResistance=stuffPointDispatch[6],
@@ -924,7 +1201,9 @@ def generateItem(*args, **kwargs):
                            agility=stuffPointDispatch[2],
                            intelligence=stuffPointDispatch[3])
     elif stuffClassName == 'Chest':
-        ItemDropped = Chest(rarity=stuffRarity, requiredLevel=itemLvlRequired,
+        ItemDropped = Chest(name=stuffPointDispatch[9],
+                            rarity=stuffRarity,
+                            requiredLevel=itemLvlRequired,
                             characterClass=itemCharacterClassRequired,
                             hpMax=stuffPointDispatch[4],
                             physicalResistance=stuffPointDispatch[5],
@@ -933,7 +1212,9 @@ def generateItem(*args, **kwargs):
                             agility=stuffPointDispatch[2],
                             intelligence=stuffPointDispatch[3])
     else:
-        ItemDropped = Leg(rarity=stuffRarity, requiredLevel=itemLvlRequired,
+        ItemDropped = Leg(name=stuffPointDispatch[9],
+                          rarity=stuffRarity,
+                          requiredLevel=itemLvlRequired,
                           characterClass=itemCharacterClassRequired,
                           hpMax=stuffPointDispatch[4],
                           physicalResistance=stuffPointDispatch[5],
@@ -982,8 +1263,8 @@ def generateItem(*args, **kwargs):
 
 
 def DropItem(**kwargs):
-    ItemLevelRequired = random.randint(0, kwargs['adventurer'].level)
-    if random.randint(1, 2) <= 2:
+    ItemLevelRequired = kwargs['adventurer'].level
+    if random.randint(1, 2) <= 1:
         stuffRarity = random.randint(1, 100)
         if 1 <= stuffRarity <= 50:
             stuffRarity = 'Common'
@@ -994,7 +1275,6 @@ def DropItem(**kwargs):
         else:
             stuffRarity = 'Legendary'
         stuffClass = random.randint(1, 6)
-        stuffClass = 6
         if stuffClass <= 2:
             stuffClassName = 'Consumable'
             stuffPull = Consumable.objects.filter(rarity=stuffRarity)
@@ -1007,14 +1287,13 @@ def DropItem(**kwargs):
             for (classStr, cls, rand) in [('Head', Head, 3), ('Chest', Chest, 4), ('Leg', Leg, 5),
                                           ('Weapon', Weapon, 6)]:
                 if rand == stuffClass:
-                    print(f'({classStr}, {cls}, {rand}) car stuffClass = {stuffClass}')
                     stuffClassName = classStr
                     stuffPull = cls.objects.filter(
                         Q(requiredLevel__gte=1 if (ItemLevelRequired - 5) < 1 else ItemLevelRequired - 5) & Q(
                             requiredLevel__lte=ItemLevelRequired)).filter(rarity=stuffRarity, characterClass=kwargs[
                         'adventurer'].characterClass)
                     stuffCount = stuffPull.count()
-                    if stuffCount == 0 or random.randint(1, 100) <= 99:
+                    if stuffCount == 0 or random.randint(1, 100) <= 20:
                         return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
                                             stuffRarity=stuffRarity)
                     ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
@@ -1032,6 +1311,28 @@ def DropItem(**kwargs):
                     'strength': ItemDropped.strength,
                     'intelligence': ItemDropped.intelligence,
                     'agility': ItemDropped.agility
+                }
+            }
+        elif stuffClassName == 'Weapon':
+            data = {
+                'isItemDropped': True,
+                'stuffClassName': stuffClassName,
+                'stuffRarity': stuffRarity,
+                'stuffCount': stuffCount,
+                'pk': ItemDropped.pk,
+                'ItemDropped': {
+                    'name': ItemDropped.name,
+                    'requiredLevel': ItemDropped.requiredLevel,
+                    'requiredClass': ItemDropped.characterClass.name,
+                    'rarity': ItemDropped.rarity,
+                    'hpMax': ItemDropped.hpMax,
+                    'physicalResistence': ItemDropped.physicalResistance,
+                    'magicalResistence': ItemDropped.magicalResistance,
+                    'strength': ItemDropped.strength,
+                    'intelligence': ItemDropped.intelligence,
+                    'agility': ItemDropped.agility,
+                    'diceNumber': ItemDropped.diceNumber,
+                    'damage': ItemDropped.damage,
                 }
             }
         else:
@@ -1094,6 +1395,8 @@ def ChangeStuff(*args, **kwargs):
         'newStuffAgility': newStuff.agility,
         'newStuffPhysicalResistance': newStuff.physicalResistance,
         'newStuffMagicalResistance': newStuff.magicalResistance,
+        'newStuffDiceNumber': newStuff.diceNumber if kwargs['stuffClassName'] == 'Weapon' else 0,
+        'newStuffDamage': newStuff.damage if kwargs['stuffClassName'] == 'Weapon' else 0,
         'character': ReloadCharacter(currentCharacter=kwargs['inventory'].character)
     })
 
