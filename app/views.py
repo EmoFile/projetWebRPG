@@ -191,6 +191,7 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
             'MagicalResistance']
         # Création en BDD du personnage
         self.object.save()
+        party = Party(user=self.request.user, character=self.object)
 
         commonWeaponPull = Weapon.objects.filter(rarity="Common",
                                                  requiredLevel=1,
@@ -244,7 +245,6 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
         randomHealingRarePotion = rareHealingConsumablePull[random.randint(0, pullCount - 1)]
         AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomHealingRarePotion)
 
-        party = Party(user=self.request.user, character=self.object)
         party.save()
         return super().form_valid(form)
 
