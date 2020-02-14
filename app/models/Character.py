@@ -22,10 +22,9 @@ class Character(models.Model):
     xp = models.PositiveIntegerField(default=0,
                                      blank=False,
                                      null=False)
-    hpMax = models.PositiveIntegerField(default=10,
-                                        validators=[MinValueValidator(0)],
-                                        blank=False,
-                                        null=False)
+    hpMax = models.IntegerField(default=10,
+                                blank=False,
+                                null=False)
     hp = models.IntegerField(default=10,
                              blank=False,
                              null=False)

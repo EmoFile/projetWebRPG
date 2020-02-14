@@ -119,7 +119,7 @@ class IndexView(TemplateView):
             )
         ).order_by(
             '-stage'
-        )
+        )[:20]
         result['title'] = 'B.T.A - II'
         return result
 
@@ -1388,7 +1388,10 @@ def ChangeStuff(*args, **kwargs):
                 kwargs['inventory'].save()
                 newStuff = getattr(kwargs['inventory'], prop)
                 kwargs['inventory'].character.setHpMax(newStuff.hpMax)
+                if kwargs['inventory'].character.hp <= 0:
+                    kwargs['inventory'].character.party.isEnded = True
                 kwargs['inventory'].character.save()
+                kwargs['inventory'].character.party.save()
             except:
                 pass
     return JsonResponse({
@@ -1404,7 +1407,8 @@ def ChangeStuff(*args, **kwargs):
         'newStuffMagicalResistance': newStuff.magicalResistance,
         'newStuffDiceNumber': newStuff.diceNumber if kwargs['stuffClassName'] == 'Weapon' else 0,
         'newStuffDamage': newStuff.damage if kwargs['stuffClassName'] == 'Weapon' else 0,
-        'character': ReloadCharacter(currentCharacter=kwargs['inventory'].character)
+        'character': ReloadCharacter(currentCharacter=kwargs['inventory'].character),
+        'isEnded': kwargs['inventory'].character.party.isEnded
     })
 
 
@@ -1547,6 +1551,7 @@ def UseItem(*args, **kwargs):
     currentParty.character.save()
     if currentParty.character.hp <= 0:
         currentParty.isEnded = True
+        currentParty.isEnded.save()
     return JsonResponse({'consumableName': consumableName,
                          'consumableOldQuantity': consumableOldQuantity,
                          'consumableNewQuantity': consumableNewQuantity,
@@ -1597,7 +1602,13 @@ def end(*args, **kwargs):
         current_party = get_object_or_404(Party, pk=kwargs['pkParty'])
         if current_party.isEnded:
             personal_parties = Party.objects.filter(user=current_party.user).annotate(
-                rank=Window(expression=RowNumber()))
+                rank=Window(
+                    expression=DenseRank(),
+                    order_by=F("stage").desc()
+                )
+            ).order_by(
+                '-stage'
+            )
             parties = Party.objects.all().order_by('-stage').annotate(
                 rank=Window(
                     expression=DenseRank(),

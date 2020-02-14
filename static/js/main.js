@@ -8,7 +8,10 @@ function isEnded($pkParty){
             type: 'get',
             dataType: 'json'
         }).done(function (result){
+            console.log(result);
             $('.useItem').off().attr('class', 'useItem btn btn-secondary');
+            $('#playRound').off().attr('class', 'btn btn-secondary');
+            $('#nextStage').attr('class', 'btn btn-secondary').off();
             $('#endRankPersonal').append(result['personalRank']);
             $('#endRank').append(result['rank']);
             $('#endUserName').append(result['username']);
@@ -481,6 +484,10 @@ $(() => {
             }
             $('#itemModal').modal('hide');
             closeModal();
+            console.log(result);
+            if(result['isEnded']){
+                isEnded($pkParty)
+            }
         });
     });
 
