@@ -4,8 +4,8 @@ import random
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.db.models import Q, Window
-from django.db.models.functions import RowNumber
+from django.db.models import Q, Window, F
+from django.db.models.functions import RowNumber, DenseRank
 from django.http import response, JsonResponse, request
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -17,7 +17,7 @@ from django.views.generic.base import RedirectView
 
 from app.forms import CharacterForm
 from app.models import CharacterClass, Character, Inventory, Party, Minion, BossAlain, Consumable, Head, Chest, Leg, \
-    Weapon, InventoryConsumable, Enemy, PartyEnemy
+    Weapon, InventoryConsumable, Enemy, PartyEnemy, models
 
 
 class IndexView(TemplateView):
@@ -27,7 +27,14 @@ class IndexView(TemplateView):
         result = super().get_context_data(**kwargs)
         result['characterClasses'] = CharacterClass.objects.all()
         # le - dans le order_by pour demander un ordre décroissant
-        result['partys'] = Party.objects.all().order_by('-stage').annotate(rank=Window(expression=RowNumber()))
+        result['partys'] = Party.objects.all().annotate(
+            rank=Window(
+                expression=DenseRank(),
+                order_by=F("stage").desc()
+            )
+        ).order_by(
+            '-stage'
+        )
         result['title'] = 'B.T.A - II'
         return result
 
@@ -231,7 +238,7 @@ class PlayRound(generic.View):
         enemy = get_object_or_404(Enemy, pk=kwargs['pkEnemy'])
         p_e = PartyEnemy.objects.get(party=party,
                                      enemy=enemy)
-        if p_e.hp <= 0 or adventurer.hp <= 0 :
+        if p_e.hp <= 0 or adventurer.hp <= 0:
             return JsonResponse({
                 'nothing': 'You know nothing John Snow'
             })
@@ -618,7 +625,7 @@ def dispatchForConsumable(*args, **kwargs):
                 stuffPoint -= hpValue
             else:
                 hpValue = random.randint(0, stuffPoint)
-                hpPoints -=hpValue
+                hpPoints -= hpValue
                 stuffPoint += hpValue
             if isUpStrength == True:
                 strengthValue = random.randint(0, stuffPoint)
@@ -645,7 +652,7 @@ def dispatchForConsumable(*args, **kwargs):
                 intelligencePoints -= intelligenceValue
                 stuffPoint += intelligenceValue
             print(
-                f' Il reste {stuffPoint} points : {hpPoints}({hpPoints*5}) HP, {strengthPoints} FOR, {agilityPoints} AGI, {intelligencePoints} INT somme {hpPoints + strengthPoints + agilityPoints + intelligencePoints}')
+                f' Il reste {stuffPoint} points : {hpPoints}({hpPoints * 5}) HP, {strengthPoints} FOR, {agilityPoints} AGI, {intelligencePoints} INT somme {hpPoints + strengthPoints + agilityPoints + intelligencePoints}')
         if Consumable.objects.filter(hp=hpPoints * 5, strength=strengthPoints, agility=agilityPoints,
                                      intelligence=intelligencePoints).count() == 0:
             break
@@ -1088,8 +1095,16 @@ def end(*args, **kwargs):
     if kwargs.get('pkParty'):
         current_party = get_object_or_404(Party, pk=kwargs['pkParty'])
         if current_party.isEnded:
-            personal_parties = Party.objects.filter(user=current_party.user).annotate(rank=Window(expression=RowNumber()))
-            parties = Party.objects.all().order_by('-stage').annotate(rank=Window(expression=RowNumber()))
+            personal_parties = Party.objects.filter(user=current_party.user).annotate(
+                rank=Window(expression=RowNumber()))
+            parties = Party.objects.all().order_by('-stage').annotate(
+                rank=Window(
+                    expression=DenseRank(),
+                    order_by=F("stage").desc()
+                )
+            ).order_by(
+                '-stage'
+            )
             for p_party in personal_parties:
                 if p_party.pk == kwargs['pkParty']:
                     personal_rank = p_party.rank
