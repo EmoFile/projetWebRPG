@@ -73,10 +73,12 @@
 {% endblock %}
 {% block choose-class %}
     <div class="row">
-        {% for characterClass in characterClasses %}
-            <button>
-                <a href="{% url 'generateCharacterByPk' characterClass.pk %}">{{ characterClass.name }}</a>
-            </button>
-        {% endfor %}
+        <div class="m-2 ml-5">
+            {% for characterClass in characterClasses %}
+                <button>
+                    <a href="{% url 'generateCharacterByPk' characterClass.pk %}">{{ characterClass.name }}</a>
+                </button>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
