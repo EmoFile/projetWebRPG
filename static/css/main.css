@@ -5,3 +5,12 @@
     color: white;
     background-color: #222222;
 }
+
+.hpAnimation{
+    animation: hp .5s forwards;
+}
+
+@keyframes hp {
+    from {transform: translateY(0px);}
+    to {transform: translateY(-20px);}
+}
