@@ -142,7 +142,7 @@ class UserProfileView(TemplateView):
             )
         ).order_by(
             '-stage'
-        )[:20]
+        )
         result['title'] = currentUser.username
         return result
 
