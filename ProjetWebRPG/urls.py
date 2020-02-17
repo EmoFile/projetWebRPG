@@ -19,8 +19,8 @@ from django.urls import path
 from app import views
 
 from app.views import IndexView, GenerateCharacterView, CharacterDetailView, \
-    SignUpView, LogInView, PlayGameView, \
-    DropItem, EnemyList, ChangeItem, UseItem, PlayRound, NextEnemyView, LogoutView, end
+    SignUpView, LogInView, PlayGameView, DropItem, EnemyList, ChangeItem, \
+    UseItem, PlayRound, NextEnemyView, LogoutView, UserProfileView, end
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -63,3 +63,8 @@ urlpatterns += [
     path('characterDetail/<int:pk>', CharacterDetailView.as_view(),
          name='characterDetail'),
 ]  # Character URL
+
+urlpatterns += [
+    path('userProfil/<int:pk>', UserProfileView.as_view(),
+         name='userProfil'),
+]  # User URL

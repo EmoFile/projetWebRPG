@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block page-top %}
+    <div class="row">
+        <div>
+            {{ user.username }}
+            <br>
+            {{ user.date_joined|date:"SHORT_DATE_FORMAT" }}
+        </div>
+    </div>
+{% endblock %}
+{% block table-score %}
+    <div class="row">
+        <div class="col-12 fluid">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Rank</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Stage</th>
+                    <th scope="col">Character</th>
+                    <th scope="col">Class</th>
+                    <th scope="col">Level</th>
+                    <th scope="col">HP</th>
+                    <th scope="col">STR</th>
+                    <th scope="col">INT</th>
+                    <th scope="col">AGI</th>
+                    <th scope="col">PR</th>
+                    <th scope="col">MR</th>
+                    <th scope="col">Date</th>
+                    {% if connectedUser.pk == user.pk %}
+                        <th scope="col">Continue ?</th>
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+
+
+                {% for party in partys %}
+                    <tr>
+                        <td>
+                            {{ party.rank }}
+                        </td>
+                        <td>
+                            {{ party.user.username }}
+                        </td>
+                        <td>
+                            {{ party.stage }}
+                        </td>
+                        <td>
+                            {{ party.character.name }}
+                        </td>
+                        <td>
+                            {{ party.character.characterClass.name }}
+                        </td>
+                        <td>
+                            {{ party.character.level }}
+                        </td>
+                        <td>
+                            {{ party.character.getHpMax }}
+                        </td>
+                        <td>
+                            {{ party.character.getStrength }}
+                        </td>
+                        <td>
+                            {{ party.character.getIntelligence }}
+                        </td>
+                        <td>
+                            {{ party.character.getAgility }}
+                        </td>
+                        <td>
+                            {{ party.character.getPhysicalResistance }}
+                        </td>
+                        <td>
+                            {{ party.character.getMagicalResistance }}
+                        </td>
+                        <td>
+                            {{ party.date|date:"SHORT_DATE_FORMAT" }}
+                        </td>
+                        {% if connectedUser.pk == user.pk %}
+                            <td>
+                                {% if party.isEnded == True %}
+                                    Finished
+                                {% else %}
+                                    <a href="{% url  'playGame' party.pk %}">Yes !</a>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

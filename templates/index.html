@@ -1,21 +1,22 @@
 {% extends 'base.html' %}
 
 {% block table-score %}
-    <div class="col-10 fluid">
+    <div class="col-12 fluid">
         <table class="table table-striped">
             <thead class="thead-dark">
             <tr>
                 <th scope="col">Rank</th>
                 <th scope="col">User</th>
-                <th scope="col">Character</th>
                 <th scope="col">Stage</th>
+                <th scope="col">Character</th>
                 <th scope="col">Class</th>
-                <th scope="col">HP Max</th>
-                <th scope="col">Strength</th>
-                <th scope="col">Intelligence</th>
-                <th scope="col">Agility</th>
-                <th scope="col">Physical resistance</th>
-                <th scope="col">Magical resistance</th>
+                <th scope="col">Level</th>
+                <th scope="col">HP</th>
+                <th scope="col">STR</th>
+                <th scope="col">INT</th>
+                <th scope="col">AGI</th>
+                <th scope="col">PR</th>
+                <th scope="col">MR</th>
                 <th scope="col">Date</th>
             </tr>
             </thead>
@@ -28,16 +29,19 @@
                         {{ party.rank }}
                     </td>
                     <td>
-                        {{ party.user.username }}
-                    </td>
-                    <td>
-                        {{ party.character.name }}
+                        <a href="{% url 'userProfil' party.user.pk %}">{{ party.user.username }}</a>
                     </td>
                     <td>
                         {{ party.stage }}
                     </td>
                     <td>
+                        {{ party.character.name }}
+                    </td>
+                    <td>
                         {{ party.character.characterClass.name }}
+                    </td>
+                    <td>
+                        {{ party.character.level }}
                     </td>
                     <td>
                         {{ party.character.getHpMax }}
@@ -68,7 +72,7 @@
     </div>
 {% endblock %}
 {% block choose-class %}
-    <div class="col-2 fluid">
+    <div class="row">
         {% for characterClass in characterClasses %}
             <button>
                 <a href="{% url 'generateCharacterByPk' characterClass.pk %}">{{ characterClass.name }}</a>

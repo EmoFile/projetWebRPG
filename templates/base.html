@@ -59,16 +59,17 @@
 </nav>
 
 
-<div class="row">
+<div class="container-fluid">
+
+    {% block choose-class %}
+
+    {% endblock %}
+
     {% block page-top %}
 
     {% endblock %}
 
     {% block table-score %}
-
-    {% endblock %}
-
-    {% block choose-class %}
 
     {% endblock %}
 </div>

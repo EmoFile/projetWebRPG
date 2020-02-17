@@ -17,7 +17,7 @@ from django.views.generic.base import RedirectView
 
 from app.forms import CharacterForm
 from app.models import CharacterClass, Character, Inventory, Party, Minion, BossAlain, Consumable, Head, Chest, Leg, \
-    Weapon, InventoryConsumable, Enemy, PartyEnemy, models
+    Weapon, InventoryConsumable, Enemy, PartyEnemy, models, User
 
 ###
 ##
@@ -122,6 +122,28 @@ class IndexView(TemplateView):
             '-stage'
         )[:20]
         result['title'] = 'B.T.A - II'
+        return result
+    
+    
+class UserProfileView(TemplateView):
+    template_name = 'userProfile.html'
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+        currentUser = User.objects.get(pk=kwargs['pk'])
+        connectedUser = self.request.user
+        result['user'] = currentUser
+        result['connectedUser'] = connectedUser
+        # le - dans le order_by pour demander un ordre décroissant
+        result['partys'] = Party.objects.filter(user=currentUser).annotate(
+            rank=Window(
+                expression=DenseRank(),
+                order_by=F("stage").desc()
+            )
+        ).order_by(
+            '-stage'
+        )[:20]
+        result['title'] = currentUser.username
         return result
 
 
@@ -1576,7 +1598,7 @@ def UseItem(*args, **kwargs):
     currentParty.character.save()
     if currentParty.character.hp <= 0:
         currentParty.isEnded = True
-        currentParty.isEnded.save()
+        currentParty.save()
     return JsonResponse({'consumableName': consumableName,
                          'consumableOldQuantity': consumableOldQuantity,
                          'consumableNewQuantity': consumableNewQuantity,
