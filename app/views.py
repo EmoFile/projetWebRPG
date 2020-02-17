@@ -1318,7 +1318,7 @@ def generateItem(*args, **kwargs):
 
 def DropItem(**kwargs):
     ItemLevelRequired = kwargs['adventurer'].level
-    if random.randint(1, 2) <= 2:
+    if random.randint(1, 2) <= 1:
         stuffRarity = random.randint(1, 100)
         if 1 <= stuffRarity <= 50:
             stuffRarity = 'Common'
@@ -1347,7 +1347,7 @@ def DropItem(**kwargs):
                             requiredLevel__lte=ItemLevelRequired)).filter(rarity=stuffRarity, characterClass=kwargs[
                         'adventurer'].characterClass)
                     stuffCount = stuffPull.count()
-                    if stuffCount == 0 or random.randint(1, 100) <= 100:
+                    if stuffCount == 0 or random.randint(1, 100) <= 20:
                         return generateItem(adventurer=kwargs['adventurer'], stuffClassName=stuffClassName,
                                             stuffRarity=stuffRarity)
                     ItemDropped = stuffPull[random.randint(0, stuffCount - 1)]
