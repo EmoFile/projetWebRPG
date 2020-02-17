@@ -17,7 +17,7 @@ from django.views.generic.base import RedirectView
 
 from app.forms import CharacterForm
 from app.models import CharacterClass, Character, Inventory, Party, Minion, BossAlain, Consumable, Head, Chest, Leg, \
-    Weapon, InventoryConsumable, Enemy, PartyEnemy, models
+    Weapon, InventoryConsumable, Enemy, PartyEnemy, models, User
 
 ###
 ##
@@ -122,6 +122,28 @@ class IndexView(TemplateView):
             '-stage'
         )[:20]
         result['title'] = 'B.T.A - II'
+        return result
+    
+    
+class UserProfileView(TemplateView):
+    template_name = 'userProfile.html'
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+        currentUser = User.objects.get(pk=kwargs['pk'])
+        connectedUser = self.request.user
+        result['user'] = currentUser
+        result['connectedUser'] = connectedUser
+        # le - dans le order_by pour demander un ordre décroissant
+        result['partys'] = Party.objects.filter(user=currentUser).annotate(
+            rank=Window(
+                expression=DenseRank(),
+                order_by=F("stage").desc()
+            )
+        ).order_by(
+            '-stage'
+        )[:20]
+        result['title'] = currentUser.username
         return result
 
 
@@ -807,7 +829,7 @@ def dispactForStuff(*args, **kwargs):
                   f'{strengthPoints} FOR, '
                   f'{agilityPoints} AGI, '
                   f'{intelligencePoints} INT, '
-                  f'{hpMaxPoints}({hpMaxPoints * 5}) HpMax, '
+                  f'{hpMaxPoints}({hpMaxPoints * 2}) HpMax, '
                   f'{physResPoints} PR, '
                   f'{MagResPoints} MR '
                   f'somme {strengthPoints + agilityPoints + intelligencePoints + hpMaxPoints + physResPoints + MagResPoints}')
@@ -818,19 +840,19 @@ def dispactForStuff(*args, **kwargs):
                 print(cls.objects.filter(strength=strengthPoints,
                                          agility=agilityPoints,
                                          intelligence=intelligencePoints,
-                                         hpMax=hpMaxPoints * 5,
+                                         hpMax=hpMaxPoints * 2,
                                          physicalResistance=physResPoints,
                                          magicalResistance=MagResPoints).count())
                 break
         if cls.objects.filter(strength=strengthPoints,
                               agility=agilityPoints,
                               intelligence=intelligencePoints,
-                              hpMax=hpMaxPoints * 5,
+                              hpMax=hpMaxPoints * 2,
                               physicalResistance=physResPoints,
                               magicalResistance=MagResPoints).count() == 0:
             break
 
-    return [0, strengthPoints, agilityPoints, intelligencePoints, hpMaxPoints * 5, physResPoints, MagResPoints, 0, 0,
+    return [0, strengthPoints, agilityPoints, intelligencePoints, hpMaxPoints * 2, physResPoints, MagResPoints, 0, 0,
             name]
 
 
@@ -1576,7 +1598,7 @@ def UseItem(*args, **kwargs):
     currentParty.character.save()
     if currentParty.character.hp <= 0:
         currentParty.isEnded = True
-        currentParty.isEnded.save()
+        currentParty.save()
     return JsonResponse({'consumableName': consumableName,
                          'consumableOldQuantity': consumableOldQuantity,
                          'consumableNewQuantity': consumableNewQuantity,
