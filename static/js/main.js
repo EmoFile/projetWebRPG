@@ -2,29 +2,29 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function isEnded($pkParty){
+function isEnded($pkParty) {
     $.ajax({
-            url: '/end/' + $pkParty,
-            type: 'get',
-            dataType: 'json'
-        }).done(function (result){
-            console.log(result);
-            $('.useItem').off().attr('class', 'useItem btn btn-secondary');
-            $('#playRound').off().attr('class', 'btn btn-secondary');
-            $('#nextStage').attr('class', 'btn btn-secondary').off();
-            $('#endRankPersonal').append(result['personalRank']);
-            $('#endRank').append(result['rank']);
-            $('#endUserName').append(result['username']);
-            $('#endCharacterName').append(result['characterName']);
-            $('#endStage').append(result['stage']);
-            $('#endHpMax').append(result['hpMax']);
-            $('#endStrength').append(result['strength']);
-            $('#endIntelligence').append(result['intelligence']);
-            $('#endAgility').append(result['agility']);
-            $('#endPhysicalResistance').append(result['physicalResistance']);
-            $('#endMagicalResistance').append(result['magicalResistance']);
-            $('#isEndedModal').modal('handleUpdate').modal('show')
-        })
+        url: '/end/' + $pkParty,
+        type: 'get',
+        dataType: 'json'
+    }).done(function (result) {
+        console.log(result);
+        $('.useItem').off().attr('class', 'useItem btn btn-secondary');
+        $('#playRound').off().attr('class', 'btn btn-secondary');
+        $('#nextStage').attr('class', 'btn btn-secondary').off();
+        $('#endRankPersonal').append(result['personalRank']);
+        $('#endRank').append(result['rank']);
+        $('#endUserName').append(result['username']);
+        $('#endCharacterName').append(result['characterName']);
+        $('#endStage').append(result['stage']);
+        $('#endHpMax').append(result['hpMax']);
+        $('#endStrength').append(result['strength']);
+        $('#endIntelligence').append(result['intelligence']);
+        $('#endAgility').append(result['agility']);
+        $('#endPhysicalResistance').append(result['physicalResistance']);
+        $('#endMagicalResistance').append(result['magicalResistance']);
+        $('#isEndedModal').modal('handleUpdate').modal('show')
+    })
 }
 
 function afterRollDice(result, $pkParty) {
@@ -74,7 +74,7 @@ function afterRollDice(result, $pkParty) {
                 $hp.textContent = 'Hp: ' + result['dropItem']['ItemDropped']['hp'] + '\n';
             } else {
                 if (result['dropItem']['stuffClassName'] === 'Weapon') {
-                    $damage.textContent ='Damage: ' + result['dropItem']['ItemDropped']['diceNumber'] + 'D' + result['dropItem']['ItemDropped']['damage'];
+                    $damage.textContent = 'Damage: ' + result['dropItem']['ItemDropped']['diceNumber'] + 'D' + result['dropItem']['ItemDropped']['damage'];
                 }
                 $levelRequired.textContent = 'Level required: ' + result['dropItem']['ItemDropped']['requiredLevel'] + '\n';
                 $classRequired.textContent = 'Class: ' + result['dropItem']['ItemDropped']['requiredClass'] + '\n';
@@ -92,16 +92,7 @@ function afterRollDice(result, $pkParty) {
         // $('#itemModal').show();
         $('#itemModal').modal('show');
     }
-    if (result['isEnded']){
-        isEnded($pkParty)
-    }
-    else if (result['enemy']['hp'] <= 0) {
-        ITEM.bindItem($pkParty);
-        bindNextStage($pkParty);
-    } else if (!result['isEnded']) {
-        bindPlayRound($pkParty);
-        ITEM.bindItem($pkParty)
-    }
+
 }
 
 function bindNextStage($pkParty) {
@@ -133,14 +124,23 @@ function bindPlayRound($pkParty) {
     $('#playRound').attr('class', 'btn btn-warning').click(function () {
         let $pkEnemy = document.getElementById('pkEnemy').innerText;
         $('#playRound').off().attr('class', 'btn btn-secondary');
-        $('.useItem').off().attr('class', 'useItem btn btn-secondary');
+        // $('.useItem').off().attr('class', 'useItem btn btn-secondary');
         $.ajax({
             url: '/playRound/' + $pkParty + '/' + $pkEnemy,
             type: 'get',
             dataType: 'json',
         }).done(function (result) {
             if (!(result['nothing'])) {
-                addBattleReport(result, $pkParty)
+                if (result['isEnded']) {
+                    isEnded($pkParty)
+                } else if (result['enemy']['hp'] <= 0) {
+                    ITEM.bindItem($pkParty);
+                    bindNextStage($pkParty);
+                } else if (!result['isEnded']) {
+                    bindPlayRound($pkParty);
+                    ITEM.bindItem($pkParty)
+                }
+                afterRollDice(result, $pkParty);
             } else {
                 console.log(result['nothing'])
             }
@@ -194,7 +194,7 @@ const ITEM = {
                 type: 'get',
                 dataType: 'json',
             }).done(function (result) {
-                if(result['isEnded']){
+                if (result['isEnded']) {
                     console.log(result)
                     isEnded($pkParty)
                 }
@@ -254,7 +254,7 @@ async function Battle(battle, result, party) {
                 $dockElement.append('<p>').append(document.createTextNode(fin)).append('</p>');
                 $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
             }
-            afterRollDice(result, party);
+
         } else {
             await sleep(200)
             Battle(battle, result, party);
@@ -461,7 +461,7 @@ $(() => {
                     $table.setAttribute('class', 'table table-borderless');
                     $table.setAttribute('id', result['newStuff']);
                     $th.setAttribute('scope', 'row');
-                    $th.setAttribute('style',$color);
+                    $th.setAttribute('style', $color);
                     $tr.setAttribute('class', 'small');
                     $th.innerText = result['newStuff'];
                     $pqunatity.setAttribute('id', 'quantity/' + $pkParty + '/' + result['stuffPk']);
@@ -522,7 +522,7 @@ $(() => {
             $('#itemModal').modal('hide');
             closeModal();
             console.log(result);
-            if(result['isEnded']){
+            if (result['isEnded']) {
                 isEnded($pkParty)
             }
         });
