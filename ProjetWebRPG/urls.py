@@ -65,6 +65,6 @@ urlpatterns += [
 ]  # Character URL
 
 urlpatterns += [
-    path('userProfil/<int:pk>', UserProfileView.as_view(),
-         name='userProfil'),
+    path('userProfile/<int:pk>', UserProfileView.as_view(),
+         name='userProfile'),
 ]  # User URL
