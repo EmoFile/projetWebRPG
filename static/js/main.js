@@ -115,6 +115,7 @@ function bindNextStage($pkParty) {
                 document.getElementById('enemyMagicalResistance').innerText = result['enemyMagicalResistance'];
                 document.getElementById('enemyName').innerText = result['enemyName'];
                 bindPlayRound($pkParty);
+                $('.battleReport').empty()
             }
         });
     });
@@ -141,6 +142,7 @@ function bindPlayRound($pkParty) {
                     ITEM.bindItem($pkParty)
                 }
                 afterRollDice(result, $pkParty);
+                addBattleReport(result, $pkParty);
             } else {
                 console.log(result['nothing'])
             }
@@ -231,36 +233,29 @@ const ITEM = {
 async function Battle(battle, result, party) {
     let thisBattle = battle[Object.keys(battle)[0]];
     let $dockElement = $('<p></p>');
-    await sleep(500);
     $dockElement.append(document.createTextNode(thisBattle['0'])).append('</br>');
     $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
-    await sleep(500);
     $dockElement.append(document.createTextNode(thisBattle['1'])).append('</br>')
     $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
     $('.battleReport').append($dockElement);
     delete thisBattle['0'];
     delete thisBattle['1'];
-    $('#rollDice').show().attr('class', 'btn btn-primary').one("click", async function () {
-        $('#rollDice').off().attr('class', 'btn btn-secondary');
-        for (let i in thisBattle) {
-            $dockElement.append(document.createTextNode(thisBattle[i])).append('</br>');
+    for (let i in thisBattle) {
+        $dockElement.append(document.createTextNode(thisBattle[i])).append('</br>');
+        $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
+    }
+    delete battle[Object.keys(battle)[0]];
+    if (Object.keys(battle).length === 0) {
+        if (result['end'] !== undefined) {
+            let fin = result['end'];
+            $dockElement.append('<p>').append(document.createTextNode(fin)).append('</p>');
             $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
-            await sleep(200)
         }
-        delete battle[Object.keys(battle)[0]];
-        if (Object.keys(battle).length === 0) {
-            if (result['end'] !== undefined) {
-                let fin = result['end'];
-                $dockElement.append('<p>').append(document.createTextNode(fin)).append('</p>');
-                $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
-            }
 
-        } else {
-            await sleep(200)
-            Battle(battle, result, party);
-        }
-        /* peut etre faire une fonction qi teste si il reste des chose a afficher pour le battle report (et donc supprimer au fur et a mesure*/
-    });
+    } else {
+        Battle(battle, result, party);
+    }
+    /* peut etre faire une fonction qi teste si il reste des chose a afficher pour le battle report (et donc supprimer au fur et a mesure*/
 }
 
 async function addBattleReport(report, party) {
@@ -291,7 +286,7 @@ $(() => {
         .attr('type', 'button')
         .attr('id', 'playRound')
         .attr('class', 'btn btn-secondary')
-        .html("Play round")
+        .html("Auto Attack")
         .off();
 
     let $buttonRollDice = $('<button></button>')
@@ -305,7 +300,7 @@ $(() => {
     let $spanNextStage = $('#buttonNextStage');
     let $spanPlayRound = $('#buttonPlayRound');
 
-    $spanRollDice.append($buttonRollDice);
+    // $spanRollDice.append($buttonRollDice);
     $spanNextStage.append($buttonNextStage);
     $spanPlayRound.append($buttonPlayRound);
 
