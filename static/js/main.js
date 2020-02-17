@@ -2,6 +2,21 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function characterHp(hp) {
+    if (hp !== 0) {
+        let hpNode = document.createElement("p");
+        hpNode.style.position = 'absolute';
+        hpNode.innerText = hp;
+        if (hp > 0) {
+            hpNode.style.color = 'green'
+            document.getElementById('CharacterDamageHeal').appendChild(hpNode)
+        } else {
+            hpNode.style.color('red')
+        }
+    }
+
+}
+
 function isEnded($pkParty) {
     $.ajax({
         url: '/end/' + $pkParty,
@@ -135,11 +150,9 @@ function bindPlayRound($pkParty) {
                 if (result['isEnded']) {
                     isEnded($pkParty)
                 } else if (result['enemy']['hp'] <= 0) {
-                    ITEM.bindItem($pkParty);
                     bindNextStage($pkParty);
                 } else if (!result['isEnded']) {
                     bindPlayRound($pkParty);
-                    ITEM.bindItem($pkParty)
                 }
                 afterRollDice(result, $pkParty);
                 addBattleReport(result, $pkParty);
@@ -315,6 +328,8 @@ $(() => {
         bindPlayRound($pkParty);
         $buttonNextStage.click(false)
     }
+
+    characterHp(5)
 
     $('#changeItem').hide();
 
