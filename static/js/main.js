@@ -2,17 +2,40 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function characterHp(hp) {
+async function characterHp(hp) {
     if (hp !== 0) {
-        let hpNode = document.createElement("p");
+        let hpNode = document.createElement("span");
         hpNode.style.position = 'absolute';
         hpNode.innerText = hp;
         if (hp > 0) {
-            hpNode.style.color = 'green'
-            document.getElementById('CharacterDamageHeal').appendChild(hpNode)
+            hpNode.style.color = 'green';
         } else {
-            hpNode.style.color('red')
+            hpNode.style.color = 'red';
         }
+        hpNode.style.right = '-10px';
+        document.getElementById('reportHpCharacter').appendChild(hpNode);
+        hpNode.className = 'hpAnimation';
+        await sleep(500);
+        hpNode.remove()
+    }
+
+}
+
+async function enemyHp(hp) {
+    if (hp !== 0) {
+        let hpNode = document.createElement("span");
+        hpNode.style.position = 'absolute';
+        hpNode.innerText = hp;
+        if (hp > 0) {
+            hpNode.style.color = 'green';
+        } else {
+            hpNode.style.color = 'red';
+        }
+        hpNode.style.right = '10px';
+        document.getElementById('reportHpEnemy').appendChild(hpNode);
+        hpNode.className = 'hpAnimation';
+        await sleep(500);
+        hpNode.remove()
     }
 
 }
@@ -43,6 +66,8 @@ function isEnded($pkParty) {
 }
 
 function afterRollDice(result, $pkParty) {
+    let damageCharacter = -(document.getElementById('characterHp').textContent - result['character']['hp']);
+    let damageEnemy = -(document.getElementById('enemyHp').textContent - result['enemy']['hp']);
     document.getElementById('enemyHp').innerText = result['enemy']['hp'];
     document.getElementById('characterHp').innerText = result['character']['hp'];
     document.getElementById('characterHpMax').innerText = result['character']['hpMax'];
@@ -59,6 +84,8 @@ function afterRollDice(result, $pkParty) {
     document.getElementById('characterBasicStrength').innerText = '(' + result['character']['basic']['strength'] + ')';
     document.getElementById('characterBasicAgility').innerText = '(' + result['character']['basic']['agility'] + ')';
     document.getElementById('characterBasicIntelligence').innerText = '(' + result['character']['basic']['intelligence'] + ')';
+    characterHp(damageCharacter);
+    enemyHp(damageEnemy);
     if (result['dropItem']) {
         console.log(result['dropItem']);
         let $modalTitle = document.getElementById('itemModalLabel');
@@ -226,6 +253,8 @@ const ITEM = {
                     document.getElementById(result['consumableName']).remove();
                     // $quantity.parentElement.hidden = true;
                 }
+                let consequenceLifeCharacter = -(document.getElementById('characterHp').textContent - result['character']['hp']);
+                characterHp(consequenceLifeCharacter);
                 $hp.textContent = result['character']['hp'];
                 $physicalResistence.textContent = result['character']['physicalResistance'];
                 $magicalResistence.textContent = result['character']['magicalResistance'];
@@ -328,8 +357,6 @@ $(() => {
         bindPlayRound($pkParty);
         $buttonNextStage.click(false)
     }
-
-    characterHp(5)
 
     $('#changeItem').hide();
 
