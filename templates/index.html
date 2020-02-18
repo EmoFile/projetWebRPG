@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 
 {% block table-score %}
+    <div class="row text-center">
+        <div class="col align-self-center">
+            <h1 class="h1 text-center">Top 20</h1>
+        </div>
+    </div>
     <div class="col-12 fluid">
         <table class="table table-striped">
             <thead class="thead-dark">
@@ -73,10 +78,12 @@
 {% endblock %}
 {% block choose-class %}
     <div class="row">
-        {% for characterClass in characterClasses %}
-            <button>
-                <a href="{% url 'generateCharacterByPk' characterClass.pk %}">{{ characterClass.name }}</a>
-            </button>
-        {% endfor %}
+        <div class="m-2 ml-5">
+            {% for characterClass in characterClasses %}
+                <button>
+                    <a href="{% url 'generateCharacterByPk' characterClass.pk %}">{{ characterClass.name }}</a>
+                </button>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

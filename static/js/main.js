@@ -2,32 +2,72 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function isEnded($pkParty){
+async function characterHp(hp) {
+    if (hp !== 0) {
+        let hpNode = document.createElement("span");
+        hpNode.style.position = 'absolute';
+        hpNode.innerText = hp;
+        if (hp > 0) {
+            hpNode.style.color = 'green';
+        } else {
+            hpNode.style.color = 'red';
+        }
+        hpNode.style.right = '-10px';
+        document.getElementById('reportHpCharacter').appendChild(hpNode);
+        hpNode.className = 'hpAnimation';
+        await sleep(500);
+        hpNode.remove()
+    }
+
+}
+
+async function enemyHp(hp) {
+    if (hp !== 0) {
+        let hpNode = document.createElement("span");
+        hpNode.style.position = 'absolute';
+        hpNode.innerText = hp;
+        if (hp > 0) {
+            hpNode.style.color = 'green';
+        } else {
+            hpNode.style.color = 'red';
+        }
+        hpNode.style.right = '10px';
+        document.getElementById('reportHpEnemy').appendChild(hpNode);
+        hpNode.className = 'hpAnimation';
+        await sleep(500);
+        hpNode.remove()
+    }
+
+}
+
+function isEnded($pkParty) {
     $.ajax({
-            url: '/end/' + $pkParty,
-            type: 'get',
-            dataType: 'json'
-        }).done(function (result){
-            console.log(result);
-            $('.useItem').off().attr('class', 'useItem btn btn-secondary');
-            $('#playRound').off().attr('class', 'btn btn-secondary');
-            $('#nextStage').attr('class', 'btn btn-secondary').off();
-            $('#endRankPersonal').append(result['personalRank']);
-            $('#endRank').append(result['rank']);
-            $('#endUserName').append(result['username']);
-            $('#endCharacterName').append(result['characterName']);
-            $('#endStage').append(result['stage']);
-            $('#endHpMax').append(result['hpMax']);
-            $('#endStrength').append(result['strength']);
-            $('#endIntelligence').append(result['intelligence']);
-            $('#endAgility').append(result['agility']);
-            $('#endPhysicalResistance').append(result['physicalResistance']);
-            $('#endMagicalResistance').append(result['magicalResistance']);
-            $('#isEndedModal').modal('handleUpdate').modal('show')
-        })
+        url: '/end/' + $pkParty,
+        type: 'get',
+        dataType: 'json'
+    }).done(function (result) {
+        console.log(result);
+        $('.useItem').off().attr('class', 'useItem btn btn-secondary');
+        $('#playRound').off().attr('class', 'btn btn-secondary');
+        $('#nextStage').attr('class', 'btn btn-secondary').off();
+        $('#endRankPersonal').append(result['personalRank']);
+        $('#endRank').append(result['rank']);
+        $('#endUserName').append(result['username']);
+        $('#endCharacterName').append(result['characterName']);
+        $('#endStage').append(result['stage']);
+        $('#endHpMax').append(result['hpMax']);
+        $('#endStrength').append(result['strength']);
+        $('#endIntelligence').append(result['intelligence']);
+        $('#endAgility').append(result['agility']);
+        $('#endPhysicalResistance').append(result['physicalResistance']);
+        $('#endMagicalResistance').append(result['magicalResistance']);
+        $('#isEndedModal').modal('handleUpdate').modal('show')
+    })
 }
 
 function afterRollDice(result, $pkParty) {
+    let damageCharacter = -(document.getElementById('characterHp').textContent - result['character']['hp']);
+    let damageEnemy = -(document.getElementById('enemyHp').textContent - result['enemy']['hp']);
     document.getElementById('enemyHp').innerText = result['enemy']['hp'];
     document.getElementById('characterHp').innerText = result['character']['hp'];
     document.getElementById('characterHpMax').innerText = result['character']['hpMax'];
@@ -44,6 +84,8 @@ function afterRollDice(result, $pkParty) {
     document.getElementById('characterBasicStrength').innerText = '(' + result['character']['basic']['strength'] + ')';
     document.getElementById('characterBasicAgility').innerText = '(' + result['character']['basic']['agility'] + ')';
     document.getElementById('characterBasicIntelligence').innerText = '(' + result['character']['basic']['intelligence'] + ')';
+    characterHp(damageCharacter);
+    enemyHp(damageEnemy);
     if (result['dropItem']) {
         console.log(result['dropItem']);
         let $modalTitle = document.getElementById('itemModalLabel');
@@ -74,7 +116,7 @@ function afterRollDice(result, $pkParty) {
                 $hp.textContent = 'Hp: ' + result['dropItem']['ItemDropped']['hp'] + '\n';
             } else {
                 if (result['dropItem']['stuffClassName'] === 'Weapon') {
-                    $damage.textContent ='Damage: ' + result['dropItem']['ItemDropped']['diceNumber'] + 'D' + result['dropItem']['ItemDropped']['damage'];
+                    $damage.textContent = 'Damage: ' + result['dropItem']['ItemDropped']['diceNumber'] + 'D' + result['dropItem']['ItemDropped']['damage'];
                 }
                 $levelRequired.textContent = 'Level required: ' + result['dropItem']['ItemDropped']['requiredLevel'] + '\n';
                 $classRequired.textContent = 'Class: ' + result['dropItem']['ItemDropped']['requiredClass'] + '\n';
@@ -92,16 +134,7 @@ function afterRollDice(result, $pkParty) {
         // $('#itemModal').show();
         $('#itemModal').modal('show');
     }
-    if (result['isEnded']){
-        isEnded($pkParty)
-    }
-    else if (result['enemy']['hp'] <= 0) {
-        ITEM.bindItem($pkParty);
-        bindNextStage($pkParty);
-    } else if (!result['isEnded']) {
-        bindPlayRound($pkParty);
-        ITEM.bindItem($pkParty)
-    }
+
 }
 
 function bindNextStage($pkParty) {
@@ -124,6 +157,7 @@ function bindNextStage($pkParty) {
                 document.getElementById('enemyMagicalResistance').innerText = result['enemyMagicalResistance'];
                 document.getElementById('enemyName').innerText = result['enemyName'];
                 bindPlayRound($pkParty);
+                $('.battleReport').empty()
             }
         });
     });
@@ -133,14 +167,22 @@ function bindPlayRound($pkParty) {
     $('#playRound').attr('class', 'btn btn-warning').click(function () {
         let $pkEnemy = document.getElementById('pkEnemy').innerText;
         $('#playRound').off().attr('class', 'btn btn-secondary');
-        $('.useItem').off().attr('class', 'useItem btn btn-secondary');
+        // $('.useItem').off().attr('class', 'useItem btn btn-secondary');
         $.ajax({
             url: '/playRound/' + $pkParty + '/' + $pkEnemy,
             type: 'get',
             dataType: 'json',
         }).done(function (result) {
             if (!(result['nothing'])) {
-                addBattleReport(result, $pkParty)
+                if (result['isEnded']) {
+                    isEnded($pkParty)
+                } else if (result['enemy']['hp'] <= 0) {
+                    bindNextStage($pkParty);
+                } else if (!result['isEnded']) {
+                    bindPlayRound($pkParty);
+                }
+                afterRollDice(result, $pkParty);
+                addBattleReport(result, $pkParty);
             } else {
                 console.log(result['nothing'])
             }
@@ -194,7 +236,7 @@ const ITEM = {
                 type: 'get',
                 dataType: 'json',
             }).done(function (result) {
-                if(result['isEnded']){
+                if (result['isEnded']) {
                     console.log(result)
                     isEnded($pkParty)
                 }
@@ -211,6 +253,8 @@ const ITEM = {
                     document.getElementById(result['consumableName']).remove();
                     // $quantity.parentElement.hidden = true;
                 }
+                let consequenceLifeCharacter = -(document.getElementById('characterHp').textContent - result['character']['hp']);
+                characterHp(consequenceLifeCharacter);
                 $hp.textContent = result['character']['hp'];
                 $physicalResistence.textContent = result['character']['physicalResistance'];
                 $magicalResistence.textContent = result['character']['magicalResistance'];
@@ -231,36 +275,29 @@ const ITEM = {
 async function Battle(battle, result, party) {
     let thisBattle = battle[Object.keys(battle)[0]];
     let $dockElement = $('<p></p>');
-    await sleep(500);
     $dockElement.append(document.createTextNode(thisBattle['0'])).append('</br>');
     $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
-    await sleep(500);
     $dockElement.append(document.createTextNode(thisBattle['1'])).append('</br>')
     $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
     $('.battleReport').append($dockElement);
     delete thisBattle['0'];
     delete thisBattle['1'];
-    $('#rollDice').show().attr('class', 'btn btn-primary').one("click", async function () {
-        $('#rollDice').off().attr('class', 'btn btn-secondary');
-        for (let i in thisBattle) {
-            $dockElement.append(document.createTextNode(thisBattle[i])).append('</br>');
+    for (let i in thisBattle) {
+        $dockElement.append(document.createTextNode(thisBattle[i])).append('</br>');
+        $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
+    }
+    delete battle[Object.keys(battle)[0]];
+    if (Object.keys(battle).length === 0) {
+        if (result['end'] !== undefined) {
+            let fin = result['end'];
+            $dockElement.append('<p>').append(document.createTextNode(fin)).append('</p>');
             $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
-            await sleep(200)
         }
-        delete battle[Object.keys(battle)[0]];
-        if (Object.keys(battle).length === 0) {
-            if (result['end'] !== undefined) {
-                let fin = result['end'];
-                $dockElement.append('<p>').append(document.createTextNode(fin)).append('</p>');
-                $('.battleReport').append($dockElement).animate({scrollTop: $('.battleReport').prop("scrollHeight")}, 0);
-            }
-            afterRollDice(result, party);
-        } else {
-            await sleep(200)
-            Battle(battle, result, party);
-        }
-        /* peut etre faire une fonction qi teste si il reste des chose a afficher pour le battle report (et donc supprimer au fur et a mesure*/
-    });
+
+    } else {
+        Battle(battle, result, party);
+    }
+    /* peut etre faire une fonction qi teste si il reste des chose a afficher pour le battle report (et donc supprimer au fur et a mesure*/
 }
 
 async function addBattleReport(report, party) {
@@ -291,7 +328,7 @@ $(() => {
         .attr('type', 'button')
         .attr('id', 'playRound')
         .attr('class', 'btn btn-secondary')
-        .html("Play round")
+        .html("Auto Attack")
         .off();
 
     let $buttonRollDice = $('<button></button>')
@@ -305,7 +342,7 @@ $(() => {
     let $spanNextStage = $('#buttonNextStage');
     let $spanPlayRound = $('#buttonPlayRound');
 
-    $spanRollDice.append($buttonRollDice);
+    // $spanRollDice.append($buttonRollDice);
     $spanNextStage.append($buttonNextStage);
     $spanPlayRound.append($buttonPlayRound);
 
@@ -461,7 +498,7 @@ $(() => {
                     $table.setAttribute('class', 'table table-borderless');
                     $table.setAttribute('id', result['newStuff']);
                     $th.setAttribute('scope', 'row');
-                    $th.setAttribute('style',$color);
+                    $th.setAttribute('style', $color);
                     $tr.setAttribute('class', 'small');
                     $th.innerText = result['newStuff'];
                     $pqunatity.setAttribute('id', 'quantity/' + $pkParty + '/' + result['stuffPk']);
@@ -522,7 +559,7 @@ $(() => {
             $('#itemModal').modal('hide');
             closeModal();
             console.log(result);
-            if(result['isEnded']){
+            if (result['isEnded']) {
                 isEnded($pkParty)
             }
         });

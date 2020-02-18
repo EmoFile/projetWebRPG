@@ -26,7 +26,7 @@
                 </tr>
                 <tr>
                     <th scope="row" class="text-success">HP:</th>
-                    <td>
+                    <td id="reportHpCharacter" style="position: relative">
                         <span id="characterHp">{{ currentCharacter.hp }}</span>/
                         <span id="characterHpMax">{{ currentCharacter.hpMax }}</span>
                     </td>
@@ -524,7 +524,7 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <th scope="row" class="text-success">HP:</th>
+                    <th id="reportHpEnemy" style="position: relative" scope="row" class="text-success">HP:</th>
                     <td>
                         <span>
                             <span id="enemyHp"> {{ enemy.enemyHp }}</span>
