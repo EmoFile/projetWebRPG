@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block table-score %}
     <div class="row container-fluid">
-        <div class="col-4">
+        <div class="col-5">
             <span id="characterPk" hidden>{{ party.character.pk }}</span>
             <table>
                 <thead>
@@ -41,37 +41,37 @@
                 <tr>
                     <th scope="row" class="text-secondary">RES:</th>
                     <td><span
-                            id="characterMagicalResistence">
+                        id="characterMagicalResistence">
                         {{ party.character.getMagicalResistance }}</span>
                         <span
-                                id="characterBasicMagicalResistence">({{ party.character.magicalResistance }})</span>
+                            id="characterBasicMagicalResistence">({{ party.character.magicalResistance }})</span>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row" class="text-danger">STR:</th>
                     <td><span
-                            id="characterStrength">
+                        id="characterStrength">
                         {{ party.character.getStrength }}</span>
                         <span
-                                id="characterBasicStrength">({{ party.character.strength }})</span>
+                            id="characterBasicStrength">({{ party.character.strength }})</span>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row" class="text-info">INT:</th>
                     <td><span
-                            id="characterIntelligence">
+                        id="characterIntelligence">
                         {{ party.character.getIntelligence }}</span>
                         <span
-                                id="characterBasicIntelligence">({{ party.character.intelligence }})</span>
+                            id="characterBasicIntelligence">({{ party.character.intelligence }})</span>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row" class="text-warning">AGI:</th>
                     <td><span
-                            id="characterAgility">
+                        id="characterAgility">
                         {{ party.character.getAgility }}</span>
                         <span
-                                id="characterBasicAgility">({{ party.character.agility }})</span>
+                            id="characterBasicAgility">({{ party.character.agility }})</span>
                     </td>
                 </tr>
                 </tbody>
@@ -372,8 +372,9 @@
                                 {% endif %}
                                 <td>
                                     <span class="text-black small">
-                                        <span id="weaponDiceNumber">{{ party.character.inventory.weapon.diceNumber }}</span>D<span
-                                            id="weaponDamage">{{ party.character.inventory.weapon.damage }}</span>
+                                        <span
+                                            id="weaponDiceNumber">{{ party.character.inventory.weapon.diceNumber }}</span>D<span
+                                        id="weaponDamage">{{ party.character.inventory.weapon.damage }}</span>
                                     </span>
                                 </td>
                                 <td>
@@ -456,7 +457,7 @@
                                     {% endif %}
                                     <td>
                                             <span
-                                                    id="quantity/{{ party.pk }}/{{ consumable.consumable.pk }}">{{ consumable.quantity }}</span>
+                                                id="quantity/{{ party.pk }}/{{ consumable.consumable.pk }}">{{ consumable.quantity }}</span>
                                     </td>
                                     <td>
                                         <button type="button"
@@ -470,16 +471,21 @@
                                         <table>
                                             <tr>
                                                 <th>
-                                                    <span id="hp/{{ party.pk }}/{{ consumable.consumable.pk }}" class="col-3 text-success">{{ consumable.consumable.hp }}</span>
+                                                    <span id="hp/{{ party.pk }}/{{ consumable.consumable.pk }}"
+                                                          class="col-3 text-success">{{ consumable.consumable.hp }}</span>
                                                 </th>
                                                 <th>
-                                                    <span id="strength/{{ party.pk }}/{{ consumable.consumable.pk }}" class="col-3 text-danger">{{ consumable.consumable.strength }}</span>
+                                                    <span id="strength/{{ party.pk }}/{{ consumable.consumable.pk }}"
+                                                          class="col-3 text-danger">{{ consumable.consumable.strength }}</span>
                                                 </th>
                                                 <th>
-                                                    <span id="intelligence/{{ party.pk }}/{{ consumable.consumable.pk }}" class="col-3 text-info">{{ consumable.consumable.intelligence }}</span>
+                                                    <span
+                                                        id="intelligence/{{ party.pk }}/{{ consumable.consumable.pk }}"
+                                                        class="col-3 text-info">{{ consumable.consumable.intelligence }}</span>
                                                 </th>
                                                 <th>
-                                                    <span id="agility/{{ party.pk }}/{{ consumable.consumable.pk }}" class="col-3 text-warning">{{ consumable.consumable.agility }}</span>
+                                                    <span id="agility/{{ party.pk }}/{{ consumable.consumable.pk }}"
+                                                          class="col-3 text-warning">{{ consumable.consumable.agility }}</span>
                                                 </th>
                                             </tr>
                                         </table>
@@ -493,7 +499,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-5">
             <div>
                 <span class="h1">Stage: </span>
                 <span id="stage" class="h1">{{ enemy.partyStage }}</span>
@@ -506,7 +512,7 @@
             <div class="battleReport">
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-2">
             <p id="pkEnemy" hidden>{{ enemy.enemyPk }}</p>
             <table>
                 <thead>
@@ -661,7 +667,8 @@
                     <a class="btn btn-primary" href="{% url 'home' %}" role="button">
                         Home page
                     </a>
-                    <a class="btn btn-success" href="{% url 'generateCharacterByPk' party.character.characterClass.pk %}" role="button">
+                    <a class="btn btn-success"
+                       href="{% url 'generateCharacterByPk' party.character.characterClass.pk %}" role="button">
                         Retry
                     </a>
 
