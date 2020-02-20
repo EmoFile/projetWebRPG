@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from app.models import Character, Enemy
+from app.models import Character, Enemy, Inventory
 
 
 class Party(models.Model):
@@ -19,6 +19,7 @@ class Party(models.Model):
     date = models.DateField("Date", default=datetime.date.today)
     isEnded = models.BooleanField(default=False)
     enemies = models.ManyToManyField('Enemy', through='PartyEnemy')
+    # lastItemDropped = models.ForeignKey('Item', default=False, on_delete=models.SET_NULL)
 
     class Meta:
         unique_together = ['character']
@@ -27,6 +28,19 @@ class Party(models.Model):
         return f'{self.id}: {self.user.username} ' \
                f'{self.character} ' \
                f'{self.stage}'
+
+    def GameOver(self):
+        self.isEnded = True
+        adventurer = self.character
+        adventurer.strength = adventurer.getStrength()
+        adventurer.agility = adventurer.getAgility()
+        adventurer.intelligence = adventurer.getIntelligence()
+        adventurer.magicalResistance = adventurer.getMagicalResistance()
+        adventurer.physicalResistance = adventurer.getPhysicalResistance()
+        PartyEnemy.objects.filter(party=self).delete()
+        # Inventory.objects.filter(character=self.character).delete()
+        self.character.inventory.delete()
+        self.save()
 
 
 class PartyEnemy(models.Model):
