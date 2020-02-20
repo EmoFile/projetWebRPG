@@ -484,8 +484,8 @@ def fight(atk, atkModif, atkDef, atkModifDef, atkObj, res, resModif, defName):
         "May the dice guide you to a favourable destiny.",
         "Fortune favors you, my friend!"
     }
-    aD20 = random.randint(0, 20)
-    dD20 = random.randint(0, 20)
+    aD20 = random.randint(1, 20)
+    dD20 = random.randint(1, 20)
     print(f'atk : {atkObj.name} | {aD20} | {atkModif}')
     print(f'def : {defName} | {dD20} | {resModif}')
     attack_dice = {
@@ -510,9 +510,9 @@ def fight(atk, atkModif, atkDef, atkModifDef, atkObj, res, resModif, defName):
                     }
     if aD20 == 1:
         weaponDamage = getDamage(atk=atkObj)
-        damage = (weaponDamage + atkModif) - atkModifDef
+        damage = int(((weaponDamage + atkModif) - atkModifDef)*0.75)
         print(
-            f'Echec critique : weaponDamage: {weaponDamage} | atkModif: {atkModif} | atkModifDef: {atkModifDef} => {damage}')
+            f'Echec critique : (weaponDamage: {weaponDamage} | atkModif: {atkModif} | atkModifDef: {atkModifDef} )*0.75=> {damage}')
         critical_failure = {
             "OMG why" + atkObj.name + " is so dumb dude ??? He wants to kill himself ???",
             "Well, let him keep this up and he'll never be remembered.",
@@ -534,7 +534,7 @@ def fight(atk, atkModif, atkDef, atkModifDef, atkObj, res, resModif, defName):
             battleReport['5'] = random.choice(list(critical_failure_nothing))
     else:
         weaponDamage = getDamage(atk=atkObj)
-        damage = getDamage(atk=atkObj) + atkModif
+        damage = weaponDamage + atkModif
         print(f'Réussite : weaponDamage: {weaponDamage} | atkModif: {atkModif} => {damage}')
         if aD20 == 20:
             success_critcal = {
@@ -543,7 +543,8 @@ def fight(atk, atkModif, atkDef, atkModifDef, atkObj, res, resModif, defName):
                 atkObj.name + " brandished his weapon! The dice were with him now his mind and strength are one!"
             }
             battleReport['4'] = random.choice(list(success_critcal))
-            damage *= 2
+            damage *= 1.5
+            damage = int(damage)
             print(f'Réussite critique: {damage}')
         if hit > 0:
             hpDef = 0 if (damage - resModif) < 0 else damage - resModif
