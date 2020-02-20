@@ -27,13 +27,26 @@ class Party(models.Model):
         return f'{self.id}: {self.user.username} ' \
                f'{self.character} ' \
                f'{self.stage}'
+    
+    def game_over(self):
+        self.isEnded = True
+        adventurer = self.character
+        adventurer.strength = adventurer.getStrength()
+        adventurer.agility = adventurer.getAgility()
+        adventurer.intelligence = adventurer.getIntelligence()
+        adventurer.magicalResistance = adventurer.getMagicalResistance()
+        adventurer.physicalResistance = adventurer.getPhysicalResistance()
+        adventurer.save()
+        PartyEnemy.objects.filter(party=self).delete()
+        self.character.inventory.delete()
+        self.save()
 
 
 class PartyEnemy(models.Model):
     party = models.ForeignKey(Party,
-                              on_delete=models.PROTECT)
+                              on_delete=models.CASCADE)
     enemy = models.ForeignKey(Enemy,
-                              on_delete=models.PROTECT)
+                              on_delete=models.CASCADE)
     hp = models.IntegerField(default=0,
                              blank=False,
                              null=False)

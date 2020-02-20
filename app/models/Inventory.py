@@ -5,17 +5,17 @@ from .Item import Head, Chest, Leg, Weapon, Consumable
 
 class Inventory(models.Model):
     head = models.ForeignKey(Head,
-                             on_delete=models.CASCADE,
+                             on_delete=models.SET_NULL,
                              related_name='headInventory',
                              blank=True,
                              null=True)
     chest = models.ForeignKey(Chest,
-                              on_delete=models.CASCADE,
+                              on_delete=models.SET_NULL,
                               related_name='chestInventory',
                               blank=True,
                               null=True)
     leg = models.ForeignKey(Leg,
-                            on_delete=models.CASCADE,
+                            on_delete=models.SET_NULL,
                             related_name='legInventory',
                             blank=True,
                             null=True)
@@ -31,9 +31,9 @@ class Inventory(models.Model):
 
 class InventoryConsumable(models.Model):
     inventory = models.ForeignKey(Inventory,
-                                  on_delete=models.PROTECT)
+                                  on_delete=models.CASCADE)
     consumable = models.ForeignKey(Consumable,
-                                   on_delete=models.PROTECT)
+                                   on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0,
                                            blank=False,
                                            null=False)
