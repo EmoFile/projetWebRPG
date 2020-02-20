@@ -484,8 +484,10 @@ def fight(atk, atkModif, atkDef, atkModifDef, atkObj, res, resModif, defName):
         "May the dice guide you to a favourable destiny.",
         "Fortune favors you, my friend!"
     }
-    aD20 = random.randint(0, 20)
-    dD20 = random.randint(0, 20)
+    aD20 = random.randint(1, 20)
+    dD20 = random.randint(1, 20)
+    print(f'atk : {atkObj.name} | {aD20} | {atkModif}')
+    print(f'def : {defName} | {dD20} | {resModif}')
     attack_dice = {
         f'{atkObj.name} throws a D20 for attack and goes {aD20.__str__()} + {atkModif}',
         f'The dice we choose! And it will be {aD20.__str__()}  + {atkModif} on the D20 attack from {atkObj.name}'
@@ -497,6 +499,8 @@ def fight(atk, atkModif, atkDef, atkModifDef, atkObj, res, resModif, defName):
     assault = atkModif + aD20
     protection = resModif + dD20
     hit = assault - protection
+    print(f'atk : {atkObj.name} | {assault}')
+    print(f'def : {defName} | {protection}')
     hpAtk = 0
     hpDef = 0
     battleReport = {'0': random.choice(list(announce)),
@@ -505,7 +509,10 @@ def fight(atk, atkModif, atkDef, atkModifDef, atkObj, res, resModif, defName):
                     '3': random.choice(list(defence_dice))
                     }
     if aD20 == 1:
-        damage = (getDamage(atk=atkObj) + atkModif) - atkModifDef
+        weaponDamage = getDamage(atk=atkObj)
+        damage = int(((weaponDamage + atkModif) - atkModifDef)*0.75)
+        print(
+            f'Echec critique : (weaponDamage: {weaponDamage} | atkModif: {atkModif} | atkModifDef: {atkModifDef} )*0.75=> {damage}')
         critical_failure = {
             "OMG why" + atkObj.name + " is so dumb dude ??? He wants to kill himself ???",
             "Well, let him keep this up and he'll never be remembered.",
@@ -526,7 +533,9 @@ def fight(atk, atkModif, atkDef, atkModifDef, atkObj, res, resModif, defName):
             }
             battleReport['5'] = random.choice(list(critical_failure_nothing))
     else:
-        damage = getDamage(atk=atkObj) + atkModif
+        weaponDamage = getDamage(atk=atkObj)
+        damage = weaponDamage + atkModif
+        print(f'Réussite : weaponDamage: {weaponDamage} | atkModif: {atkModif} => {damage}')
         if aD20 == 20:
             success_critcal = {
                 atkObj.name + " does his most murderous and darkSasuke look.",
@@ -534,9 +543,12 @@ def fight(atk, atkModif, atkDef, atkModifDef, atkObj, res, resModif, defName):
                 atkObj.name + " brandished his weapon! The dice were with him now his mind and strength are one!"
             }
             battleReport['4'] = random.choice(list(success_critcal))
-            damage *= 2
+            damage *= 1.5
+            damage = int(damage)
+            print(f'Réussite critique: {damage}')
         if hit > 0:
-            hpDef = damage - resModif
+            hpDef = 0 if (damage - resModif) < 0 else damage - resModif
+            print(f'Réussite : {damage} - {resModif} => {hpDef}')
             success_damage = {
                 atkObj.name + " attacks and does " + damage.__str__() + " damages to his opponent!",
                 atkObj.name + " is not at his peak but still does " + damage.__str__() + " damages."
