@@ -194,8 +194,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# django migrations
-**/migrations/**
-!**/migrations
-!**/migrations/__init__.py
