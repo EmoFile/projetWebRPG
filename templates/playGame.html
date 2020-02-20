@@ -35,7 +35,7 @@
                     <th scope="row" class="text-primary">ARM:</th>
                     <td>
                         <span id="characterPhysicalResistence">{{ party.character.getPhysicalResistance }}</span>
-                        <span id="characterBasicPhysicalResistence">({{ party.character.physicalResistance }})</span>
+                        <span id="characterBasicPhysicalResistence">({{ party.character.getPRModificator }})</span>
                     </td>
                 </tr>
                 <tr>
@@ -44,7 +44,7 @@
                         id="characterMagicalResistence">
                         {{ party.character.getMagicalResistance }}</span>
                         <span
-                            id="characterBasicMagicalResistence">({{ party.character.magicalResistance }})</span>
+                            id="characterBasicMagicalResistence">({{ party.character.getMRModificator }})</span>
                     </td>
                 </tr>
                 <tr>
@@ -53,7 +53,7 @@
                         id="characterStrength">
                         {{ party.character.getStrength }}</span>
                         <span
-                            id="characterBasicStrength">({{ party.character.strength }})</span>
+                            id="characterBasicStrength">({{ party.character.getSTRModificator }})</span>
                     </td>
                 </tr>
                 <tr>
@@ -62,7 +62,7 @@
                         id="characterIntelligence">
                         {{ party.character.getIntelligence }}</span>
                         <span
-                            id="characterBasicIntelligence">({{ party.character.intelligence }})</span>
+                            id="characterBasicIntelligence">({{ party.character.getINTModificator }})</span>
                     </td>
                 </tr>
                 <tr>
@@ -71,7 +71,7 @@
                         id="characterAgility">
                         {{ party.character.getAgility }}</span>
                         <span
-                            id="characterBasicAgility">({{ party.character.agility }})</span>
+                            id="characterBasicAgility">({{ party.character.getAGIModificator }})</span>
                     </td>
                 </tr>
                 </tbody>

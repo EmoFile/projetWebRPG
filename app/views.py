@@ -108,7 +108,7 @@ print(random.choice(global_synonyms_dico['Carac']['Heal']).capitalize())
 
 class IndexView(TemplateView):
     template_name = 'index.html'
-
+    
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['characterClasses'] = CharacterClass.objects.all()
@@ -123,11 +123,11 @@ class IndexView(TemplateView):
         )[:20]
         result['title'] = 'B.T.A - II'
         return result
-    
-    
+
+
 class UserProfileView(TemplateView):
     template_name = 'userProfile.html'
-
+    
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         currentUser = User.objects.get(pk=kwargs['pk'])
@@ -150,7 +150,7 @@ class UserProfileView(TemplateView):
 class CharacterDetailView(DetailView):
     model = Character
     template_name = 'characterDetail.html'
-
+    
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['title'] = 'Character Detail'
@@ -162,16 +162,16 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
     model = Character
     form_class = CharacterForm
     template_name = 'characterForm.html'
-
+    
     def get_success_url(self):
         party = get_object_or_404(Party, character=self.object)
         return reverse('playGame', kwargs={'pk': party.pk})
-
+    
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['title'] = 'Create Character'
         return result
-
+    
     def get(self, *args, **kwargs):
         currentCharacterClass = get_object_or_404(CharacterClass,
                                                   pk=self.kwargs['pk'])
@@ -189,7 +189,7 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
         self.request.session[
             'MagicalResistance'] = currentCharacterClass.generateMR()
         return super().get(self)
-
+    
     def form_valid(self, form):
         # Création de l'objet sans enregistrement en base
         self.object = form.save(commit=False)
@@ -214,7 +214,7 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
         # Création en BDD du personnage
         self.object.save()
         party = Party(user=self.request.user, character=self.object)
-
+        
         commonWeaponPull = Weapon.objects.filter(rarity="Common",
                                                  requiredLevel=1,
                                                  characterClass=self.object.characterClass,
@@ -227,8 +227,9 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
                                                      characterClass=self.object.characterClass,
                                                      hpMax__gte=0)
             pullCount = commonWeaponPull.count()
-        ChangeStuff(stuffClassName='Weapon', inventory=self.object.inventory, stuffPk=commonWeaponPull[random.randint(0, pullCount - 1)].pk)
-
+        ChangeStuff(stuffClassName='Weapon', inventory=self.object.inventory,
+                    stuffPk=commonWeaponPull[random.randint(0, pullCount - 1)].pk)
+        
         commonConsumablePull = Consumable.objects.filter(Q(rarity="Common") | Q(rarity="Rare"))
         pullCount = commonConsumablePull.count()
         if pullCount == 0 or random.randint(1, 100) <= 20:
@@ -238,10 +239,10 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
             pullCount = commonConsumablePull.count()
         randomPotion = commonConsumablePull[random.randint(0, pullCount - 1)]
         AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomPotion)
-
+        
         commonHealingConsumablePull = Consumable.objects.filter(rarity="Common", hp__gt=0)
         pullCount = commonHealingConsumablePull.count()
-
+        
         if pullCount == 0 or random.randint(1, 100) <= 20:
             generateItem(stuffClassName='Consumable', stuffRarity='Common', adventurer=self.object)
             commonHealingConsumablePull = Consumable.objects.filter(rarity="Common", hp__gt=0)
@@ -253,7 +254,7 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
         randomHealingCommonPotion = commonHealingConsumablePull[random.randint(0, pullCount - 1)]
         AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory,
                       consumable=randomHealingCommonPotion)
-
+        
         rareHealingConsumablePull = Consumable.objects.filter(rarity="Rare", hp__gt=0)
         pullCount = rareHealingConsumablePull.count()
         if pullCount == 0 or random.randint(1, 100) <= 20:
@@ -266,7 +267,7 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
                 pullCount = rareHealingConsumablePull.count()
         randomHealingRarePotion = rareHealingConsumablePull[random.randint(0, pullCount - 1)]
         AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomHealingRarePotion)
-
+        
         party.save()
         return super().form_valid(form)
 
@@ -280,7 +281,7 @@ class SignUpView(CreateView):
 class LogInView(LoginView):
     form_class = AuthenticationForm
     template_name = 'logIn.html'
-
+    
     def get_success_url(self):
         return reverse('home')
 
@@ -292,7 +293,7 @@ class LogoutView(LogoutView):
 class PlayGameView(LoginRequiredMixin, TemplateView):
     login_url = 'logIn'
     template_name = 'playGame.html'
-
+    
     def get(self, request, *args, **kwargs):
         party = get_object_or_404(Party, pk=self.kwargs['pk'])
         print(request.user.pk)
@@ -301,7 +302,7 @@ class PlayGameView(LoginRequiredMixin, TemplateView):
         elif party.isEnded:
             return redirect(reverse('home'))
         return super().get(self)
-
+    
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result['title'] = 'Play Game'
@@ -333,7 +334,7 @@ class PlayGameView(LoginRequiredMixin, TemplateView):
 
 class PlayRound(generic.View):
     http_method_names = ['get']
-
+    
     def get(self, request, **kwargs):
         """
 
@@ -342,7 +343,7 @@ class PlayRound(generic.View):
         :optional:
         :return:
         """
-
+        
         party = get_object_or_404(Party, pk=kwargs['pkParty'])
         adventurer = party.character
         enemy = get_object_or_404(Enemy, pk=kwargs['pkEnemy'])
@@ -354,45 +355,63 @@ class PlayRound(generic.View):
             })
         if random.randint(0, 1):
             atkEnemy = enemy.strength
+            atkModifEnemy = enemy.getSTRModificator()
             resAdventurer = adventurer.getPhysicalResistance()
+            resModifAdventurer = adventurer.getPRModificator()
             defEnemy = enemy.physical_resistance
+            defModifEnemy = enemy.getPRModificator()
         else:
             atkEnemy = enemy.intelligence
+            atkModifEnemy = enemy.getINTModificator()
             resAdventurer = adventurer.getMagicalResistance()
+            resModifAdventurer = adventurer.getMRModificator()
             defEnemy = enemy.magical_resistance
-
+            defModifEnemy = enemy.getMRModificator()
+        
         if adventurer.characterClass.name == 'Warrior':
             atkAdventurer = adventurer.getStrength()
+            atkModifAdventurer = adventurer.getSTRModificator()
             defAdventurer = adventurer.getPhysicalResistance()
+            defModifAdventurer = adventurer.getPRModificator()
             resEnemy = enemy.physical_resistance
+            resModifEnemy = enemy.getPRModificator()
         else:
             atkAdventurer = adventurer.getIntelligence()
+            atkModifAdventurer = adventurer.getINTModificator()
             resEnemy = enemy.magical_resistance
+            resModifEnemy = enemy.getMRModificator()
             defAdventurer = adventurer.getMagicalResistance()
-
-        if adventurer.agility > enemy.agility:
-            hpTab = fight(atkAdventurer, defAdventurer, adventurer, resEnemy, enemy.name)
+            defModifAdventurer = adventurer.getMRModificator()
+        
+        adventurer_initiative = random.randint(1, 20) + adventurer.getAGIModificator()
+        enemy_initiative = random.randint(1, 20) + enemy.getAGIModificator()
+        if adventurer_initiative > enemy_initiative:
+            hpTab = fight(atkAdventurer, atkModifAdventurer, defAdventurer, defModifAdventurer, adventurer, resEnemy,
+                          resModifEnemy, enemy.name)
             adventurer.setHp(-hpTab[0])
             p_e.hp -= hpTab[1]
             battleReport = {'0': hpTab[2]}
             adventurer.save()
             p_e.save()
             if p_e.hp > 0 and adventurer.hp > 0:
-                hpTab = fight(atkEnemy, defEnemy, enemy, resAdventurer, adventurer.name)
+                hpTab = fight(atkEnemy, atkModifEnemy, defEnemy, defModifEnemy, enemy, resAdventurer,
+                              resModifAdventurer, adventurer.name)
                 p_e.hp -= hpTab[0]
                 adventurer.setHp(-hpTab[1])
                 battleReport['1'] = hpTab[2]
                 p_e.save()
                 adventurer.save()
         else:
-            hpTab = fight(atkEnemy, defEnemy, enemy, resAdventurer, adventurer.name)
+            hpTab = fight(atkEnemy, atkModifEnemy, defEnemy, defModifEnemy, enemy, resAdventurer, resModifAdventurer,
+                          adventurer.name)
             p_e.hp -= hpTab[0]
             adventurer.setHp(-hpTab[1])
             battleReport = {'0': hpTab[2]}
             p_e.save()
             adventurer.save()
             if p_e.hp > 0 and adventurer.hp > 0:
-                hpTab = fight(atkAdventurer, defAdventurer, adventurer, resEnemy, enemy.name)
+                hpTab = fight(atkAdventurer, atkModifAdventurer, defAdventurer, defModifAdventurer, adventurer,
+                              resEnemy, resModifEnemy, enemy.name)
                 adventurer.setHp(-hpTab[0])
                 p_e.hp -= hpTab[1]
                 battleReport['1'] = hpTab[2]
@@ -421,7 +440,7 @@ class PlayRound(generic.View):
             GettingXp(character=adventurer)
             return JsonResponse({'dropItem': DropItem(adventurer=adventurer),
                                  'isEnded': party.isEnded,
-
+            
                                  'enemy': {
                                      'hp': p_e.hp
                                  },
@@ -454,7 +473,7 @@ def getDamage(*args, **kwargs):
         return currantAtk.getDamage()
 
 
-def fight(atk, atkDef, atkObj, res, defName):
+def fight(atk, atkModif, atkDef, atkModifDef, atkObj, res, resModif, defName):
     announce = {
         atkObj.name + " is getting ready to attack.",
         atkObj.name + " is getting closer!",
@@ -468,15 +487,15 @@ def fight(atk, atkDef, atkObj, res, defName):
     aD20 = random.randint(0, 20)
     dD20 = random.randint(0, 20)
     attack_dice = {
-        atkObj.name + " throws a D20 for attack and goes " + aD20.__str__(),
-        "The dice we choose! And it will be " + aD20.__str__() + " on the D20 attack from " + atkObj.name
+        f'{atkObj.name} throws a D20 for attack and goes {aD20.__str__()} + {atkModif}',
+        f'The dice we choose! And it will be {aD20.__str__()}  + {atkModif} on the D20 attack from {atkObj.name}'
     }
     defence_dice = {
-        defName + "doesn't let up and throws a D20 in his defense and goes... " + dD20.__str__(),
-        defName + " says a prayer before throwing his d20 and does " + dD20.__str__()
+        f'{defName} doesn\'t let up and throws a D20 in his defense and goes... {dD20.__str__()} + {resModif}',
+        f'{defName} says a prayer before throwing his d20 and does {dD20.__str__()}  + {resModif}'
     }
-    assault = atk + aD20
-    protection = res + dD20
+    assault = atkModif + aD20
+    protection = resModif + dD20
     hit = assault - protection
     hpAtk = 0
     hpDef = 0
@@ -486,7 +505,7 @@ def fight(atk, atkDef, atkObj, res, defName):
                     '3': random.choice(list(defence_dice))
                     }
     if aD20 == 1:
-        damage = getDamage(atk=atkObj)
+        damage = (getDamage(atk=atkObj) + atkModif) - atkModifDef
         critical_failure = {
             "OMG why" + atkObj.name + " is so dumb dude ??? He wants to kill himself ???",
             "Well, let him keep this up and he'll never be remembered.",
@@ -507,7 +526,7 @@ def fight(atk, atkDef, atkObj, res, defName):
             }
             battleReport['5'] = random.choice(list(critical_failure_nothing))
     else:
-        damage = getDamage(atk=atkObj)
+        damage = getDamage(atk=atkObj) + atkModif
         if aD20 == 20:
             success_critcal = {
                 atkObj.name + " does his most murderous and darkSasuke look.",
@@ -517,7 +536,7 @@ def fight(atk, atkDef, atkObj, res, defName):
             battleReport['4'] = random.choice(list(success_critcal))
             damage *= 2
         if hit > 0:
-            hpDef = damage
+            hpDef = damage - resModif
             success_damage = {
                 atkObj.name + " attacks and does " + damage.__str__() + " damages to his opponent!",
                 atkObj.name + " is not at his peak but still does " + damage.__str__() + " damages."
@@ -547,32 +566,34 @@ def generateStuffName(*args, **kwargs):
     stuff_name = ''
     stuff_class_synonym = ''
     stuff_material = ''
-
+    
     while True:
         city_name = random.choice(global_synonyms_dico['City'])
         race_name = random.choice(global_synonyms_dico['Race'])
         character_name = random.choice(global_synonyms_dico['Name'])
-
+        
         for (stuff_class_name, cls, synonym_list) in [('Head', Head, global_synonyms_dico['Item']['Head']),
                                                       ('Chest', Chest, global_synonyms_dico['Item']['Chest']),
                                                       ('Leg', Leg, global_synonyms_dico['Item']['Leg'])]:
             if stuffClassName == stuff_class_name:
                 stuff_class_synonym = random.choice(synonym_list)
                 break
-
+        
         if stuffRarity == 'Common':
             stuff_material = random.choice(global_synonyms_dico['Material']['Poor'])
         else:
             for (rarity, proba_list_1, list_material_1, list_material_2) in [
                 ('Rare', 70, global_synonyms_dico['Material']['Poor'], global_synonyms_dico['Material']['Medium']),
                 ('Epic', 80, global_synonyms_dico['Material']['Medium'], global_synonyms_dico['Material']['Good']),
-                ('Legendary', 40, global_synonyms_dico['Material']['Medium'], global_synonyms_dico['Material']['Good'])]:
+                (
+                    'Legendary', 40, global_synonyms_dico['Material']['Medium'],
+                    global_synonyms_dico['Material']['Good'])]:
                 if stuffRarity == rarity:
                     if random.randint(1, 100) <= proba_list_1:
                         stuff_material = random.choice(list_material_1)
                     else:
                         stuff_material = random.choice(list_material_2)
-
+        
         stuff_name_form = random.randint(1, 10)
         if stuffRarity == 'Common':
             if stuff_name_form <= 2:
@@ -605,18 +626,18 @@ def generateWeaponName(*args, **kwargs):
     weaponType = kwargs['weaponType']
     weapon_name = ''
     grip_type_name = ''
-
+    
     while True:
         city_name = random.choice(global_synonyms_dico['City'])
         race_name = random.choice(global_synonyms_dico['Race'])
         character_name = random.choice(global_synonyms_dico['Name'])
-
+        
         for (gripTypeFor, grip_type_name_for) in [('OneHanded', 'one handed'),
                                                   ('TwoHanded', 'two handed'),
                                                   ('TwoWeapon', 'double'), ]:
             if gripType == gripTypeFor:
                 grip_type_name = grip_type_name_for
-
+        
         weapon_name_form = random.randint(1, 10)
         if stuffRarity == 'Common':
             if weapon_name_form <= 2:
@@ -652,12 +673,12 @@ def generatePotionName(*args, **kwargs):
     potion_name = ''
     potion_adjective = ''
     carac_synonym = ''
-
+    
     while True:
         potion_name_synonym = random.choice(global_synonyms_dico['Item']['Potion'])
         city_name = random.choice(global_synonyms_dico['City'])
         race_name = random.choice(global_synonyms_dico['Race'])
-
+        
         if stuffRarity == 'Common':
             potion_adjective = random.choice(global_synonyms_dico['Adjective']['Low'])
         else:
@@ -671,7 +692,7 @@ def generatePotionName(*args, **kwargs):
                         potion_adjective = random.choice(list_adjective_1)
                     else:
                         potion_adjective = random.choice(list_adjective_2)
-
+        
         if strength + agility + intelligence == 0:
             carac_synonym = random.choice(global_synonyms_dico['Carac']['Heal'])
         else:
@@ -681,7 +702,7 @@ def generatePotionName(*args, **kwargs):
                 (intelligence, strength, agility, global_synonyms_dico['Carac']['Intelligence'])]:
                 if caracPoint1 >= caracPoint2 and caracPoint1 >= caracPoint3:
                     carac_synonym = random.choice(table_carac_name)
-
+        
         potion_name_form = random.randint(1, 10)
         if stuffRarity == 'Common':
             if potion_name_form <= 2:
@@ -760,7 +781,7 @@ def dispactForStuff(*args, **kwargs):
                 isUpMR = True
             else:
                 isUpMR = False
-
+        
         stuffPoint = kwargs['stuffPoint']
         strengthPoints = 0
         agilityPoints = 0
@@ -851,7 +872,7 @@ def dispactForStuff(*args, **kwargs):
                               physicalResistance=physResPoints,
                               magicalResistance=MagResPoints).count() == 0:
             break
-
+    
     return [0, strengthPoints, agilityPoints, intelligencePoints, hpMaxPoints * 2, physResPoints, MagResPoints, 0, 0,
             name]
 
@@ -902,7 +923,7 @@ def dispatchForWeapon(*args, **kwargs):
                               weaponType=weaponType,
                               gripType=gripType,
                               itemCharacterClassRequired=itemCharacterClassRequired)
-
+    
     while True:
         isUpStrength = False
         isUpAgility = False
@@ -932,7 +953,7 @@ def dispatchForWeapon(*args, **kwargs):
                     isUpIntelligence = False
                 else:
                     isUpIntelligence = True
-
+        
         stuffPoint = kwargs['stuffPoint']
         strengthPoints = 0
         agilityPoints = 0
@@ -940,7 +961,7 @@ def dispatchForWeapon(*args, **kwargs):
         diceNumber = 1
         damage = 4
         print(f'Création d\'une {weaponType}({gripType}) {stuffRarity} avec {stuffPoint} points')
-
+        
         diceNumberRand = random.randint(1, 200)
         print(diceNumberRand)
         for (gripTypeFor, d1_grip, d2_grip, d3_grip) in [('OneHanded', 90, 10, 0),
@@ -971,7 +992,7 @@ def dispatchForWeapon(*args, **kwargs):
                             # print(f'{diceNumberRand / 200} > {d3_prop}')
                             # print(f'{diceNumberRand} > {d3_prop * 200}')
                             diceNumber = 4
-
+        
         damageRand = random.randint(1, 200)
         # print(damageRand)
         for (weaponTypeFor, damage4_type, damage6_type, damage8_type,
@@ -1051,7 +1072,7 @@ def dispatchForWeapon(*args, **kwargs):
                 intelligenceValue = random.randint(0, stuffPoint)
                 intelligencePoints -= intelligenceValue
                 stuffPoint += intelligenceValue
-
+            
             print(f' Il reste {stuffPoint} points: {strengthPoints} FOR,'
                   f' {agilityPoints} AGI,'
                   f' {intelligencePoints} '
@@ -1089,7 +1110,7 @@ def dispatchForConsumable(*args, **kwargs):
                 isUpIntelligence = True
             else:
                 isUpIntelligence = False
-
+        
         stuffPoint = kwargs['stuffPoint']
         hpPoints = 0
         strengthPoints = 0
@@ -1416,7 +1437,7 @@ def DropItem(**kwargs):
 
 def AddConsumable(*args, **kwargs):
     kwargs['inventory'].consumables.add(kwargs['consumable'])
-
+    
     i_c = InventoryConsumable.objects.get(inventory=kwargs['inventory'],
                                           consumable=kwargs['consumable'])
     i_c.quantity += 1
@@ -1533,7 +1554,7 @@ def NextEnemy(**kwargs):
 
 class NextEnemyView(generic.View):
     http_method_names = ['get']
-
+    
     def get(self, request, **kwargs):
         if kwargs.get('pkEnemy'):
             p_e = get_object_or_404(PartyEnemy, party=kwargs['pkParty'], enemy=kwargs['pkEnemy'])
@@ -1583,7 +1604,7 @@ def GenerateEnemy(**kwargs):
 def UseItem(*args, **kwargs):
     currentParty = get_object_or_404(Party, pk=kwargs['partyPk'])
     currentConsumable = get_object_or_404(Consumable, pk=kwargs['consumablePk'])
-
+    
     i_c = InventoryConsumable.objects.get(inventory=currentParty.character.inventory,
                                           consumable=currentConsumable)
     consumableName = i_c.consumable.name
@@ -1593,7 +1614,7 @@ def UseItem(*args, **kwargs):
     if i_c.quantity == 0:
         i_c.delete()
     consumableNewQuantity = i_c.quantity
-
+    
     currentParty.character.modifyCarac(currentConsumable)
     currentParty.character.save()
     if currentParty.character.hp <= 0:
@@ -1612,7 +1633,7 @@ class EnemyList(ListView):
     template_name = 'listEnemy.html'
     model = Minion
     paginate_by = 100  # if pagination is desired
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['minions'] = Minion.objects.all()

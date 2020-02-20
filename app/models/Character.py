@@ -46,7 +46,7 @@ class Character(models.Model):
     inventory = models.OneToOneField('Inventory',
                                      default=1,
                                      on_delete=models.PROTECT)
-
+    
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Lvl: {self.level}' \
@@ -58,7 +58,7 @@ class Character(models.Model):
                f'|Int: {self.intelligence}' \
                f'|Pr: {self.physicalResistance}' \
                f'|Mr: {self.magicalResistance}]'
-
+    
     def modifyCarac(self, item):
         if item._meta.object_name == 'Consumable':
             self.setHp(item.hp)
@@ -73,10 +73,10 @@ class Character(models.Model):
             self.intelligence += item.intelligence
             self.physicalResistance += item.physicalResistance
             self.magicalResistance += item.magicalResistance
-
+    
     def getHpMax(self):
         return self.hpMax
-
+    
     def getStrength(self):
         strength = self.strength
         if self.inventory.head is not None:
@@ -88,7 +88,7 @@ class Character(models.Model):
         if self.inventory.weapon is not None:
             strength += self.inventory.weapon.strength
         return strength
-
+    
     def getAgility(self):
         agility = self.agility
         if self.inventory.head is not None:
@@ -100,7 +100,7 @@ class Character(models.Model):
         if self.inventory.weapon is not None:
             agility += self.inventory.weapon.agility
         return agility
-
+    
     def getIntelligence(self):
         intelligence = self.intelligence
         if self.inventory.head is not None:
@@ -112,7 +112,7 @@ class Character(models.Model):
         if self.inventory.weapon is not None:
             intelligence += self.inventory.weapon.intelligence
         return intelligence
-
+    
     def getPhysicalResistance(self):
         physicalResistance = self.physicalResistance
         if self.inventory.head is not None:
@@ -124,7 +124,7 @@ class Character(models.Model):
         if self.inventory.weapon is not None:
             physicalResistance += self.inventory.weapon.physicalResistance
         return physicalResistance
-
+    
     def getMagicalResistance(self):
         magicalResistance = self.magicalResistance
         if self.inventory.head is not None:
@@ -136,7 +136,22 @@ class Character(models.Model):
         if self.inventory.weapon is not None:
             magicalResistance += self.inventory.weapon.magicalResistance
         return magicalResistance
-
+    
+    def getSTRModificator(self):
+        return int(self.getStrength() / 6)
+    
+    def getINTModificator(self):
+        return int(self.getIntelligence() / 6)
+    
+    def getAGIModificator(self):
+        return int(self.getAgility() / 6)
+    
+    def getPRModificator(self):
+        return int(self.getPhysicalResistance() / 6)
+    
+    def getMRModificator(self):
+        return int(self.getMagicalResistance() / 6)
+    
     def setHp(self, hp):
         hp_temp = self.hp + hp
         if hp_temp > self.hpMax:
@@ -144,16 +159,16 @@ class Character(models.Model):
         else:
             self.hp = hp_temp
         return None
-
+    
     def setHpMax(self, hp):
         hp_max = self.hpMax + hp
         self.hp = math.ceil((self.hp * hp_max) / self.hpMax)
         self.hpMax = hp_max
         self.save()
-
+    
     def xpRequired(self):
         return 100 + 10 * (self.level - 1)
-
+    
     def reload(self):
         if self.xp >= self.xpRequired():
             self.xp -= 100 + 10 * (self.level - 1)
