@@ -48,15 +48,16 @@ class Enemy(models.Model):
             min_ratio_damage = 0.90
         if ratio > 1.25:
             ratio = 1.25
-        damage = random.uniform(
-            min_ratio_damage * adventurer.inventory.weapon.damage,
-            max_ratio_damage * adventurer.inventory.weapon.damage
-        )
+        damage = int(random.uniform(
+            min_ratio_damage*adventurer.inventory.weapon.damage,
+            max_ratio_damage*adventurer.inventory.weapon.damage
+        ))
+
         damage = 4 if damage < 4 else damage
-        diceNumber = random.uniform(
+        diceNumber = int(random.uniform(
             adventurer.inventory.weapon.diceNumber - 1,
-            adventurer.inventory.weapon.diceNumber + 1
-        )
+            adventurer.inventory.weapon.diceNumber
+        ))
         if diceNumber > 4:
             diceNumber = 4
         elif diceNumber < 1:

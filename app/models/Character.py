@@ -45,8 +45,10 @@ class Character(models.Model):
                                             null=False)
     inventory = models.OneToOneField('Inventory',
                                      default=1,
-                                     on_delete=models.PROTECT)
-    
+                                     blank=True,
+                                     null=True,
+                                     on_delete=models.SET_NULL)
+
     def __str__(self):
         return f'{self.id}: {self.name} ' \
                f'[Lvl: {self.level}' \
@@ -79,62 +81,67 @@ class Character(models.Model):
     
     def getStrength(self):
         strength = self.strength
-        if self.inventory.head is not None:
-            strength += self.inventory.head.strength
-        if self.inventory.chest is not None:
-            strength += self.inventory.chest.strength
-        if self.inventory.leg is not None:
-            strength += self.inventory.leg.strength
-        if self.inventory.weapon is not None:
-            strength += self.inventory.weapon.strength
+        if self.inventory is not None:
+            if self.inventory.head is not None:
+                strength += self.inventory.head.strength
+            if self.inventory.chest is not None:
+                strength += self.inventory.chest.strength
+            if self.inventory.leg is not None:
+                strength += self.inventory.leg.strength
+            if self.inventory.weapon is not None:
+                strength += self.inventory.weapon.strength
         return strength
     
     def getAgility(self):
         agility = self.agility
-        if self.inventory.head is not None:
-            agility += self.inventory.head.agility
-        if self.inventory.chest is not None:
-            agility += self.inventory.chest.agility
-        if self.inventory.leg is not None:
-            agility += self.inventory.leg.agility
-        if self.inventory.weapon is not None:
-            agility += self.inventory.weapon.agility
+        if self.inventory is not None:
+            if self.inventory.head is not None:
+                agility += self.inventory.head.agility
+            if self.inventory.chest is not None:
+                agility += self.inventory.chest.agility
+            if self.inventory.leg is not None:
+                agility += self.inventory.leg.agility
+            if self.inventory.weapon is not None:
+                agility += self.inventory.weapon.agility
         return agility
     
     def getIntelligence(self):
         intelligence = self.intelligence
-        if self.inventory.head is not None:
-            intelligence += self.inventory.head.intelligence
-        if self.inventory.chest is not None:
-            intelligence += self.inventory.chest.intelligence
-        if self.inventory.leg is not None:
-            intelligence += self.inventory.leg.intelligence
-        if self.inventory.weapon is not None:
-            intelligence += self.inventory.weapon.intelligence
+        if self.inventory is not None:
+            if self.inventory.head is not None:
+                intelligence += self.inventory.head.intelligence
+            if self.inventory.chest is not None:
+                intelligence += self.inventory.chest.intelligence
+            if self.inventory.leg is not None:
+                intelligence += self.inventory.leg.intelligence
+            if self.inventory.weapon is not None:
+                intelligence += self.inventory.weapon.intelligence
         return intelligence
     
     def getPhysicalResistance(self):
         physicalResistance = self.physicalResistance
-        if self.inventory.head is not None:
-            physicalResistance += self.inventory.head.physicalResistance
-        if self.inventory.chest is not None:
-            physicalResistance += self.inventory.chest.physicalResistance
-        if self.inventory.leg is not None:
-            physicalResistance += self.inventory.leg.physicalResistance
-        if self.inventory.weapon is not None:
-            physicalResistance += self.inventory.weapon.physicalResistance
+        if self.inventory is not None:
+            if self.inventory.head is not None:
+                physicalResistance += self.inventory.head.physicalResistance
+            if self.inventory.chest is not None:
+                physicalResistance += self.inventory.chest.physicalResistance
+            if self.inventory.leg is not None:
+                physicalResistance += self.inventory.leg.physicalResistance
+            if self.inventory.weapon is not None:
+                physicalResistance += self.inventory.weapon.physicalResistance
         return physicalResistance
     
     def getMagicalResistance(self):
         magicalResistance = self.magicalResistance
-        if self.inventory.head is not None:
-            magicalResistance += self.inventory.head.magicalResistance
-        if self.inventory.chest is not None:
-            magicalResistance += self.inventory.chest.magicalResistance
-        if self.inventory.leg is not None:
-            magicalResistance += self.inventory.leg.magicalResistance
-        if self.inventory.weapon is not None:
-            magicalResistance += self.inventory.weapon.magicalResistance
+        if self.inventory is not None:
+            if self.inventory.head is not None:
+                magicalResistance += self.inventory.head.magicalResistance
+            if self.inventory.chest is not None:
+                magicalResistance += self.inventory.chest.magicalResistance
+            if self.inventory.leg is not None:
+                magicalResistance += self.inventory.leg.magicalResistance
+            if self.inventory.weapon is not None:
+                magicalResistance += self.inventory.weapon.magicalResistance
         return magicalResistance
     
     def getSTRModificator(self):

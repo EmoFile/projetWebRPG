@@ -422,7 +422,7 @@ class PlayRound(generic.View):
                 "This enemy was far superior to this hero, unfortunately..., SOUILLED",
                 "It could have gone well... but it didn't."
             }
-            party.isEnded = True
+            party.game_over()
             party.save()
             return JsonResponse({'isEnded': party.isEnded,
                                  'enemy': {
@@ -1487,7 +1487,7 @@ def ChangeStuff(*args, **kwargs):
                 newStuff = getattr(kwargs['inventory'], prop)
                 kwargs['inventory'].character.setHpMax(newStuff.hpMax)
                 if kwargs['inventory'].character.hp <= 0:
-                    kwargs['inventory'].character.party.isEnded = True
+                    kwargs['inventory'].character.party.game_over()
                 kwargs['inventory'].character.save()
                 kwargs['inventory'].character.party.save()
             except:
@@ -1629,7 +1629,7 @@ def UseItem(*args, **kwargs):
     currentParty.character.modifyCarac(currentConsumable)
     currentParty.character.save()
     if currentParty.character.hp <= 0:
-        currentParty.isEnded = True
+        currentParty.game_over()
         currentParty.save()
     return JsonResponse({'consumableName': consumableName,
                          'consumableOldQuantity': consumableOldQuantity,
