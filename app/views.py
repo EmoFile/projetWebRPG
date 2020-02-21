@@ -489,12 +489,12 @@ def fight(atk, atkModif, atkDef, atkModifDef, atkObj, res, resModif, defName):
     print(f'atk : {atkObj.name} | {aD20} | {atkModif}')
     print(f'def : {defName} | {dD20} | {resModif}')
     attack_dice = {
-        f'{atkObj.name} throws a D20 for attack and goes {aD20.__str__()} + {atkModif}',
-        f'The dice we choose! And it will be {aD20.__str__()}  + {atkModif} on the D20 attack from {atkObj.name}'
+        f'{atkObj.name} throws a D20 for attack and goes {aD20.__str__()}',
+        f'The dice we choose! And it will be {aD20.__str__()} on the D20 attack from {atkObj.name}'
     }
     defence_dice = {
-        f'{defName} doesn\'t let up and throws a D20 in his defense and goes... {dD20.__str__()} + {resModif}',
-        f'{defName} says a prayer before throwing his d20 and does {dD20.__str__()}  + {resModif}'
+        f'{defName} doesn\'t let up and throws a D20 in his defense and goes... {dD20.__str__()}',
+        f'{defName} says a prayer before throwing his d20 and does {dD20.__str__()}'
     }
     assault = atkModif + aD20
     protection = resModif + dD20
@@ -550,12 +550,12 @@ def fight(atk, atkModif, atkDef, atkModifDef, atkObj, res, resModif, defName):
             hpDef = 0 if (damage - resModif) < 0 else damage - resModif
             print(f'Réussite : {damage} - {resModif} => {hpDef}')
             success_damage = {
-                atkObj.name + " attacks and does " + damage.__str__() + " damages to his opponent!",
-                atkObj.name + " is not at his peak but still does " + damage.__str__() + " damages."
+                atkObj.name + " attacks and does " + hpDef.__str__() + " damages to his opponent!",
+                atkObj.name + " is not at his peak but still does " + hpDef.__str__() + " damages."
             }
             success_critcal_damage = {
-                "Oh, my God! It wasn't all for nothing, that murderous atmosphere! " + atkObj.name + " inflicts " + damage.__str__() + " damages to his opponent !",
-                "so much power !!!! he does " + damage.__str__() + " damages"
+                "Oh, my God! It wasn't all for nothing, that murderous atmosphere! " + atkObj.name + " inflicts " + hpDef.__str__() + " damages to his opponent !",
+                "so much power !!!! he does " + hpDef.__str__() + " damages"
             }
             if aD20 == 20:
                 battleReport['5'] = random.choice(list(success_critcal_damage))
