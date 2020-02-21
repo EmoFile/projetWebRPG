@@ -161,15 +161,13 @@ class BossAlain(Enemy):
         :return: BossAlain
         """
         cls.is_boss = True
-        k = random.randint(7, 9)
-        min_percent_def = (30 * k - 330) / 11
-        max_percent_def = (7 * k - 69) / 3
-        
-        min_percent = max_percent = name = None
-        for (percent, p_min, p_max, title) in [(100, 70, 100, 'King Alain'),
-                                               (50, 60, 70, 'General Alain'),
-                                               (10, 50, 60, 'Soldier Alain')]:
+        min_percent = max_percent = name = min_percent_def = max_percent_def = None
+        for (percent, p_min, p_max, title, k) in [(100, 70, 100, 'King Alain', random.randint(13, 17)),
+                                               (50, 60, 70, 'General Alain', random.randint(11, 15)),
+                                               (10, 50, 60, 'Soldier Alain', random.randint(9, 13))]:
             if (stage % percent) == 0:
+                min_percent_def = (30 * k - 330) / 11
+                max_percent_def = (7 * k - 69) / 3
                 min_percent = p_min
                 max_percent = p_max
                 name = title
