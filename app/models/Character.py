@@ -201,10 +201,10 @@ class Character(models.Model):
             'physicalResistance': self.getPhysicalResistance(),
             'magicalResistance': self.getMagicalResistance(),
             'basic': {
-                'strength': self.strength,
-                'agility': self.agility,
-                'intelligence': self.intelligence,
-                'physicalResistance': self.physicalResistance,
-                'magicalResistance': self.magicalResistance
+                'strength': self.getSTRModificator(),
+                'agility': self.getAGIModificator(),
+                'intelligence': self.getINTModificator(),
+                'physicalResistance': self.getPRModificator(),
+                'magicalResistance': self.getMRModificator()
             }
         }
