@@ -41,7 +41,7 @@ class Enemy(models.Model):
         :param name:
         :return: Enemy
         """
-        ratio = (0.5 * stage + 49) / 99
+        ratio = (0.25 * stage + 24.5) / 99
         min_ratio_damage = (0.1 * adventurer.inventory.weapon.damage + 36.65) / 49
         max_ratio_damage = 1.10
         if min_ratio_damage > 0.90:
