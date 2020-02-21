@@ -145,19 +145,19 @@ class Character(models.Model):
         return magicalResistance
     
     def getSTRModificator(self):
-        return int(self.getStrength() / 6)
+        return int(self.getStrength() / 4)
     
     def getINTModificator(self):
-        return int(self.getIntelligence() / 6)
+        return int(self.getIntelligence() / 4)
     
     def getAGIModificator(self):
-        return int(self.getAgility() / 6)
+        return int(self.getAgility() / 4)
     
     def getPRModificator(self):
-        return int(self.getPhysicalResistance() / 6)
+        return int(self.getPhysicalResistance() / 4)
     
     def getMRModificator(self):
-        return int(self.getMagicalResistance() / 6)
+        return int(self.getMagicalResistance() / 4)
     
     def setHp(self, hp):
         hp_temp = self.hp + hp
