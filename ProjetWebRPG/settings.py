@@ -90,6 +90,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app.apps.AppConfig',
+    'polymorphic',
+    'django.contrib.contenttypes',
 ]
 
 ROOT_URLCONF = 'ProjetWebRPG.urls'

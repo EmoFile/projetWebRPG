@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from app.models import Character, Enemy, Inventory
+from app.models import Character, Enemy, Inventory, Item
 
 
 class Party(models.Model):
@@ -19,7 +19,7 @@ class Party(models.Model):
     date = models.DateField("Date", default=datetime.date.today)
     isEnded = models.BooleanField(default=False)
     enemies = models.ManyToManyField('Enemy', through='PartyEnemy')
-    # lastItemDropped = models.ForeignKey('Item', default=False, on_delete=models.SET_NULL)
+    lastItemDropped = models.ForeignKey(Item, default=False, null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         unique_together = ['character']

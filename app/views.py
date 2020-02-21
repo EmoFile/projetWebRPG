@@ -266,7 +266,7 @@ class GenerateCharacterView(LoginRequiredMixin, CreateView):
                 pullCount = rareHealingConsumablePull.count()
         randomHealingRarePotion = rareHealingConsumablePull[random.randint(0, pullCount - 1)]
         AddConsumable(stuffClassName="Consumable", inventory=self.object.inventory, consumable=randomHealingRarePotion)
-
+        party.lastItemDropped = None
         party.save()
         return super().form_valid(form)
 
@@ -1421,6 +1421,8 @@ def AddConsumable(*args, **kwargs):
                                           consumable=kwargs['consumable'])
     i_c.quantity += 1
     i_c.save()
+    kwargs['inventory'].character.party.lastItemDropped = None
+    kwargs['inventory'].character.party.save()
     return JsonResponse({
         'stuffClassName': kwargs['stuffClassName'],
         'stuffPk': kwargs['consumable'].pk,
@@ -1460,6 +1462,7 @@ def ChangeStuff(*args, **kwargs):
                 kwargs['inventory'].character.party.save()
             except:
                 pass
+
     return JsonResponse({
         'stuffClassName': kwargs['stuffClassName'],
         'oldStuff': oldStuff,
@@ -1482,15 +1485,15 @@ def ChangeItem(*args, **kwargs):
     currentParty = get_object_or_404(Party, pk=kwargs['partyPk'])
     currentCharacter = currentParty.character
     characterInventory = currentCharacter.inventory
-    if kwargs['stuffClassName'] == 'Consumable':
+    stuffClassName = currentParty.lastItemDropped.__class__.__name__
+    if stuffClassName == 'Consumable':
         return AddConsumable(inventory=characterInventory,
-                             consumable=get_object_or_404(Consumable,
-                                                          pk=kwargs['stuffPk']),
-                             stuffClassName=kwargs['stuffClassName'])
+                             consumable=currentParty.lastItemDropped,
+                             stuffClassName=stuffClassName)
     else:
         return ChangeStuff(inventory=characterInventory,
-                           stuffClassName=kwargs['stuffClassName'],
-                           stuffPk=kwargs['stuffPk'])
+                           stuffClassName=stuffClassName,
+                           stuffPk=currentParty.lastItemDropped.pk)
 
 
 def NextEnemy(**kwargs):
