@@ -510,7 +510,7 @@ def fight(atk, atkModif, atkDef, atkModifDef, atkObj, res, resModif, defName):
                     }
     if aD20 == 1:
         weaponDamage = getDamage(atk=atkObj)
-        damage = int(((weaponDamage + atkModif) - atkModifDef)*0.75)
+        damage = int(((weaponDamage + atkModif) - atkModifDef)*0.25)
         print(
             f'Echec critique : (weaponDamage: {weaponDamage} | atkModif: {atkModif} | atkModifDef: {atkModifDef} )*0.75=> {damage}')
         critical_failure = {
