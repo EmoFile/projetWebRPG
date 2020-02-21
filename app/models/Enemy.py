@@ -41,7 +41,7 @@ class Enemy(models.Model):
         :param name:
         :return: Enemy
         """
-        ratio = (0.5 * stage + 49) / 99
+        ratio = (0.25 * stage + 24.5) / 99
         min_ratio_damage = (0.1 * adventurer.inventory.weapon.damage + 36.65) / 49
         max_ratio_damage = 1.10
         if min_ratio_damage > 0.90:
@@ -100,19 +100,19 @@ class Enemy(models.Model):
         return damage
     
     def getSTRModificator(self):
-        return int(self.strength / 6)
+        return int(self.strength / 4)
     
     def getINTModificator(self):
-        return int(self.intelligence / 6)
+        return int(self.intelligence / 4)
     
     def getAGIModificator(self):
-        return int(self.agility / 6)
+        return int(self.agility / 4)
     
     def getPRModificator(self):
-        return int(self.physical_resistance / 6)
+        return int(self.physical_resistance / 4)
     
     def getMRModificator(self):
-        return int(self.magical_resistance / 6)
+        return int(self.magical_resistance / 4)
 
 
 class Minion(Enemy):
